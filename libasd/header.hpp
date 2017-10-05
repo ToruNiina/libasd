@@ -15,9 +15,9 @@ struct Header
     static_assert(std::is_same<chT, channel<1>>::value ||
                   std::is_same<chT, channel<2>>::value,
                   "currently, channel 1 and 2 are supported.");
-    static_assert(std::is_same<chT, version<0>>::value ||
-                  std::is_same<chT, version<1>>::value ||
-                  std::is_same<chT, version<2>>::value,
+    static_assert(std::is_same<verT, version<0>>::value ||
+                  std::is_same<verT, version<1>>::value ||
+                  std::is_same<verT, version<2>>::value,
                   "currently, version 0, 1, and 2 are supported.");
 };
 
