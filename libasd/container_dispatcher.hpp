@@ -58,7 +58,7 @@ struct arr
         {
             throw_exception<std::bad_alloc>(
                     "array(size = %) has no enough storage(size = %)",
-                    cont.size(), N);
+                    cont.size(), M);
         }
         return;
     }
