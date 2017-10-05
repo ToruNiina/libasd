@@ -3,6 +3,7 @@
 #include <libasd/debug_macro.hpp>
 #include <libasd/tag.hpp>
 #include <libasd/container_dispatcher.hpp>
+#include <libasd/read_binary_as.hpp>
 #include <iostream>
 #include <cstdint>
 
@@ -24,6 +25,7 @@ struct Header
 template<std::size_t N, typename contT>
 struct Header<channel<N>, version<0>, contT>
 {
+    typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
 
     std::int32_t version;             //!< file version
@@ -123,6 +125,7 @@ struct Header<channel<N>, version<1>, contT>
 template<std::size_t N, typename contT>
 struct Header<channel<N>, version<2>, contT>
 {
+    typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
     typedef typename contT::template rebind<std::int32_t>::other i32_array;
 
@@ -207,79 +210,59 @@ read_header_impl(Header<channel<N>, version<0>, contT>& header, std::istream& is
     return;
 }
 
-template<typename std::size_t N>
-inline bool check_ptr_and_throw_if_ends_with(const char* ptr) noexcept
-{
-    for(std::size_t i=0; i<N; ++i)
-    {
-        if(*ptr == '\0'){throw std::invalid_argument("string suddenly ends");}
-        else            {++ptr;}
-    }
-    return true;
-}
-
-template<typename T>
-T read_char_ptr_as(const char*& ptr)
-{
-    //XXX its unsafe!
-    const T retval = *reinterpret_cast<const T*>(ptr);
-    ptr += sizeof(T);
-    return retval;
-}
-
 template<std::size_t N, typename contT>
-void read_header_impl(Header<channel<N>, version<1>, contT>& header,
-                      char const* ptr)
+const char*
+read_header_impl(Header<channel<N>, version<1>, contT>& header, const char* ptr)
 {
     typedef Header<channel<N>, version<1>, contT> header_type;
 
-    header.version              = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.version              )
-    header.file_header_size     = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.file_header_size     )
-    header.frame_header_size    = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.frame_header_size    )
-    header.text_encoding        = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.text_encoding        )
-    header.operator_name_size   = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.operator_name_size   )
-    header.comment_size         = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.comment_size         )
-    header.data_kind_1ch        = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.data_kind_1ch        )
-    header.data_kind_2ch        = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.data_kind_2ch        )
-    header.init_frame           = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.init_frame           )
-    header.frame_size           = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.frame_size           )
-    header.scanning_direction   = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.scanning_direction   )
-    header.file_id              = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.file_id              )
-    header.x_pixel              = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.x_pixel              )
-    header.y_pixel              = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.y_pixel              )
-    header.x_scanning_range     = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.x_scanning_range     )
-    header.y_scanning_range     = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.y_scanning_range     )
-    header.is_averaged          = read_char_ptr_as<bool        >(ptr); LIBASD_DUMP_IF_DEBUG( header.is_averaged          )
-    header.average_window       = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.average_window       )
-    header.year                 = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.year                 )
-    header.month                = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.month                )
-    header.day                  = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.day                  )
-    header.hour                 = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.hour                 )
-    header.minute               = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.minute               )
-    header.second               = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.second               )
-    header.x_rounding_degree    = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.x_rounding_degree    )
-    header.y_rounding_degree    = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.y_rounding_degree    )
-    header.frame_acquision_time = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.frame_acquision_time )
-    header.sensor_sensitiviy    = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.sensor_sensitiviy    )
-    header.phase_sensitivity    = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.phase_sensitivity    )
-    header.offset               = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.offset               )
+    header.version              = read_binary_as<std::int32_t>(ptr);
+    header.file_header_size     = read_binary_as<std::int32_t>(ptr);
+    header.frame_header_size    = read_binary_as<std::int32_t>(ptr);
+    header.text_encoding        = read_binary_as<std::int32_t>(ptr);
+    header.operator_name_size   = read_binary_as<std::int32_t>(ptr);
+    header.comment_size         = read_binary_as<std::int32_t>(ptr);
+    header.data_kind_1ch        = read_binary_as<std::int32_t>(ptr);
+    header.data_kind_2ch        = read_binary_as<std::int32_t>(ptr);
+    header.init_frame           = read_binary_as<std::int32_t>(ptr);
+    header.frame_size           = read_binary_as<std::int32_t>(ptr);
+    header.scanning_direction   = read_binary_as<std::int32_t>(ptr);
+    header.file_id              = read_binary_as<std::int32_t>(ptr);
+    header.x_pixel              = read_binary_as<std::int32_t>(ptr);
+    header.y_pixel              = read_binary_as<std::int32_t>(ptr);
+    header.x_scanning_range     = read_binary_as<std::int32_t>(ptr);
+    header.y_scanning_range     = read_binary_as<std::int32_t>(ptr);
+    header.is_averaged          = read_binary_as<bool        >(ptr);
+    header.average_window       = read_binary_as<std::int32_t>(ptr);
+    header.year                 = read_binary_as<std::int32_t>(ptr);
+    header.month                = read_binary_as<std::int32_t>(ptr);
+    header.day                  = read_binary_as<std::int32_t>(ptr);
+    header.hour                 = read_binary_as<std::int32_t>(ptr);
+    header.minute               = read_binary_as<std::int32_t>(ptr);
+    header.second               = read_binary_as<std::int32_t>(ptr);
+    header.x_rounding_degree    = read_binary_as<std::int32_t>(ptr);
+    header.y_rounding_degree    = read_binary_as<std::int32_t>(ptr);
+    header.frame_acquision_time = read_binary_as<float       >(ptr);
+    header.sensor_sensitiviy    = read_binary_as<float       >(ptr);
+    header.phase_sensitivity    = read_binary_as<float       >(ptr);
+    header.offset               = read_binary_as<std::int32_t>(ptr);
     ptr += 12; // booked region
-    header.machine_id           = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.machine_id           )
-    header.AD_range             = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.AD_range             )
-    header.AD_resolution        = read_char_ptr_as<std::int32_t>(ptr); LIBASD_DUMP_IF_DEBUG( header.AD_resolution        )
-    header.x_max_scanning_range = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.x_max_scanning_range )
-    header.y_max_scanning_range = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.y_max_scanning_range )
-    header.x_piezo_extension    = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.x_piezo_extension    )
-    header.y_piezo_extension    = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.y_piezo_extension    )
-    header.z_piezo_extension    = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.z_piezo_extension    )
-    header.z_piezo_gain         = read_char_ptr_as<float       >(ptr); LIBASD_DUMP_IF_DEBUG( header.z_piezo_gain         )
+    header.machine_id           = read_binary_as<std::int32_t>(ptr);
+    header.AD_range             = read_binary_as<std::int32_t>(ptr);
+    header.AD_resolution        = read_binary_as<std::int32_t>(ptr);
+    header.x_max_scanning_range = read_binary_as<float       >(ptr);
+    header.y_max_scanning_range = read_binary_as<float       >(ptr);
+    header.x_piezo_extension    = read_binary_as<float       >(ptr);
+    header.y_piezo_extension    = read_binary_as<float       >(ptr);
+    header.z_piezo_extension    = read_binary_as<float       >(ptr);
+    header.z_piezo_gain         = read_binary_as<float       >(ptr);
 
     const std::size_t op_name_size =
         static_cast<std::size_t>(header.operator_name_size);
     header_type::container_dispatcher_type::resize(header.operator_name, op_name_size);
     for(std::size_t i=0; i<op_name_size; ++i)
     {
-        header.operator_name[i] += read_char_ptr_as<std::int8_t>(ptr);
+        header.operator_name[i] += read_binary_as<std::int8_t>(ptr);
     }
 
     const std::size_t cm_size =
@@ -287,9 +270,9 @@ void read_header_impl(Header<channel<N>, version<1>, contT>& header,
     header_type::container_dispatcher_type::resize(header.comment, cm_size);
     for(std::size_t i=0; i<cm_size; ++i)
     {
-        header.comment[i] += read_char_ptr_as<std::int8_t>(ptr);
+        header.comment[i] += read_binary_as<std::int8_t>(ptr);
     }
-    return;
+    return ptr;
 }
 
 template<std::size_t N, typename contT = container::vec>
