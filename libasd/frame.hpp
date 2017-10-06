@@ -5,7 +5,6 @@
 #include <libasd/frame_header.hpp>
 #include <libasd/frame_data.hpp>
 #include <libasd/channel_tag.hpp>
-#include <libasd/version_tag.hpp>
 #include <type_traits>
 #include <stdexcept>
 #include <array>
@@ -14,15 +13,12 @@
 namespace asd
 {
 
-template<typename chT, typename verT,
-         typename pixelT = std::int16_t, typename contT = vec>
+template<typename chT, typename contT = vec>
 struct Frame
 {
-    typedef chT  channel_tag;
-    typedef verT version_tag;
+    typedef chT channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    static constexpr std::size_t num_version = version_tag::value;
-    typedef pixelT                                     pixel_type;
+    typedef std::int16_t                               pixel_type;
     typedef FrameHeader                                header_type;
     typedef FrameData<contT, pixelT>                   frame_data_type;
     typedef std::array<frame_data_type, num_channel>   data_type;
@@ -65,17 +61,15 @@ struct Frame
 
 };
 
-template<std::size_t N, typename dataT, typename contT>
-struct Frame<channel<1>, version<N>, dataT, contT>
+template<typename dataT, typename contT>
+struct Frame<channel<1>, dataT, contT>
 {
     typedef channel<1> channel_tag;
-    typedef version<N> version_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    static constexpr std::size_t num_version = version_tag::value;
-    typedef dataT data_type;
-    typedef FrameHeader             header_type;
-    typedef FrameData<contT, dataT> frame_data_type;
-    typedef frame_data_type         data_type;
+    typedef std::int16_t                               pixel_type;
+    typedef FrameHeader                                header_type;
+    typedef FrameData<contT, dataT>                    frame_data_type;
+    typedef frame_data_type                            data_type;
     typedef typename data_type::proxy_type             proxy_type;
     typedef typename data_type::const_proxy_type       const_proxy_type;
     typedef typename data_type::iterator               iterator;
