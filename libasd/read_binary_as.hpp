@@ -25,6 +25,18 @@ T read_binary_as(std::istream& is)
     return retval;
 }
 
+inline void ignore_bytes(const char*& ptr, std::ptrdiff_t pdiff)
+{
+    ptr += pdiff;
+    return;
+}
+inline void ignore_bytes(std::istream& is, std::ptrdiff_t pdiff)
+{
+    is.ignore(pdiff);
+    return;
+}
+
+
 } // detail
 }// asd
 #endif// LIBASD_READ_BINARY_AS_H
