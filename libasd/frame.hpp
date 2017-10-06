@@ -4,7 +4,7 @@
 #include <libasd/container_dispatcher.hpp>
 #include <libasd/frame_header.hpp>
 #include <libasd/frame_data.hpp>
-#include <libasd/channel_tag.hpp>
+#include <libasd/tag.hpp>
 #include <type_traits>
 #include <stdexcept>
 #include <array>
@@ -13,14 +13,14 @@
 namespace asd
 {
 
-template<typename chT, typename contT = vec>
+template<typename chT, typename contT = container::vec>
 struct Frame
 {
     typedef chT channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
     typedef std::int16_t                               pixel_type;
     typedef FrameHeader                                header_type;
-    typedef FrameData<contT, pixelT>                   frame_data_type;
+    typedef FrameData<contT>                           frame_data_type;
     typedef std::array<frame_data_type, num_channel>   data_type;
     typedef typename data_type::iterator               iterator;
     typedef typename data_type::const_iterator         const_iterator;
@@ -61,14 +61,14 @@ struct Frame
 
 };
 
-template<typename dataT, typename contT>
-struct Frame<channel<1>, dataT, contT>
+template<typename contT>
+struct Frame<channel<1>, contT>
 {
     typedef channel<1> channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
     typedef std::int16_t                               pixel_type;
     typedef FrameHeader                                header_type;
-    typedef FrameData<contT, dataT>                    frame_data_type;
+    typedef FrameData<contT>                           frame_data_type;
     typedef frame_data_type                            data_type;
     typedef typename data_type::proxy_type             proxy_type;
     typedef typename data_type::const_proxy_type       const_proxy_type;
