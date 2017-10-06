@@ -18,7 +18,7 @@ T read_binary_as(const char*& ptr)
 template<typename T>
 T read_binary_as(std::istream& is)
 {
-    const std::size_t sz = sizeof(T);
+    constexpr std::size_t sz = sizeof(T);
     char cbytes[sz];
     is.read(cbytes, sz);
     const T retval = *reinterpret_cast<const T*>(cbytes);
