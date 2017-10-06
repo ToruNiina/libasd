@@ -160,31 +160,31 @@ struct Header<channel<N>, version<2>, contT>
     std::int32_t machine_id;           //!< Number of the imaging machine
     std::int32_t AD_range;             //!< Code showing AD range (AD_1V, AD_2P5V, AD_5V or AD_10V)
     std::int32_t AD_resolution;        //!< AD resolution (When this value is 12, the AD resolution is 4096 (2^12).)
-    float x_max_scanning_range;        //!< X maximum scanning range (nm)
-    float y_max_scanning_range;        //!< Y maximum scanning range (nm)
-    float x_piezo_extension;           //!< X piezo extension coefficient (nm/V)
-    float y_piezo_extension;           //!< Y piezo extension coefficient (nm/V)
-    float z_piezo_extension;           //!< Z piezo extension coefficient (nm/V)
-    float z_piezo_gain;                //!< Z piezo driver gain
-    byte_array operator_name;          //!< Name of the operator
-    byte_array comment;                //!< Comment
+    float        x_max_scanning_range; //!< X maximum scanning range (nm)
+    float        y_max_scanning_range; //!< Y maximum scanning range (nm)
+    float        x_piezo_extension;    //!< X piezo extension coefficient (nm/V)
+    float        y_piezo_extension;    //!< Y piezo extension coefficient (nm/V)
+    float        z_piezo_extension;    //!< Z piezo extension coefficient (nm/V)
+    float        z_piezo_gain;         //!< Z piezo driver gain
+    byte_array   operator_name;        //!< Name of the operator
+    byte_array   comment;              //!< Comment
 
     // additional parameters...
-    std::int32_t number_of_frames;     //!< number of frames
-    bool         is_x_feed_forward;    //!< flag for X-line feed-forward
-    std::int32_t x_feed_forward_i;     //!< X-line feed-forward parameter
-    double       x_feed_forward_d;     //!< X-line feed-forward parameter
-    std::int32_t max_color_scale;      //!< maximum value of color scale[0, 255]
-    std::int32_t min_color_scale;      //!< maximum value of color scale[0, 255]
-    std::int32_t anchor_point_red;     //!< number of anchor point for color collection (R)
-    std::int32_t anchor_point_green;   //!< number of anchor point for color collection (G)
-    std::int32_t anchor_point_blue;    //!< number of anchor point for color collection (B)
-    i32_array    x_anchor_points_red;  //!< X value of an anchor point (R)
-    i32_array    y_anchor_points_red;  //!< Y value of an anchor point (R)
-    i32_array    x_anchor_points_green;//!< X value of an anchor point (G)
-    i32_array    y_anchor_points_green;//!< Y value of an anchor point (G)
-    i32_array    x_anchor_points_blue; //!< X value of an anchor point (B)
-    i32_array    y_anchor_points_blue; //!< Y value of an anchor point (B)
+    std::int32_t number_of_frames;        //!< number of frames
+    bool         is_x_feed_forward;       //!< flag for X-line feed-forward
+    std::int32_t x_feed_forward_i;        //!< X-line feed-forward parameter
+    double       x_feed_forward_d;        //!< X-line feed-forward parameter
+    std::int32_t max_color_scale;         //!< maximum value of color scale[0, 255]
+    std::int32_t min_color_scale;         //!< maximum value of color scale[0, 255]
+    std::int32_t anchor_point_size_red;   //!< number of anchor point for color collection (R)
+    std::int32_t anchor_point_size_green; //!< number of anchor point for color collection (G)
+    std::int32_t anchor_point_size_blue;  //!< number of anchor point for color collection (B)
+    i32_array    x_anchor_points_red;     //!< X value of an anchor point (R)
+    i32_array    y_anchor_points_red;     //!< Y value of an anchor point (R)
+    i32_array    x_anchor_points_green;   //!< X value of an anchor point (G)
+    i32_array    y_anchor_points_green;   //!< Y value of an anchor point (G)
+    i32_array    x_anchor_points_blue;    //!< X value of an anchor point (B)
+    i32_array    y_anchor_points_blue;    //!< Y value of an anchor point (B)
 };
 
 } // asd
