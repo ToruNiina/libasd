@@ -300,7 +300,7 @@ struct FrameData
     const_proxy_type operator[](std::size_t i) const noexcept
     {
         const std::size_t offset = i * x_pixel;
-        return proxy_type(
+        return const_proxy_type(
             this->raw_cbegin() + offset, this->raw_cbegin() + offset + x_pixel,
             i, x_pixel, y_pixel);
     }
