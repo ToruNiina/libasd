@@ -16,7 +16,7 @@ read_header_impl(Header<channel<N>, version<0>, contT>& header,
                  sourceT& source)
 {
     typedef Header<channel<N>, version<0>, contT> header_type;
-    header.version             = read_binary_as<std::int32_t>(source);
+    header.file_version        = read_binary_as<std::int32_t>(source);
     header.data_type_1ch       = read_binary_as<std::int16_t>(source);
     header.data_type_2ch       = read_binary_as<std::int16_t>(source);
     header.file_header_size    = read_binary_as<std::int32_t>(source);
@@ -82,7 +82,7 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header,
                  sourceT& source)
 {
     typedef Header<channel<N>, version<1>, contT> header_type;
-    header.version              = read_binary_as<std::int32_t>(source);
+    header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
     header.text_encoding        = read_binary_as<std::int32_t>(source);
@@ -147,7 +147,7 @@ read_header_impl(Header<channel<N>, version<2>, contT>& header,
                  sourceT& source)
 {
     typedef Header<channel<N>, version<1>, contT> header_type;
-    header.version              = read_binary_as<std::int32_t>(source);
+    header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
     header.text_encoding        = read_binary_as<std::int32_t>(source);
