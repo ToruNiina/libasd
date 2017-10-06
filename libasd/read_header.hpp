@@ -11,20 +11,134 @@ namespace detail
 {
 
 template<std::size_t N, typename contT>
-void
+const char*
 read_header_impl(Header<channel<N>, version<0>, contT>& header,
-                 const char* const ptr)
+                 const char* ptr)
 {
-// TODO
-    return;
+    typedef Header<channel<N>, version<0>, contT> header_type;
+    header.version             = read_binary_as<std::int32_t>(ptr);
+    header.data_type_1ch       = read_binary_as<std::int16_t>(ptr);
+    header.data_type_2ch       = read_binary_as<std::int16_t>(ptr);
+    header.file_header_size    = read_binary_as<std::int32_t>(ptr);
+    header.frame_header_size   = read_binary_as<std::int32_t>(ptr);
+    header.operator_name_size  = read_binary_as<std::int32_t>(ptr);
+    header.comment_offset_size = read_binary_as<std::int32_t>(ptr);
+    header.comment_size        = read_binary_as<std::int32_t>(ptr);
+    header.x_pixel             = read_binary_as<std::int32_t>(ptr);
+    header.y_pixel             = read_binary_as<std::int32_t>(ptr);
+    header.x_scanning_range    = read_binary_as<std::int32_t>(ptr);
+    header.y_scanning_range    = read_binary_as<std::int32_t>(ptr);
+    header.frame_rate          = read_binary_as<float       >(ptr);
+    header.z_piezo_extension   = read_binary_as<float       >(ptr);
+    header.z_piexo_gain        = read_binary_as<float       >(ptr);
+    header.ad_range            = read_binary_as<std::int32_t>(ptr);
+    header.bits_data           = read_binary_as<std::int32_t>(ptr);
+    header.is_averaged         = read_binary_as<bool	    >(ptr);
+    header.average_window      = read_binary_as<std::int32_t>(ptr);
+    header._legacy             = read_binary_as<std::int32_t>(ptr);
+    header.year                = read_binary_as<std::int16_t>(ptr);
+    header.month               = read_binary_as<std::uint8_t>(ptr);
+    header.day                 = read_binary_as<std::uint8_t>(ptr);
+    header.hour                = read_binary_as<std::uint8_t>(ptr);
+    header.minute              = read_binary_as<std::uint8_t>(ptr);
+    header.second              = read_binary_as<std::uint8_t>(ptr);
+    header.rounding_degree     = read_binary_as<std::int32_t>(ptr);
+    header.x_max_range         = read_binary_as<float       >(ptr);
+    header.y_max_range         = read_binary_as<float       >(ptr);
+    header._booked1            = read_binary_as<std::int32_t>(ptr);
+    header._booked2            = read_binary_as<std::int32_t>(ptr);
+    header._booked3            = read_binary_as<std::int32_t>(ptr);
+    header.init_frame          = read_binary_as<std::int32_t>(ptr);
+    header.num_frames          = read_binary_as<std::int32_t>(ptr);
+    header.machine_id          = read_binary_as<std::int32_t>(ptr);
+    header.file_id             = read_binary_as<std::int32_t>(ptr);
+
+    const std::size_t op_nm_sz =
+        static_cast<std::size_t>(header.operator_name_size);
+    header_type::container_dispatcher_type::resize(
+            header.operator_name, op_nm_sz);
+    for(std::size_t i=0; i<op_nm_sz; ++i)
+    {
+        header.operator_name[i] = read_binary_as<std::int8_t>(ptr);
+    }
+
+    header.sensor_sensitivity  = read_binary_as<float       >(ptr);
+    header.phase_sensitivity   = read_binary_as<float       >(ptr);
+    header.scannig_direction   = read_binary_as<std::int32_t>(ptr);
+
+    const std::size_t cm_sz = static_cast<std::size_t>(header.comment_size);
+    header_type::container_dispatcher_type::resize(header.comment, cm_sz);
+    for(std::size_t i=0; i<cm_sz; ++i)
+    {
+        header.comment[i] = read_binary_as<std::int8_t>(ptr);
+    }
+
+    return ptr;
 }
 
 template<std::size_t N, typename contT = container::vec>
-void
+std::istream&
 read_header_impl(Header<channel<N>, version<0>, contT>& header, std::istream& is)
 {
-// TODO
-    return;
+    typedef Header<channel<N>, version<0>, contT> header_type;
+    header.version             = read_binary_as<std::int32_t>(is);
+    header.data_type_1ch       = read_binary_as<std::int16_t>(is);
+    header.data_type_2ch       = read_binary_as<std::int16_t>(is);
+    header.file_header_size    = read_binary_as<std::int32_t>(is);
+    header.frame_header_size   = read_binary_as<std::int32_t>(is);
+    header.operator_name_size  = read_binary_as<std::int32_t>(is);
+    header.comment_offset_size = read_binary_as<std::int32_t>(is);
+    header.comment_size        = read_binary_as<std::int32_t>(is);
+    header.x_pixel             = read_binary_as<std::int32_t>(is);
+    header.y_pixel             = read_binary_as<std::int32_t>(is);
+    header.x_scanning_range    = read_binary_as<std::int32_t>(is);
+    header.y_scanning_range    = read_binary_as<std::int32_t>(is);
+    header.frame_rate          = read_binary_as<float       >(is);
+    header.z_piezo_extension   = read_binary_as<float       >(is);
+    header.z_piexo_gain        = read_binary_as<float       >(is);
+    header.ad_range            = read_binary_as<std::int32_t>(is);
+    header.bits_data           = read_binary_as<std::int32_t>(is);
+    header.is_averaged         = read_binary_as<bool	    >(is);
+    header.average_window      = read_binary_as<std::int32_t>(is);
+    header._legacy             = read_binary_as<std::int32_t>(is);
+    header.year                = read_binary_as<std::int16_t>(is);
+    header.month               = read_binary_as<std::uint8_t>(is);
+    header.day                 = read_binary_as<std::uint8_t>(is);
+    header.hour                = read_binary_as<std::uint8_t>(is);
+    header.minute              = read_binary_as<std::uint8_t>(is);
+    header.second              = read_binary_as<std::uint8_t>(is);
+    header.rounding_degree     = read_binary_as<std::int32_t>(is);
+    header.x_max_range         = read_binary_as<float       >(is);
+    header.y_max_range         = read_binary_as<float       >(is);
+    header._booked1            = read_binary_as<std::int32_t>(is);
+    header._booked2            = read_binary_as<std::int32_t>(is);
+    header._booked3            = read_binary_as<std::int32_t>(is);
+    header.init_frame          = read_binary_as<std::int32_t>(is);
+    header.num_frames          = read_binary_as<std::int32_t>(is);
+    header.machine_id          = read_binary_as<std::int32_t>(is);
+    header.file_id             = read_binary_as<std::int32_t>(is);
+
+    const std::size_t op_nm_sz =
+        static_cast<std::size_t>(header.operator_name_size);
+    header_type::container_dispatcher_type::resize(
+            header.operator_name, op_nm_sz);
+    for(std::size_t i=0; i<op_nm_sz; ++i)
+    {
+        header.operator_name[i] = read_binary_as<std::int8_t>(is);
+    }
+
+    header.sensor_sensitivity  = read_binary_as<float       >(is);
+    header.phase_sensitivity   = read_binary_as<float       >(is);
+    header.scannig_direction   = read_binary_as<std::int32_t>(is);
+
+    const std::size_t cm_sz = static_cast<std::size_t>(header.comment_size);
+    header_type::container_dispatcher_type::resize(header.comment, cm_sz);
+    for(std::size_t i=0; i<cm_sz; ++i)
+    {
+        header.comment[i] = read_binary_as<std::int8_t>(is);
+    }
+
+    return is;
 }
 
 template<std::size_t N, typename contT>
@@ -78,7 +192,7 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header, const char* ptr)
     header_type::container_dispatcher_type::resize(header.operator_name, op_name_size);
     for(std::size_t i=0; i<op_name_size; ++i)
     {
-        header.operator_name[i] += read_binary_as<std::int8_t>(ptr);
+        header.operator_name[i] = read_binary_as<std::int8_t>(ptr);
     }
 
     const std::size_t cm_size =
@@ -86,7 +200,7 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header, const char* ptr)
     header_type::container_dispatcher_type::resize(header.comment, cm_size);
     for(std::size_t i=0; i<cm_size; ++i)
     {
-        header.comment[i] += read_binary_as<std::int8_t>(ptr);
+        header.comment[i] = read_binary_as<std::int8_t>(ptr);
     }
     return ptr;
 }
@@ -137,45 +251,275 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header, std::istream& is
     header.z_piezo_extension    = read_binary_as<float       >(is);
     header.z_piezo_gain         = read_binary_as<float       >(is);
 
-    const std::size_t op_name_size =
+    const std::size_t op_nm_sz =
         static_cast<std::size_t>(header.operator_name_size);
     header_type::container_dispatcher_type::resize(
-            header.operator_name, op_name_size);
-    for(std::size_t i=0; i<op_name_size; ++i)
+            header.operator_name, op_nm_sz);
+    for(std::size_t i=0; i<op_nm_sz; ++i)
     {
-        header.operator_name[i] += read_binary_as<std::int8_t>(is);
+        header.operator_name[i] = read_binary_as<std::int8_t>(is);
     }
 
-    const std::size_t cm_size =
-        static_cast<std::size_t>(header.comment_size);
+    const std::size_t cm_size = static_cast<std::size_t>(header.comment_size);
     header_type::container_dispatcher_type::resize(header.comment, cm_size);
     for(std::size_t i=0; i<cm_size; ++i)
     {
-        header.comment[i] += read_binary_as<std::int8_t>(is);
+        header.comment[i] = read_binary_as<std::int8_t>(is);
     }
     return is;
 }
 
 template<std::size_t N, typename contT>
-void read_header_impl(Header<channel<N>, version<2>, contT>& header,
-                 const char* const ptr)
+const char*
+read_header_impl(Header<channel<N>, version<2>, contT>& header,
+                 const char* ptr)
 {
-// TODO
-    return;
+    typedef Header<channel<N>, version<1>, contT> header_type;
+    header.version              = read_binary_as<std::int32_t>(ptr);
+    header.file_header_size     = read_binary_as<std::int32_t>(ptr);
+    header.frame_header_size    = read_binary_as<std::int32_t>(ptr);
+    header.text_encoding        = read_binary_as<std::int32_t>(ptr);
+    header.operator_name_size   = read_binary_as<std::int32_t>(ptr);
+    header.comment_size         = read_binary_as<std::int32_t>(ptr);
+    header.data_kind_1ch        = read_binary_as<std::int32_t>(ptr);
+    header.data_kind_2ch        = read_binary_as<std::int32_t>(ptr);
+    header.init_frame           = read_binary_as<std::int32_t>(ptr);
+    header.frame_size           = read_binary_as<std::int32_t>(ptr);
+    header.scanning_direction   = read_binary_as<std::int32_t>(ptr);
+    header.file_id              = read_binary_as<std::int32_t>(ptr);
+    header.x_pixel              = read_binary_as<std::int32_t>(ptr);
+    header.y_pixel              = read_binary_as<std::int32_t>(ptr);
+    header.x_scanning_range     = read_binary_as<std::int32_t>(ptr);
+    header.y_scanning_range     = read_binary_as<std::int32_t>(ptr);
+    header.is_averaged          = read_binary_as<bool        >(ptr);
+    header.average_window       = read_binary_as<std::int32_t>(ptr);
+    header.year                 = read_binary_as<std::int32_t>(ptr);
+    header.month                = read_binary_as<std::int32_t>(ptr);
+    header.day                  = read_binary_as<std::int32_t>(ptr);
+    header.hour                 = read_binary_as<std::int32_t>(ptr);
+    header.minute               = read_binary_as<std::int32_t>(ptr);
+    header.second               = read_binary_as<std::int32_t>(ptr);
+    header.x_rounding_degree    = read_binary_as<std::int32_t>(ptr);
+    header.y_rounding_degree    = read_binary_as<std::int32_t>(ptr);
+    header.frame_acquision_time = read_binary_as<float       >(ptr);
+    header.sensor_sensitiviy    = read_binary_as<float       >(ptr);
+    header.phase_sensitivity    = read_binary_as<float       >(ptr);
+    header.offset               = read_binary_as<std::int32_t>(ptr);
+    ptr += 12; // booked region
+    header.machine_id           = read_binary_as<std::int32_t>(ptr);
+    header.AD_range             = read_binary_as<std::int32_t>(ptr);
+    header.AD_resolution        = read_binary_as<std::int32_t>(ptr);
+    header.x_max_scanning_range = read_binary_as<float       >(ptr);
+    header.y_max_scanning_range = read_binary_as<float       >(ptr);
+    header.x_piezo_extension    = read_binary_as<float       >(ptr);
+    header.y_piezo_extension    = read_binary_as<float       >(ptr);
+    header.z_piezo_extension    = read_binary_as<float       >(ptr);
+    header.z_piezo_gain         = read_binary_as<float       >(ptr);
+
+    const std::size_t op_nm_sz =
+        static_cast<std::size_t>(header.operator_name_size);
+    header_type::container_dispatcher_type::resize(
+            header.operator_name, op_nm_sz);
+    for(std::size_t i=0; i<op_nm_sz; ++i)
+    {
+        header.operator_name[i] = read_binary_as<std::int8_t>(ptr);
+    }
+
+    const std::size_t cm_size = static_cast<std::size_t>(header.comment_size);
+    header_type::container_dispatcher_type::resize(header.comment, cm_size);
+    for(std::size_t i=0; i<cm_size; ++i)
+    {
+        header.comment[i] = read_binary_as<std::int8_t>(ptr);
+    }
+
+    header.number_of_frames        = read_binary_as<std::int32_t>(ptr);
+    header.is_x_feed_forward       = read_binary_as<std::int32_t>(ptr);
+    header.x_feed_forward_i        = read_binary_as<std::int32_t>(ptr);
+    header.x_feed_forward_d        = read_binary_as<std::int32_t>(ptr);
+    header.max_color_scale         = read_binary_as<std::int32_t>(ptr);
+    header.min_color_scale         = read_binary_as<std::int32_t>(ptr);
+    header.anchor_point_size_red   = read_binary_as<std::int32_t>(ptr);
+    header.anchor_point_size_green = read_binary_as<std::int32_t>(ptr);
+    header.anchor_point_size_blue  = read_binary_as<std::int32_t>(ptr);
+
+    /* anchor_red */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_red);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_red, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_red, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_red[i] = read_binary_as<std::int32_t>(ptr);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_red[i] = read_binary_as<std::int32_t>(ptr);
+        }
+    }
+    /* anchor_green */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_green);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_green, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_green, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_green[i] = read_binary_as<std::int32_t>(ptr);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_green[i] = read_binary_as<std::int32_t>(ptr);
+        }
+    }
+    /* anchor_blue */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_blue);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_blue, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_blue, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_blue[i] = read_binary_as<std::int32_t>(ptr);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_blue[i] = read_binary_as<std::int32_t>(ptr);
+        }
+    }
+    return ptr;
 }
 
 template<std::size_t N, typename contT = container::vec>
-void
+std::istream&
 read_header_impl(Header<channel<N>, version<2>, contT>& header, std::istream& is)
 {
-// TODO
-    return;
+    typedef Header<channel<N>, version<1>, contT> header_type;
+    header.version              = read_binary_as<std::int32_t>(is);
+    header.file_header_size     = read_binary_as<std::int32_t>(is);
+    header.frame_header_size    = read_binary_as<std::int32_t>(is);
+    header.text_encoding        = read_binary_as<std::int32_t>(is);
+    header.operator_name_size   = read_binary_as<std::int32_t>(is);
+    header.comment_size         = read_binary_as<std::int32_t>(is);
+    header.data_kind_1ch        = read_binary_as<std::int32_t>(is);
+    header.data_kind_2ch        = read_binary_as<std::int32_t>(is);
+    header.init_frame           = read_binary_as<std::int32_t>(is);
+    header.frame_size           = read_binary_as<std::int32_t>(is);
+    header.scanning_direction   = read_binary_as<std::int32_t>(is);
+    header.file_id              = read_binary_as<std::int32_t>(is);
+    header.x_pixel              = read_binary_as<std::int32_t>(is);
+    header.y_pixel              = read_binary_as<std::int32_t>(is);
+    header.x_scanning_range     = read_binary_as<std::int32_t>(is);
+    header.y_scanning_range     = read_binary_as<std::int32_t>(is);
+    header.is_averaged          = read_binary_as<bool        >(is);
+    header.average_window       = read_binary_as<std::int32_t>(is);
+    header.year                 = read_binary_as<std::int32_t>(is);
+    header.month                = read_binary_as<std::int32_t>(is);
+    header.day                  = read_binary_as<std::int32_t>(is);
+    header.hour                 = read_binary_as<std::int32_t>(is);
+    header.minute               = read_binary_as<std::int32_t>(is);
+    header.second               = read_binary_as<std::int32_t>(is);
+    header.x_rounding_degree    = read_binary_as<std::int32_t>(is);
+    header.y_rounding_degree    = read_binary_as<std::int32_t>(is);
+    header.frame_acquision_time = read_binary_as<float       >(is);
+    header.sensor_sensitiviy    = read_binary_as<float       >(is);
+    header.phase_sensitivity    = read_binary_as<float       >(is);
+    header.offset               = read_binary_as<std::int32_t>(is);
+    is.ignore(12); // booked region
+    header.machine_id           = read_binary_as<std::int32_t>(is);
+    header.AD_range             = read_binary_as<std::int32_t>(is);
+    header.AD_resolution        = read_binary_as<std::int32_t>(is);
+    header.x_max_scanning_range = read_binary_as<float       >(is);
+    header.y_max_scanning_range = read_binary_as<float       >(is);
+    header.x_piezo_extension    = read_binary_as<float       >(is);
+    header.y_piezo_extension    = read_binary_as<float       >(is);
+    header.z_piezo_extension    = read_binary_as<float       >(is);
+    header.z_piezo_gain         = read_binary_as<float       >(is);
+
+    const std::size_t op_nm_sz =
+        static_cast<std::size_t>(header.operator_name_size);
+    header_type::container_dispatcher_type::resize(
+            header.operator_name, op_nm_sz);
+    for(std::size_t i=0; i<op_nm_sz; ++i)
+    {
+        header.operator_name[i] = read_binary_as<std::int8_t>(is);
+    }
+
+    const std::size_t cm_size = static_cast<std::size_t>(header.comment_size);
+    header_type::container_dispatcher_type::resize(header.comment, cm_size);
+    for(std::size_t i=0; i<cm_size; ++i)
+    {
+        header.comment[i] = read_binary_as<std::int8_t>(is);
+    }
+
+    header.number_of_frames        = read_binary_as<std::int32_t>(is);
+    header.is_x_feed_forward       = read_binary_as<std::int32_t>(is);
+    header.x_feed_forward_i        = read_binary_as<std::int32_t>(is);
+    header.x_feed_forward_d        = read_binary_as<std::int32_t>(is);
+    header.max_color_scale         = read_binary_as<std::int32_t>(is);
+    header.min_color_scale         = read_binary_as<std::int32_t>(is);
+    header.anchor_point_size_red   = read_binary_as<std::int32_t>(is);
+    header.anchor_point_size_green = read_binary_as<std::int32_t>(is);
+    header.anchor_point_size_blue  = read_binary_as<std::int32_t>(is);
+
+    /* anchor_red */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_red);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_red, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_red, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_red[i] = read_binary_as<std::int32_t>(is);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_red[i] = read_binary_as<std::int32_t>(is);
+        }
+    }
+    /* anchor_green */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_green);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_green, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_green, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_green[i] = read_binary_as<std::int32_t>(is);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_green[i] = read_binary_as<std::int32_t>(is);
+        }
+    }
+    /* anchor_blue */{
+        const std::size_t sz =
+            static_cast<std::size_t>(header.anchor_point_size_blue);
+        header_type::container_dispatcher_type::resize(
+                header.x_anchor_points_blue, sz);
+        header_type::container_dispatcher_type::resize(
+                header.y_anchor_points_blue, sz);
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.x_anchor_points_blue[i] = read_binary_as<std::int32_t>(is);
+        }
+        for(std::size_t i=0; i<sz; ++i)
+        {
+            header.y_anchor_points_blue[i] = read_binary_as<std::int32_t>(is);
+        }
+    }
+    return is;
 }
 
 } // detail
 
 template<typename chT, typename verT, typename contT = container::vec>
-Header<chT, verT, contT> read_header(const char* const ptr)
+Header<chT, verT, contT> read_header(const char* ptr)
 {
     Header<chT, verT, contT> header;
     detail::read_header_impl(header, ptr);
