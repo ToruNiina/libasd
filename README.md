@@ -1,4 +1,4 @@
-__This project is now in progress.__
+__This project is now in progress. These features might change in future release.__
 
 # libasd
 
@@ -8,11 +8,182 @@ libasd has a binding to python3.
 
 ## Usage in Python3
 
+### Building Python Library
+
+WIP
+
+### Example Code
+
+WIP
+
+### With NumPy
+
 WIP
 
 ## Usage in C++
 
-WIP
+You can read and output the data with the code described below.
+
+```cpp
+#include <libasd/libasd.hpp>
+#include <fstream>
+#include <iostream>
+
+int main()
+{
+    std::ifstream ifs("example.asd");
+    const auto data = asd::read_asd(ifs);
+
+    std::cout << "x_pixel = " << data.header.x_pixel << '\n';
+    std::cout << "y_pixel = " << data.header.y_pixel << '\n';
+
+    for(auto const& frame : data.frames)
+    {
+        for(auto const& line : frame)
+        {
+            for(auto const& pixel : line)
+            {
+                std::cout << pixel;
+            }
+            std::cout << '\n';
+        }
+        std::cout << "\n\n";
+    }
+    std::cout << std::flush;
+    return 0;
+}
+```
+
+Here you can access each frame, line, and pixel intuitively by using range-based
+for loops.
+
+You can set file version and channel as a template parameter.
+
+```cpp
+const auto data = asd::read_asd<asd::ch<2>, asd::ver<0>>(ifs);
+```
+
+By default, these are set as channel 1, version 1 respectively.
+Currently, version 0, 1, and 2 are supported. For channel, you can set any
+number as you like (normally, 1 or 2).
+
+### How to access the data?
+
+See documents.
+
+### I don't want to use streams. What can I do?
+
+You can pass a `char const*` to `read_asd` function in the same way as streams.
+
+### I need only file-header information. Frame data are not needed.
+
+There is `asd::read_header` function. It reads only file-header information.
+You can use this function in the same way as `read_asd`.
+
+```cpp
+#include <libasd/libasd.hpp>
+#include <fstream>
+#include <iostream>
+
+int main()
+{
+    std::ifstream ifs("example.asd");
+    const auto data = asd::read_header<asd::ver<1>, asd::ch<1>>(ifs);
+    return 0;
+}
+```
+
+Note: It simply ignore the channel information because header format does not
+depend on channel number.
+
+### How it contains data?
+
+You may think that libasd contains a frame using an array of arrays.
+
+```cpp
+typedef std::int16_t            pixel_type;
+typedef std::vector<pixel_type> line_type;
+typedef std::vector<line_type>  frame_type;
+```
+
+You might be afraid of the performance loss that is owing to a cache-missing
+while you access to each line. But it is __not__ true.
+Although the usage is easy, you don't have to be afraid of the performance cost.
+Libasd contains frames as a single array, not an array of arrays.
+
+```cpp
+typedef std::int16_t            pixel_type;
+typedef std::vector<pixel_type> frame_type;
+```
+
+To make the usage easier, libasd provides a proxy class to access each lines.
+It wraps frame class and enable you to access a particular line in the same way
+as standard containers. In range-based for loops, this proxy classes are used
+instead of `std::vector<pixel_type>::(const_)iterator`.
+
+You can use `std::vector<pixel_type>::(const_)iterator` if you want.
+
+```cpp
+const auto frame = data.frames.front();
+for(auto iter = frame.raw_begin(), iend = frame.raw_end(); iter != iend; ++iter)
+{
+    std::cerr << *iter << ' ';
+}
+```
+
+### How to use my awesome container in libasd?
+
+If you have a container or allocator that has a great feature,
+you may want to use it with libasd instead of `std::vector<T, std::allocator<T>>`.
+
+In libasd, you can specify the container used in classes by passing a
+`container_dispatcher` struct as a template parameter.
+
+For example, `asd::container::vec` that is used by default is defined as follows.
+
+```cpp
+struct vec
+{
+    template<typename T>
+    struct rebind
+    {
+        typedef std::vector<T, std::allocator<T>> other;
+    };
+
+    template<typename T, typename Alloc>
+    static void resize(std::vector<T, Alloc>& cont, std::size_t N)
+    {
+        cont.resize(N);
+        return;
+    }
+};
+```
+
+Even though it has no information about actual type that will be contained,
+you can use `std::vector<T>` for any T by using this struct. For example,
+
+```cpp
+typedef typename vec::template rebind<int>::other int_array;
+```
+
+All the classes that are defined in libasd use this `container_dispatcher`
+to make their containers.
+By defining and passing this kind of structs, you can use your awesome container
+class with libasd.
+
+By default, `asd::container::vec`, `asd::container::deq`, and
+`asd::container::arr` are defined in `libasd/container_dispatcher.hpp`.
+They are corresponds to `std::vector`, `std::deque`, `std::array`, respectively.
+It should be noted that only randomly accessible containers can be used with
+libasd.
+
+Additionally, you can find `asd::container::boost_vec`,
+`asd::container::boost_stable_vec`, `asd::container::boost_static_vec`,
+`asd::container::boost_small_vec`, `asd::container::boost_deq`, and
+`asd::container::boost_arr` in the file `libasd/boost/container_dispatcher.hpp`.
+It is not included by default, but you can manually include this file and then
+you can use containers provided by the Boost.Container library if you have
+installed Boost C++ Library.
 
 ## Documents
 
