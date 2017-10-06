@@ -22,7 +22,7 @@ WIP
 
 ## Usage in C++
 
-You can read and output the data with the code described below.
+You can read the data with the code described below.
 
 ```cpp
 #include <libasd/libasd.hpp>
@@ -73,11 +73,12 @@ See documents.
 
 ### I don't want to use streams. What can I do?
 
-You can pass a `char const*` to `read_asd` function in the same way as streams.
+You can pass a `char const*` to `read_asd` function in exactly the same way as streams.
 
 ### I need only file-header information. Frame data are not needed.
 
-There is `asd::read_header` function. It reads only file-header information.
+libasd provides `asd::read_header` function.
+It reads only file-header information.
 You can use this function in the same way as `read_asd`.
 
 ```cpp
@@ -94,11 +95,12 @@ int main()
 ```
 
 Note: It simply ignore the channel information because header format does not
-depend on channel number.
+depend on channel number. You can set channel number as unrealistic value here,
+but it is not recommended because it is confusing.
 
 ### How it contains data?
 
-You may think that libasd contains a frame using an array of arrays.
+You may think that libasd contains a frame as an array of arrays.
 
 ```cpp
 typedef std::int16_t            pixel_type;
@@ -106,7 +108,7 @@ typedef std::vector<pixel_type> line_type;
 typedef std::vector<line_type>  frame_type;
 ```
 
-You might be afraid of the performance loss that is owing to a cache-missing
+You might be afraid of the performance loss that is owing to a cache-miss
 while you access to each line. But it is __not__ true.
 Although the usage is easy, you don't have to be afraid of the performance cost.
 Libasd contains frames as a single array, not an array of arrays.
@@ -117,9 +119,9 @@ typedef std::vector<pixel_type> frame_type;
 ```
 
 To make the usage easier, libasd provides a proxy class to access each lines.
-It wraps frame class and enable you to access a particular line in the same way
-as standard containers. In range-based for loops, this proxy classes are used
-instead of `std::vector<pixel_type>::(const_)iterator`.
+It wraps frame class and enable you to access a particular line as a container.
+In range-based for loops, this proxy classes are used instead of
+`std::vector<pixel_type>::(const_)iterator`.
 
 You can use `std::vector<pixel_type>::(const_)iterator` if you want.
 
@@ -131,17 +133,19 @@ for(auto iter = frame.raw_begin(), iend = frame.raw_end(); iter != iend; ++iter)
 }
 ```
 
-### How to use my awesome container in libasd?
+### Can I use my awesome container with libasd?
 
 If you have a container or allocator that has a great feature,
 you may want to use it with libasd instead of `std::vector<T, std::allocator<T>>`.
 
-In libasd, you can specify the container used in classes by passing a
+In libasd, you can specify the container used in the classes by passing a
 `container_dispatcher` struct as a template parameter.
 
 For example, `asd::container::vec` that is used by default is defined as follows.
 
 ```cpp
+namespace asd {
+namespace container {
 struct vec
 {
     template<typename T>
@@ -157,6 +161,8 @@ struct vec
         return;
     }
 };
+} // container
+} // asd
 ```
 
 Even though it has no information about actual type that will be contained,
@@ -182,8 +188,8 @@ Additionally, you can find `asd::container::boost_vec`,
 `asd::container::boost_small_vec`, `asd::container::boost_deq`, and
 `asd::container::boost_arr` in the file `libasd/boost/container_dispatcher.hpp`.
 It is not included by default, but you can manually include this file and then
-you can use containers provided by the Boost.Container library if you have
-installed Boost C++ Library.
+you can use containers provided by the Boost.Container library if you installed
+it.
 
 ## Documents
 
