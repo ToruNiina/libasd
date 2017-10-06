@@ -1,10 +1,7 @@
 #ifndef LIBASD_HEADER_H
 #define LIBASD_HEADER_H
-#include <libasd/debug_macro.hpp>
 #include <libasd/tag.hpp>
 #include <libasd/container_dispatcher.hpp>
-#include <libasd/read_binary_as.hpp>
-#include <iostream>
 #include <cstdint>
 
 namespace asd
@@ -108,7 +105,7 @@ struct Header<channel<N>, version<1>, contT>
     float        sensor_sensitiviy;    //!< Sensor sensitivity (nm/V)
     float        phase_sensitivity;    //!< Phase sensitivity (deg/V)
     std::int32_t offset;               //!< Offset (This number is “0” in the case of file ver. 2)
-    // 12 byte Booked region of 12 byte
+    // Booked region of 12 byte
     std::int32_t machine_id;           //!< Number of the imaging machine
     std::int32_t AD_range;             //!< Code showing AD range (AD_1V, AD_2P5V, AD_5V or AD_10V)
     std::int32_t AD_resolution;        //!< AD resolution (When this value is 12, the AD resolution is 4096 (2^12).)
@@ -159,7 +156,7 @@ struct Header<channel<N>, version<2>, contT>
     float        sensor_sensitiviy;    //!< Sensor sensitivity (nm/V)
     float        phase_sensitivity;    //!< Phase sensitivity (deg/V)
     std::int32_t offset;               //!< Offset (This number is “0” in the case of file ver. 2)
-    // 12 byte Booked region of 12 byte
+    // Booked region of 12 byte
     std::int32_t machine_id;           //!< Number of the imaging machine
     std::int32_t AD_range;             //!< Code showing AD range (AD_1V, AD_2P5V, AD_5V or AD_10V)
     std::int32_t AD_resolution;        //!< AD resolution (When this value is 12, the AD resolution is 4096 (2^12).)
@@ -190,140 +187,5 @@ struct Header<channel<N>, version<2>, contT>
     i32_array    y_anchor_points_blue; //!< Y value of an anchor point (B)
 };
 
-namespace detail
-{
-
-template<std::size_t N, typename contT>
-void
-read_header_impl(Header<channel<N>, version<0>, contT>& header,
-                 const char* const ptr)
-{
-// TODO
-    return;
-}
-
-template<std::size_t N, typename contT = container::vec>
-void
-read_header_impl(Header<channel<N>, version<0>, contT>& header, std::istream& is)
-{
-// TODO
-    return;
-}
-
-template<std::size_t N, typename contT>
-const char*
-read_header_impl(Header<channel<N>, version<1>, contT>& header, const char* ptr)
-{
-    typedef Header<channel<N>, version<1>, contT> header_type;
-
-    header.version              = read_binary_as<std::int32_t>(ptr);
-    header.file_header_size     = read_binary_as<std::int32_t>(ptr);
-    header.frame_header_size    = read_binary_as<std::int32_t>(ptr);
-    header.text_encoding        = read_binary_as<std::int32_t>(ptr);
-    header.operator_name_size   = read_binary_as<std::int32_t>(ptr);
-    header.comment_size         = read_binary_as<std::int32_t>(ptr);
-    header.data_kind_1ch        = read_binary_as<std::int32_t>(ptr);
-    header.data_kind_2ch        = read_binary_as<std::int32_t>(ptr);
-    header.init_frame           = read_binary_as<std::int32_t>(ptr);
-    header.frame_size           = read_binary_as<std::int32_t>(ptr);
-    header.scanning_direction   = read_binary_as<std::int32_t>(ptr);
-    header.file_id              = read_binary_as<std::int32_t>(ptr);
-    header.x_pixel              = read_binary_as<std::int32_t>(ptr);
-    header.y_pixel              = read_binary_as<std::int32_t>(ptr);
-    header.x_scanning_range     = read_binary_as<std::int32_t>(ptr);
-    header.y_scanning_range     = read_binary_as<std::int32_t>(ptr);
-    header.is_averaged          = read_binary_as<bool        >(ptr);
-    header.average_window       = read_binary_as<std::int32_t>(ptr);
-    header.year                 = read_binary_as<std::int32_t>(ptr);
-    header.month                = read_binary_as<std::int32_t>(ptr);
-    header.day                  = read_binary_as<std::int32_t>(ptr);
-    header.hour                 = read_binary_as<std::int32_t>(ptr);
-    header.minute               = read_binary_as<std::int32_t>(ptr);
-    header.second               = read_binary_as<std::int32_t>(ptr);
-    header.x_rounding_degree    = read_binary_as<std::int32_t>(ptr);
-    header.y_rounding_degree    = read_binary_as<std::int32_t>(ptr);
-    header.frame_acquision_time = read_binary_as<float       >(ptr);
-    header.sensor_sensitiviy    = read_binary_as<float       >(ptr);
-    header.phase_sensitivity    = read_binary_as<float       >(ptr);
-    header.offset               = read_binary_as<std::int32_t>(ptr);
-    ptr += 12; // booked region
-    header.machine_id           = read_binary_as<std::int32_t>(ptr);
-    header.AD_range             = read_binary_as<std::int32_t>(ptr);
-    header.AD_resolution        = read_binary_as<std::int32_t>(ptr);
-    header.x_max_scanning_range = read_binary_as<float       >(ptr);
-    header.y_max_scanning_range = read_binary_as<float       >(ptr);
-    header.x_piezo_extension    = read_binary_as<float       >(ptr);
-    header.y_piezo_extension    = read_binary_as<float       >(ptr);
-    header.z_piezo_extension    = read_binary_as<float       >(ptr);
-    header.z_piezo_gain         = read_binary_as<float       >(ptr);
-
-    const std::size_t op_name_size =
-        static_cast<std::size_t>(header.operator_name_size);
-    header_type::container_dispatcher_type::resize(header.operator_name, op_name_size);
-    for(std::size_t i=0; i<op_name_size; ++i)
-    {
-        header.operator_name[i] += read_binary_as<std::int8_t>(ptr);
-    }
-
-    const std::size_t cm_size =
-        static_cast<std::size_t>(header.comment_size);
-    header_type::container_dispatcher_type::resize(header.comment, cm_size);
-    for(std::size_t i=0; i<cm_size; ++i)
-    {
-        header.comment[i] += read_binary_as<std::int8_t>(ptr);
-    }
-    return ptr;
-}
-
-template<std::size_t N, typename contT = container::vec>
-void read_header_impl(Header<channel<N>, version<1>, contT>& header,
-                      std::istream& is)
-{
-    const auto initial = is.tellg();
-    is.seekg(0, std::ios::end);
-    const auto eofpos  = is.tellg();
-    const std::size_t size = eofpos - initial;
-    is.seekg(initial);
-    std::vector<char> contents(size);
-    is.read(contents.data(), size);
-
-    read_header_impl(header, contents.data());
-    return;
-}
-
-template<std::size_t N, typename contT>
-void read_header_impl(Header<channel<N>, version<2>, contT>& header,
-                 const char* const ptr)
-{
-// TODO
-    return;
-}
-
-template<std::size_t N, typename contT = container::vec>
-void
-read_header_impl(Header<channel<N>, version<2>, contT>& header, std::istream& is)
-{
-// TODO
-    return;
-}
-
-} // detail
-
-template<typename chT, typename verT, typename contT = container::vec>
-Header<chT, verT, contT> read_header(const char* const ptr)
-{
-    Header<chT, verT, contT> header;
-    detail::read_header_impl(header, ptr);
-    return header;
-}
-
-template<typename chT, typename verT, typename contT = container::vec>
-Header<chT, verT, contT> read_header(std::istream& is)
-{
-    Header<chT, verT, contT> header;
-    detail::read_header_impl(header, is);
-    return header;
-}
-
 } // asd
-#endif//LIBASD_CHANNELS_TAG_H
+#endif//LIBASD_FILE_HEADER_H
