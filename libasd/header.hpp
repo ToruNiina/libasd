@@ -24,13 +24,13 @@ struct Header<channel<N>, version<0>, contT>
 {
     typedef channel<N> channel_tag;
     typedef version<0> version_tag;
-    static constexpr num_channel = channel_tag::value;
-    static constexpr num_version = version_tag::value;
+    static constexpr std::size_t num_channel = channel_tag::value;
+    static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
 
-    std::int32_t version;             //!< file version
+    std::int32_t file_version;        //!< file version
     std::int16_t data_type_1ch;       //!< AFM data type of 1ch
     std::int16_t data_type_2ch;       //!< AFM data type of 2ch
     std::int32_t file_header_size;    //!< Size of the file header
@@ -78,14 +78,14 @@ struct Header<channel<N>, version<1>, contT>
 {
     typedef channel<N> channel_tag;
     typedef version<1> version_tag;
-    static constexpr num_channel = channel_tag::value;
-    static constexpr num_version = version_tag::value;
+    static constexpr std::size_t num_channel = channel_tag::value;
+    static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
     //! XXX because text encoding is not known here, we can't use std::string.
 
-    std::int32_t version;              //!< File version
+    std::int32_t file_version;         //!< File version
     std::int32_t file_header_size;     //!< Size of the file header
     std::int32_t frame_header_size;    //!< Size of the frame header
     std::int32_t text_encoding;        //!< Characteristic number for text encoding (ex. “932” in case of Shift-JIS)
@@ -134,14 +134,14 @@ struct Header<channel<N>, version<2>, contT>
 {
     typedef channel<N> channel_tag;
     typedef version<2> version_tag;
-    static constexpr num_channel = channel_tag::value;
-    static constexpr num_version = version_tag::value;
+    static constexpr std::size_t num_channel = channel_tag::value;
+    static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
     typedef typename contT::template rebind<std::int32_t>::other i32_array;
 
-    std::int32_t version;              //!< File version
+    std::int32_t file_version;         //!< File version
     std::int32_t file_header_size;     //!< Size of the file header
     std::int32_t frame_header_size;    //!< Size of the frame header
     std::int32_t text_encoding;        //!< Characteristic number for text encoding (ex. “932” in case of Shift-JIS)
