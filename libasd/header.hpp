@@ -22,6 +22,11 @@ struct Header
 template<std::size_t N, typename contT>
 struct Header<channel<N>, version<0>, contT>
 {
+    typedef channel<N> channel_tag;
+    typedef version<0> version_tag;
+    static constexpr num_channel = channel_tag::value;
+    static constexpr num_version = version_tag::value;
+
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
 
@@ -71,6 +76,11 @@ struct Header<channel<N>, version<0>, contT>
 template<std::size_t N, typename contT>
 struct Header<channel<N>, version<1>, contT>
 {
+    typedef channel<N> channel_tag;
+    typedef version<1> version_tag;
+    static constexpr num_channel = channel_tag::value;
+    static constexpr num_version = version_tag::value;
+
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
     //! XXX because text encoding is not known here, we can't use std::string.
@@ -122,6 +132,11 @@ struct Header<channel<N>, version<1>, contT>
 template<std::size_t N, typename contT>
 struct Header<channel<N>, version<2>, contT>
 {
+    typedef channel<N> channel_tag;
+    typedef version<2> version_tag;
+    static constexpr num_channel = channel_tag::value;
+    static constexpr num_version = version_tag::value;
+
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<std::int8_t>::other byte_array;
     typedef typename contT::template rebind<std::int32_t>::other i32_array;
