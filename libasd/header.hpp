@@ -94,7 +94,7 @@ struct Header<channel<N>, version<1>, contT>
     std::int32_t data_kind_1ch;        //!< Kind of AFM data of 1ch (Topography, Error or Phase) written by enum array (ex. Topography 0x5054)
     std::int32_t data_kind_2ch;        //!< Kind of AFM data of 2ch (Topography, Error or Phase) written by enum array (ex. Topography 0x5054)
     std::int32_t init_frame;           //!< Number of frames when this asd file was recorded
-    std::int32_t frame_size;           //!< Number of frames contained in this asd file
+    std::int32_t num_frames;           //!< Number of frames contained in this asd file
     std::int32_t scanning_direction;   //!< Number showing the scanning direction
     std::int32_t file_id;              //!< Name of the asd file
     std::int32_t x_pixel;              //!< X pixel
@@ -150,7 +150,7 @@ struct Header<channel<N>, version<2>, contT>
     std::int32_t data_kind_1ch;        //!< Kind of AFM data of 1ch (Topography, Error or Phase) written by enum array (ex. Topography 0x5054)
     std::int32_t data_kind_2ch;        //!< Kind of AFM data of 2ch (Topography, Error or Phase) written by enum array (ex. Topography 0x5054)
     std::int32_t init_frame;           //!< Number of frames when this asd file was recorded
-    std::int32_t frame_size;           //!< Number of frames contained in this asd file
+    std::int32_t num_frames;           //!< Number of frames contained in this asd file
     std::int32_t scanning_direction;   //!< Number showing the scanning direction
     std::int32_t file_id;              //!< Name of the asd file
     std::int32_t x_pixel;              //!< X pixel

@@ -91,7 +91,7 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header,
     header.data_kind_1ch        = read_binary_as<std::int32_t>(source);
     header.data_kind_2ch        = read_binary_as<std::int32_t>(source);
     header.init_frame           = read_binary_as<std::int32_t>(source);
-    header.frame_size           = read_binary_as<std::int32_t>(source);
+    header.num_frames           = read_binary_as<std::int32_t>(source);
     header.scanning_direction   = read_binary_as<std::int32_t>(source);
     header.file_id              = read_binary_as<std::int32_t>(source);
     header.x_pixel              = read_binary_as<std::int32_t>(source);
@@ -156,7 +156,7 @@ read_header_impl(Header<channel<N>, version<2>, contT>& header,
     header.data_kind_1ch        = read_binary_as<std::int32_t>(source);
     header.data_kind_2ch        = read_binary_as<std::int32_t>(source);
     header.init_frame           = read_binary_as<std::int32_t>(source);
-    header.frame_size           = read_binary_as<std::int32_t>(source);
+    header.num_frames           = read_binary_as<std::int32_t>(source);
     header.scanning_direction   = read_binary_as<std::int32_t>(source);
     header.file_id              = read_binary_as<std::int32_t>(source);
     header.x_pixel              = read_binary_as<std::int32_t>(source);
