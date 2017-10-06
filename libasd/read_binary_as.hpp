@@ -8,7 +8,7 @@ namespace detail
 {
 
 template<typename T>
-T read_binary_as(const char*& ptr)
+T read_binary_as(const char*& ptr) noexcept
 {
     const T retval = *reinterpret_cast<const T*>(ptr);
     ptr += sizeof(T);
@@ -25,7 +25,7 @@ T read_binary_as(std::istream& is)
     return retval;
 }
 
-inline void ignore_bytes(const char*& ptr, std::ptrdiff_t pdiff)
+inline void ignore_bytes(const char*& ptr, std::ptrdiff_t pdiff) noexcept
 {
     ptr += pdiff;
     return;
