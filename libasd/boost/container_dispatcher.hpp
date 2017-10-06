@@ -26,6 +26,22 @@ struct boost_vec
     }
 };
 
+struct boost_stable_vec
+{
+    template<typename T>
+    struct rebind
+    {
+        typedef boost::container::stable_vector<T> other;
+    };
+
+    template<typename T>
+    static void resize(boost::container::stable_vector<T>& cont, std::size_t N)
+    {
+        cont.resize(N);
+        return;
+    }
+};
+
 template<std::size_t N>
 struct boost_static_vec
 {
