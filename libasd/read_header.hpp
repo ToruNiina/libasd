@@ -10,12 +10,11 @@ namespace asd
 namespace detail
 {
 
-template<std::size_t N, typename contT, typename sourceT>
+template<typename contT, typename sourceT>
 sourceT&
-read_header_impl(Header<channel<N>, version<0>, contT>& header,
-                 sourceT& source)
+read_header_impl(Header<version<0>, contT>& header, sourceT& source)
 {
-    typedef Header<channel<N>, version<0>, contT> header_type;
+    typedef Header<version<0>, contT> header_type;
     header.file_version        = read_binary_as<std::int32_t>(source);
     header.data_type_1ch       = read_binary_as<std::int16_t>(source);
     header.data_type_2ch       = read_binary_as<std::int16_t>(source);
@@ -76,12 +75,11 @@ read_header_impl(Header<channel<N>, version<0>, contT>& header,
     return source;
 }
 
-template<std::size_t N, typename contT, typename sourceT>
+template<typename contT, typename sourceT>
 sourceT&
-read_header_impl(Header<channel<N>, version<1>, contT>& header,
-                 sourceT& source)
+read_header_impl(Header<version<1>, contT>& header, sourceT& source)
 {
-    typedef Header<channel<N>, version<1>, contT> header_type;
+    typedef Header<version<1>, contT> header_type;
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
@@ -141,12 +139,11 @@ read_header_impl(Header<channel<N>, version<1>, contT>& header,
     return source;
 }
 
-template<std::size_t N, typename contT, typename sourceT>
+template<typename contT, typename sourceT>
 sourceT&
-read_header_impl(Header<channel<N>, version<2>, contT>& header,
-                 sourceT& source)
+read_header_impl(Header<version<2>, contT>& header, sourceT& source)
 {
-    typedef Header<channel<N>, version<1>, contT> header_type;
+    typedef Header<version<1>, contT> header_type;
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
@@ -267,18 +264,18 @@ read_header_impl(Header<channel<N>, version<2>, contT>& header,
 
 } // detail
 
-template<typename chT, typename verT, typename contT = container::vec>
-Header<chT, verT, contT> read_header(const char* ptr)
+template<typename verT, typename contT = container::vec>
+Header<verT, contT> read_header(const char* ptr)
 {
-    Header<chT, verT, contT> header;
+    Header<verT, contT> header;
     detail::read_header_impl(header, ptr);
     return header;
 }
 
-template<typename chT, typename verT, typename contT = container::vec>
-Header<chT, verT, contT> read_header(std::istream& is)
+template<typename verT, typename contT = container::vec>
+Header<verT, contT> read_header(std::istream& is)
 {
-    Header<chT, verT, contT> header;
+    Header<verT, contT> header;
     detail::read_header_impl(header, is);
     return header;
 }

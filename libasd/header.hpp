@@ -7,24 +7,19 @@
 namespace asd
 {
 
-template<typename chT, typename verT, typename contT = container::vec>
+template<typename verT, typename contT = container::vec>
 struct Header
 {
-    static_assert(std::is_same<chT, channel<1>>::value ||
-                  std::is_same<chT, channel<2>>::value,
-                  "currently, channel 1 and 2 are supported.");
     static_assert(std::is_same<verT, version<0>>::value ||
                   std::is_same<verT, version<1>>::value ||
                   std::is_same<verT, version<2>>::value,
                   "currently, version 0, 1, and 2 are supported.");
 };
 
-template<std::size_t N, typename contT>
-struct Header<channel<N>, version<0>, contT>
+template<typename contT>
+struct Header<version<0>, contT>
 {
-    typedef channel<N> channel_tag;
     typedef version<0> version_tag;
-    static constexpr std::size_t num_channel = channel_tag::value;
     static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
@@ -73,12 +68,10 @@ struct Header<channel<N>, version<0>, contT>
     byte_array   comment;             //!< Comment
 };
 
-template<std::size_t N, typename contT>
-struct Header<channel<N>, version<1>, contT>
+template<typename contT>
+struct Header<version<1>, contT>
 {
-    typedef channel<N> channel_tag;
     typedef version<1> version_tag;
-    static constexpr std::size_t num_channel = channel_tag::value;
     static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
@@ -129,12 +122,10 @@ struct Header<channel<N>, version<1>, contT>
     byte_array comment;                //!< Comment
 };
 
-template<std::size_t N, typename contT>
-struct Header<channel<N>, version<2>, contT>
+template<typename contT>
+struct Header<version<2>, contT>
 {
-    typedef channel<N> channel_tag;
     typedef version<2> version_tag;
-    static constexpr std::size_t num_channel = channel_tag::value;
     static constexpr std::size_t num_version = version_tag::value;
 
     typedef contT container_dispatcher_type;
