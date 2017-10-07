@@ -1,5 +1,9 @@
 #ifndef LIBASD_READ_DATA_H
 #define LIBASD_READ_DATA_H
+#include <libasd/container_dispatcher.hpp>
+#include <libasd/header.hpp>
+#include <libasd/frame.hpp>
+#include <libasd/tag.hpp>
 
 namespace asd
 {
