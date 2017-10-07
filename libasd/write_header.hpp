@@ -2,7 +2,7 @@
 #define LIBASD_WRITE_HEADER_H
 #include <libasd/write_as_binary.hpp>
 #include <libasd/header.hpp>
-#include <iostream>
+#include <ostream>
 
 namespace asd
 {
@@ -10,8 +10,7 @@ namespace detail
 {
 
 template<typename contT, typename sourceT>
-sourceT&
-write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
+void write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
 {
     typedef Header<version<0>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version       );
@@ -62,14 +61,12 @@ write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
     write_as_binary(source, header.comment,
         typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
-    return source;
+    return;
 }
 
 template<typename contT, typename sourceT>
-sourceT&
-write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
+void write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
 {
-    std::cerr << "write_header_impl" << std::endl;
     typedef Header<version<1>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version         );
     write_as_binary<std::int32_t>(source, header.file_header_size     );
@@ -119,12 +116,11 @@ write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
         typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
-    return source;
+    return;
 }
 
 template<typename contT, typename sourceT>
-sourceT&
-write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
+void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
 {
     typedef Header<version<2>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version         );
@@ -175,15 +171,15 @@ write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
         typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
-    read_binary_as<std::int32_t>(source, header.number_of_frames       );
-    read_binary_as<std::int32_t>(source, header.is_x_feed_forward      );
-    read_binary_as<std::int32_t>(source, header.x_feed_forward_i       );
-    read_binary_as<std::int32_t>(source, header.x_feed_forward_d       );
-    read_binary_as<std::int32_t>(source, header.max_color_scale        );
-    read_binary_as<std::int32_t>(source, header.min_color_scale        );
-    read_binary_as<std::int32_t>(source, header.anchor_point_size_red  );
-    read_binary_as<std::int32_t>(source, header.anchor_point_size_green);
-    read_binary_as<std::int32_t>(source, header.anchor_point_size_blue );
+    write_binary_as<std::int32_t>(source, header.number_of_frames       );
+    write_binary_as<std::int32_t>(source, header.is_x_feed_forward      );
+    write_binary_as<std::int32_t>(source, header.x_feed_forward_i       );
+    write_binary_as<std::int32_t>(source, header.x_feed_forward_d       );
+    write_binary_as<std::int32_t>(source, header.max_color_scale        );
+    write_binary_as<std::int32_t>(source, header.min_color_scale        );
+    write_binary_as<std::int32_t>(source, header.anchor_point_size_red  );
+    write_binary_as<std::int32_t>(source, header.anchor_point_size_green);
+    write_binary_as<std::int32_t>(source, header.anchor_point_size_blue );
 
     write_as_binary(source, header.x_anchor_points_red,
         typename header_type::container_dispatcher_type{},
@@ -206,19 +202,19 @@ write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
         typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
-    return source;
+    return;
 }
 }// detail
 
 template<typename verT, typename contT = container::vec>
-void write_header(const char* ptr, const Header<verT, contT>& header)
+char* write_header(char* ptr, const Header<verT, contT>& header)
 {
     detail::write_header_impl(ptr, header);
     return;
 }
 
 template<typename verT, typename contT = container::vec>
-void write_header(std::ostream& os, const Header<verT, contT>& header)
+std::ostream& write_header(std::ostream& os, const Header<verT, contT>& header)
 {
     detail::write_header_impl(os, header);
     return;
