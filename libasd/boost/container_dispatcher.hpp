@@ -18,11 +18,25 @@ struct boost_vec
         typedef boost::container::vector<T> other;
     };
 
+    typedef std::true_type ptr_accessibility;
+
     template<typename T>
     static void resize(boost::container::vector<T>& cont, std::size_t N)
     {
         cont.resize(N);
         return;
+    }
+
+    template<typename T>
+    static const T* get_ptr(const boost::container::vector<T>& cont) noexcept
+    {
+        return cont.data();
+    }
+
+    template<typename T>
+    static std::size_t size(const boost::container::vector<T>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
@@ -34,11 +48,19 @@ struct boost_stable_vec
         typedef boost::container::stable_vector<T> other;
     };
 
+    typedef std::false_type ptr_accessibility;
+
     template<typename T>
     static void resize(boost::container::stable_vector<T>& cont, std::size_t N)
     {
         cont.resize(N);
         return;
+    }
+
+    template<typename T, typename Alloc>
+    static std::size_t size(const std::vector<T, Alloc>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
@@ -51,11 +73,27 @@ struct boost_static_vec
         typedef boost::container::static_vector<T, N> other;
     };
 
+    typedef std::true_type ptr_accessibility;
+
     template<typename T>
     static void resize(boost::container::static_vector<T, N>& cont, std::size_t M)
     {
         cont.resize(M);
         return;
+    }
+
+    template<typename T>
+    static const T*
+    get_ptr(const boost::container::static_vector<T, N>& cont) noexcept
+    {
+        return cont.data();
+    }
+
+    template<typename T>
+    static std::size_t
+    size(const boost::container::static_vector<T, N>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
@@ -68,11 +106,27 @@ struct boost_small_vec
         typedef boost::container::small_vector<T, N> other;
     };
 
+    typedef std::true_type ptr_accessibility;
+
     template<typename T>
     static void resize(boost::container::small_vector<T, N>& cont, std::size_t M)
     {
         cont.resize(M);
         return;
+    }
+
+    template<typename T>
+    static const T*
+    get_ptr(const boost::container::small_vector<T, N>& cont) noexcept
+    {
+        return cont.data();
+    }
+
+    template<typename T>
+    static std::size_t
+    size(const boost::container::small_vector<T, N>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
@@ -84,11 +138,20 @@ struct boost_deq
         typedef boost::container::deque<T> other;
     };
 
+    typedef std::false_type ptr_accessibility;
+
     template<typename T>
     static void resize(boost::container::deque<T, N>& cont, std::size_t N)
     {
         cont.resize(N);
         return;
+    }
+
+    template<typename T>
+    static std::size_t
+    size(const boost::container::deque<T, N>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
@@ -111,6 +174,20 @@ struct boost_arr
                     cont.size(), M);
         }
         return;
+    }
+
+    template<typename T>
+    static const T*
+    get_ptr(const boost::array<T, N>& cont) noexcept
+    {
+        return cont.data();
+    }
+
+    template<typename T>
+    static std::size_t
+    size(const boost::array<T, N>& cont) noexcept
+    {
+        return cont.size();
     }
 };
 
