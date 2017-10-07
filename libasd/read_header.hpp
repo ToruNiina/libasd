@@ -264,7 +264,7 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
 
 } // detail
 
-template<typename verT, typename contT = container::vec>
+template<typename verT = version<1>, typename contT = container::vec>
 Header<verT, contT> read_header(const char* ptr)
 {
     Header<verT, contT> header;
@@ -272,7 +272,7 @@ Header<verT, contT> read_header(const char* ptr)
     return header;
 }
 
-template<typename verT, typename contT = container::vec>
+template<typename verT = version<1>, typename contT = container::vec>
 Header<verT, contT> read_header(std::istream& is)
 {
     Header<verT, contT> header;
