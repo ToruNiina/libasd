@@ -29,7 +29,7 @@ read_header_impl(Header<version<0>, contT>& header, sourceT& source)
     header.y_scanning_range    = read_binary_as<std::int32_t>(source);
     header.frame_rate          = read_binary_as<float       >(source);
     header.z_piezo_extension   = read_binary_as<float       >(source);
-    header.z_piexo_gain        = read_binary_as<float       >(source);
+    header.z_piezo_gain        = read_binary_as<float       >(source);
     header.ad_range            = read_binary_as<std::int32_t>(source);
     header.bits_data           = read_binary_as<std::int32_t>(source);
     header.is_averaged         = read_binary_as<bool	    >(source);

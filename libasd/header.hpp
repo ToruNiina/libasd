@@ -39,7 +39,7 @@ struct Header<version<0>, contT>
     std::int32_t y_scanning_range;    //!< Y scanning range (nm)
     float        frame_rate;          //!< Frame rate (ms/frame)
     float        z_piezo_extension;   //!< Z piezo extension coefficient (nm/V)
-    float        z_piexo_gain;        //!< Z piezo driver gain
+    float        z_piezo_gain;        //!< Z piezo driver gain
     std::int32_t ad_range;            //!< Code showing AD range (AD_1V, AD_2P5V, AD_5V or AD_10V)
     std::int32_t bits_data;           //!< Number of bits of Data(typically, 12)
     bool	     is_averaged;         //!< Flag of the averaging
