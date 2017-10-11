@@ -171,15 +171,15 @@ void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
         typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
-    write_binary_as<std::int32_t>(source, header.number_of_frames       );
-    write_binary_as<std::int32_t>(source, header.is_x_feed_forward      );
-    write_binary_as<std::int32_t>(source, header.x_feed_forward_i       );
-    write_binary_as<std::int32_t>(source, header.x_feed_forward_d       );
-    write_binary_as<std::int32_t>(source, header.max_color_scale        );
-    write_binary_as<std::int32_t>(source, header.min_color_scale        );
-    write_binary_as<std::int32_t>(source, header.anchor_point_size_red  );
-    write_binary_as<std::int32_t>(source, header.anchor_point_size_green);
-    write_binary_as<std::int32_t>(source, header.anchor_point_size_blue );
+    write_as_binary<std::int32_t>(source, header.number_of_frames       );
+    write_as_binary<std::int32_t>(source, header.is_x_feed_forward      );
+    write_as_binary<std::int32_t>(source, header.x_feed_forward_i       );
+    write_as_binary<std::int32_t>(source, header.x_feed_forward_d       );
+    write_as_binary<std::int32_t>(source, header.max_color_scale        );
+    write_as_binary<std::int32_t>(source, header.min_color_scale        );
+    write_as_binary<std::int32_t>(source, header.anchor_point_size_red  );
+    write_as_binary<std::int32_t>(source, header.anchor_point_size_green);
+    write_as_binary<std::int32_t>(source, header.anchor_point_size_blue );
 
     write_as_binary(source, header.x_anchor_points_red,
         typename header_type::container_dispatcher_type{},
@@ -210,14 +210,14 @@ template<typename verT, typename contT = container::vec>
 char* write_header(char* ptr, const Header<verT, contT>& header)
 {
     detail::write_header_impl(ptr, header);
-    return;
+    return ptr;
 }
 
 template<typename verT, typename contT = container::vec>
 std::ostream& write_header(std::ostream& os, const Header<verT, contT>& header)
 {
     detail::write_header_impl(os, header);
-    return;
+    return os;
 }
 
 } // asd
