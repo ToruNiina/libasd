@@ -67,6 +67,28 @@ By default, these are set as channel 1, version 1 respectively.
 Currently, version 0, 1, and 2 are supported. For channel, you can set any
 number as you like (normally, 1 or 2).
 
+You can access to each pixel by index instead of range-based for loops.
+
+```cpp
+    const std::size_t x_pixel = data.header.x_pixel;
+    const std::size_t y_pixel = data.header.y_pixel;
+    for(const auto& frame : data.frames)
+    {
+        for(std::size_t y=0; y<y_pixel; ++y)
+        {
+            for(std::size_t x=0; x<x_pixel; ++x)
+            {
+                std::cout << data[y][x];
+            }
+            std::cout << '\n';
+        }
+        std::cout << "\n\n";
+    }
+```
+
+Be careful with the order of index. `Frame[y]` returns a `Line` at y.
+So first you must specify `y` value of the pixel, not `x`.
+
 ### How to access the data?
 
 See documents.
