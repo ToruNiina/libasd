@@ -1,3 +1,15 @@
+/*!
+@file  frame.hpp
+@brief definition of a class that contains frame (frame header and frame data)
+
+For 1 channel case, it contains just one FrameData.
+Otherwise, it contains an array of FrameData, std::array<FrameData, Channel>.
+
+@author Toru Niina (niina.toru.68u@gmail.com)
+@date 2017-11-06 14:30
+@copyright Toru Niina
+*/
+
 #ifndef LIBASD_FRAME_H
 #define LIBASD_FRAME_H
 #include <libasd/exception_thrower.hpp>
@@ -13,6 +25,12 @@
 namespace asd
 {
 
+//! .asd frame class containing frame header and frame data information.
+/*!
+ * It contains an array of FrameData, std::array<FrameData, Channel>.
+ * @tparam chT   a class having the number of channel
+ * @tparam contT a container-dispatcher that defines container class to be used
+ * */
 template<typename chT, typename contT = container::vec>
 struct Frame
 {
@@ -27,13 +45,14 @@ struct Frame
     typedef typename data_type::reverse_iterator       reverse_iterator;
     typedef typename data_type::const_reverse_iterator const_reverse_iterator;
 
-    header_type header;
-    data_type   data;
+    header_type header; //!< frame-header information
+    data_type   data;   //!< frame-data information
 
     // ------------------------------------------------------------------------
     // container-interface as an array of frames (not as a framedata)
     // ------------------------------------------------------------------------
 
+    //! return size of data (in this case, channel)
     constexpr std::size_t size() const noexcept {return data.size();}
 
     frame_data_type&       operator[](std::size_t i)       noexcept {return data[i];}
@@ -61,6 +80,11 @@ struct Frame
 
 };
 
+//! .asd frame class containing frame header and frame data information.
+/*!
+ * It contains just one FrameData. The interfaces are forwarded to FrameData.
+ * @tparam contT a container-dispatcher that defines container class to be used
+ */
 template<typename contT>
 struct Frame<channel<1>, contT>
 {

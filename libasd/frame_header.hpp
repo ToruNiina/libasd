@@ -1,3 +1,12 @@
+/*!
+@file  frame_header.hpp
+@brief definition of a class that contains frame header information
+
+@author Toru Niina (niina.toru.68u@gmail.com)
+@date 2017-11-06 14:30
+@copyright Toru Niina
+*/
+
 #ifndef LIBASD_FRAME_HEADER_H
 #define LIBASD_FRAME_HEADER_H
 #include <cstdint>
@@ -5,6 +14,11 @@
 namespace asd
 {
 
+//! frame header class
+/*!
+ * Because frame header format does not depends on version or channel,
+ * this class does not depends on version or channel tag.
+ */
 struct FrameHeader
 {
     std::int32_t number;        //!< frame number

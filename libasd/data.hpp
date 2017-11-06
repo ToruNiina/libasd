@@ -1,3 +1,12 @@
+/*!
+@file  data.hpp
+@brief definition of a class that contains data from .asd files
+
+@author Toru Niina (niina.toru.68u@gmail.com)
+@date 2017-11-06 14:30
+@copyright Toru Niina
+*/
+
 #ifndef LIBASD_READ_DATA_H
 #define LIBASD_READ_DATA_H
 #include <libasd/container_dispatcher.hpp>
@@ -8,6 +17,14 @@
 namespace asd
 {
 
+
+//! .asd data class.
+/*!
+ * class Data contains header, frame-header, frame-data informations from asd files.
+ * @tparam chT   a class having the number of channel
+ * @tparam verT  a class having the version information
+ * @tparam contT a container-dispatcher that defines container class to be used
+ * */
 template<typename chT   = channel<1>,
          typename verT  = version<1>,
          typename contT = container::vec>
@@ -26,8 +43,8 @@ struct Data
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<frame_type>::other frame_container_type;
 
-    header_type header;
-    frame_container_type frames;
+    header_type          header; //!< header information
+    frame_container_type frames; //!< an array of frame
 };
 
 }
