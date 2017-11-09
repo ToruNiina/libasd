@@ -54,7 +54,8 @@ void read_frame_data_impl(FrameData<contT>& fd, std::istream& is,
     fd.x_pixel = x; fd.y_pixel = y;
     std::size_t total_size = x * y;
     contT::resize(fd.data, total_size);
-    is.read(reinterpret_cast<char*>(fd.data.data()), total_size);
+    is.read(reinterpret_cast<char*>(fd.data.data()),
+            total_size * sizeof(std::int16_t));
     return;
 }
 
