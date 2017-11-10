@@ -27,30 +27,27 @@ void write_as_binary(std::ostream& os, const T& value)
 }
 
 // for array with length
-template<typename containerT, typename ContainerDispatcher>
-void write_as_binary(char*& ptr, const containerT& c,
-                     ContainerDispatcher, std::true_type) noexcept
+template<typename containerT>
+void write_as_binary(char*& ptr, const containerT& c, std::true_type) noexcept
 {
     ptr = std::copy(
-        reinterpret_cast<const char*>(ContainerDispatcher::get_ptr(c)),
-        reinterpret_cast<const char*>(ContainerDispatcher::get_ptr(c))
-            + (ContainerDispatcher::size(c) * sizeof(typename containerT::value_type)),
+        reinterpret_cast<const char*>(::asd::container::get_ptr(c)),
+        reinterpret_cast<const char*>(::asd::container::get_ptr(c)) +
+        (::asd::container::size(c) * sizeof(typename containerT::value_type)),
         ptr);
     return;
 }
 
-template<typename containerT, typename ContainerDispatcher>
-void write_as_binary(std::ostream& os, const containerT& c,
-                     ContainerDispatcher, std::true_type)
+template<typename containerT>
+void write_as_binary(std::ostream& os, const containerT& c, std::true_type)
 {
-    os.write(reinterpret_cast<const char*>(ContainerDispatcher::get_ptr(c)),
-             (ContainerDispatcher::size(c) * sizeof(typename containerT::value_type)));
+    os.write(reinterpret_cast<const char*>(::asd::container::get_ptr(c)),
+        (::asd::container::size(c) * sizeof(typename containerT::value_type)));
     return;
 }
 
-template<typename containerT, typename ContainerDispatcher>
-void write_as_binary(char*& ptr, const containerT& c,
-                     ContainerDispatcher, std::false_type) noexcept
+template<typename containerT>
+void write_as_binary(char*& ptr, const containerT& c, std::false_type) noexcept
 {
     for(auto const& item : c)
     {
@@ -60,8 +57,7 @@ void write_as_binary(char*& ptr, const containerT& c,
 }
 
 template<typename containerT, typename ContainerDispatcher>
-void write_as_binary(std::ostream& os, const containerT& c,
-                     ContainerDispatcher, std::false_type)
+void write_as_binary(std::ostream& os, const containerT& c, std::false_type)
 {
     for(auto const& item : c)
     {
@@ -87,7 +83,6 @@ inline void skip_bytes(std::ostream& os, std::size_t sz)
     }
     return;
 }
-
 
 } // detail
 }// asd

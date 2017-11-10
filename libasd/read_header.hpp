@@ -54,8 +54,8 @@ read_header_impl(Header<version<0>, contT>& header, sourceT& source)
 
     const std::size_t op_nm_sz =
         static_cast<std::size_t>(header.operator_name_size);
-    header_type::container_dispatcher_type::resize(
-            header.operator_name, op_nm_sz);
+
+    ::asd::container::resize(header.operator_name, op_nm_sz);
     for(std::size_t i=0; i<op_nm_sz; ++i)
     {
         header.operator_name[i] = read_binary_as<std::int8_t>(source);
@@ -66,7 +66,7 @@ read_header_impl(Header<version<0>, contT>& header, sourceT& source)
     header.scannig_direction   = read_binary_as<std::int32_t>(source);
 
     const std::size_t cm_sz = static_cast<std::size_t>(header.comment_size);
-    header_type::container_dispatcher_type::resize(header.comment, cm_sz);
+    ::asd::container::resize(header.comment, cm_sz);
     for(std::size_t i=0; i<cm_sz; ++i)
     {
         header.comment[i] = read_binary_as<std::int8_t>(source);
@@ -121,17 +121,15 @@ read_header_impl(Header<version<1>, contT>& header, sourceT& source)
     header.z_piezo_extension    = read_binary_as<float       >(source);
     header.z_piezo_gain         = read_binary_as<float       >(source);
 
-    const std::size_t op_name_size =
-        static_cast<std::size_t>(header.operator_name_size);
-    header_type::container_dispatcher_type::resize(header.operator_name, op_name_size);
+    const auto op_name_size = static_cast<std::size_t>(header.operator_name_size);
+    ::asd::container::resize(header.operator_name, op_name_size);
     for(std::size_t i=0; i<op_name_size; ++i)
     {
         header.operator_name[i] = read_binary_as<std::int8_t>(source);
     }
 
-    const std::size_t cm_size =
-        static_cast<std::size_t>(header.comment_size);
-    header_type::container_dispatcher_type::resize(header.comment, cm_size);
+    const std::size_t cm_size = static_cast<std::size_t>(header.comment_size);
+    ::asd::container::resize(header.comment, cm_size);
     for(std::size_t i=0; i<cm_size; ++i)
     {
         header.comment[i] = read_binary_as<std::int8_t>(source);
@@ -187,15 +185,14 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
 
     const std::size_t op_nm_sz =
         static_cast<std::size_t>(header.operator_name_size);
-    header_type::container_dispatcher_type::resize(
-            header.operator_name, op_nm_sz);
+    ::asd::container::resize(header.operator_name, op_nm_sz);
     for(std::size_t i=0; i<op_nm_sz; ++i)
     {
         header.operator_name[i] = read_binary_as<std::int8_t>(source);
     }
 
     const std::size_t cm_size = static_cast<std::size_t>(header.comment_size);
-    header_type::container_dispatcher_type::resize(header.comment, cm_size);
+    ::asd::container::resize(header.comment, cm_size);
     for(std::size_t i=0; i<cm_size; ++i)
     {
         header.comment[i] = read_binary_as<std::int8_t>(source);
@@ -214,10 +211,8 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
     /* anchor_red */{
         const std::size_t sz =
             static_cast<std::size_t>(header.anchor_point_size_red);
-        header_type::container_dispatcher_type::resize(
-                header.x_anchor_points_red, sz);
-        header_type::container_dispatcher_type::resize(
-                header.y_anchor_points_red, sz);
+        ::asd::container::resize(header.x_anchor_points_red, sz);
+        ::asd::container::resize(header.y_anchor_points_red, sz);
         for(std::size_t i=0; i<sz; ++i)
         {
             header.x_anchor_points_red[i] = read_binary_as<std::int32_t>(source);
@@ -230,10 +225,8 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
     /* anchor_green */{
         const std::size_t sz =
             static_cast<std::size_t>(header.anchor_point_size_green);
-        header_type::container_dispatcher_type::resize(
-                header.x_anchor_points_green, sz);
-        header_type::container_dispatcher_type::resize(
-                header.y_anchor_points_green, sz);
+        ::asd::container::resize(header.x_anchor_points_green, sz);
+        ::asd::container::resize(header.y_anchor_points_green, sz);
         for(std::size_t i=0; i<sz; ++i)
         {
             header.x_anchor_points_green[i] = read_binary_as<std::int32_t>(source);
@@ -246,10 +239,8 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
     /* anchor_blue */{
         const std::size_t sz =
             static_cast<std::size_t>(header.anchor_point_size_blue);
-        header_type::container_dispatcher_type::resize(
-                header.x_anchor_points_blue, sz);
-        header_type::container_dispatcher_type::resize(
-                header.y_anchor_points_blue, sz);
+        ::asd::container::resize(header.x_anchor_points_blue, sz);
+        ::asd::container::resize(header.y_anchor_points_blue, sz);
         for(std::size_t i=0; i<sz; ++i)
         {
             header.x_anchor_points_blue[i] = read_binary_as<std::int32_t>(source);

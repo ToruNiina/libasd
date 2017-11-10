@@ -31,10 +31,8 @@ void write_frame_header_impl(sourceT& source, const FrameHeader& fh)
 template<typename sourceT, typename contT>
 void write_frame_data_impl(sourceT& source, const FrameData<contT>& fd)
 {
-    typedef contT container_dispatcher_type;
-    write_as_binary(source, fd.data,
-        container_dispatcher_type{},
-        container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, fd.data, typename
+            FrameData<contT>::container_dispatcher_type::ptr_accessibility{});
     return;
 }
 

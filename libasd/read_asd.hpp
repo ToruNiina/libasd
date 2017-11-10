@@ -18,7 +18,7 @@ Data<chT, verT, contT> read_asd(const char* ptr)
     const std::size_t y = data.header.y_pixel;
     const std::size_t n = data.header.num_frames;
 
-    data_type::container_dispatcher_type::resize(data.frames, n);
+    container::resize(data.frames, n);
 
     for(std::size_t i=0; i<n; ++i)
     {
@@ -38,7 +38,7 @@ Data<chT, verT, contT> read_asd(std::istream& is)
     const std::size_t y = data.header.y_pixel;
     const std::size_t n = data.header.num_frames;
 
-    data_type::container_dispatcher_type::resize(data.frames, n);
+    container::resize(data.frames, n);
 
     for(std::size_t i=0; i<n; ++i)
     {

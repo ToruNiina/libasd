@@ -51,7 +51,6 @@ void write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
     write_as_binary<std::int32_t>(source, header.file_id            );
 
     write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     write_as_binary<float       >(source, header.sensor_sensitivity);
@@ -59,7 +58,6 @@ void write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
     write_as_binary<std::int32_t>(source, header.scannig_direction);
 
     write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     return;
 }
@@ -110,10 +108,8 @@ void write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
     write_as_binary<float       >(source, header.z_piezo_gain        );
 
     write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     return;
@@ -165,10 +161,8 @@ void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
     write_as_binary<float       >(source, header.z_piezo_gain        );
 
     write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     write_as_binary<std::int32_t>(source, header.number_of_frames       );
@@ -182,24 +176,18 @@ void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
     write_as_binary<std::int32_t>(source, header.anchor_point_size_blue );
 
     write_as_binary(source, header.x_anchor_points_red,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     write_as_binary(source, header.y_anchor_points_red,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     write_as_binary(source, header.x_anchor_points_green,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     write_as_binary(source, header.y_anchor_points_green,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     write_as_binary(source, header.x_anchor_points_blue,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
     write_as_binary(source, header.y_anchor_points_blue,
-        typename header_type::container_dispatcher_type{},
         typename header_type::container_dispatcher_type::ptr_accessibility{});
 
     return;
