@@ -14,7 +14,6 @@ template<typename contT, typename sourceT>
 sourceT&
 read_header_impl(Header<version<0>, contT>& header, sourceT& source)
 {
-    typedef Header<version<0>, contT> header_type;
     header.file_version        = read_binary_as<std::int32_t>(source);
     header.data_type_1ch       = read_binary_as<std::int16_t>(source);
     header.data_type_2ch       = read_binary_as<std::int16_t>(source);
@@ -79,7 +78,6 @@ template<typename contT, typename sourceT>
 sourceT&
 read_header_impl(Header<version<1>, contT>& header, sourceT& source)
 {
-    typedef Header<version<1>, contT> header_type;
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
@@ -141,7 +139,6 @@ template<typename contT, typename sourceT>
 sourceT&
 read_header_impl(Header<version<2>, contT>& header, sourceT& source)
 {
-    typedef Header<version<1>, contT> header_type;
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
     header.frame_header_size    = read_binary_as<std::int32_t>(source);
