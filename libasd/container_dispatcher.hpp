@@ -79,7 +79,7 @@ inline T const* get_ptr(const std::array<T, N>& v) noexcept
 }
 
 template<typename T, std::size_t N>
-inline void resize(std::array<T, N>& v, const std::size_t N)
+inline void resize(std::array<T, N>& v, const std::size_t M)
 {
     if(v.size() < M)
     {
