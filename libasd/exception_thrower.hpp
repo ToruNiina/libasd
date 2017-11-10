@@ -38,7 +38,7 @@ formatter(const char* fmt, T&& head, Ts&& ... tail)
 }//detail
 
 template<typename Exception, typename ... Ts>
-void throw_exception(const char* fmt, Ts&& ... strs)
+[[noreturn]] void throw_exception(const char* fmt, Ts&& ... strs)
 {
     throw Exception(detail::formatter(fmt, std::forward<Ts>(strs)...));
 }
