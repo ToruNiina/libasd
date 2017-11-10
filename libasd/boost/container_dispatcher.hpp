@@ -9,6 +9,10 @@
 
 namespace asd
 {
+namespace container
+{
+
+// ------------------------- boost::container::vector ------------------------//
 
 struct boost_vec
 {
@@ -17,28 +21,26 @@ struct boost_vec
     {
         typedef boost::container::vector<T> other;
     };
-
-    typedef std::true_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(boost::container::vector<T>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
-
-    template<typename T>
-    static const T* get_ptr(const boost::container::vector<T>& cont) noexcept
-    {
-        return cont.data();
-    }
-
-    template<typename T>
-    static std::size_t size(const boost::container::vector<T>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+template<typename T, typename Alloc>
+inline void resize(boost::container::vector<T, Alloc>& cont, std::size_t N)
+{
+    cont.resize(N);
+    return;
+}
+template<typename T, typename Alloc>
+inline const T* get_ptr(const boost::container::vector<T, Alloc>& cont) noexcept
+{
+    return cont.data();
+}
+template<typename T, typename Alloc>
+inline std::size_t size(const boost::container::vector<T, Alloc>& cont) noexcept
+{
+    return cont.size();
+}
+
+// --------------------- boost::container::stable_vector ---------------------//
 
 struct boost_stable_vec
 {
@@ -47,22 +49,22 @@ struct boost_stable_vec
     {
         typedef boost::container::stable_vector<T> other;
     };
-
-    typedef std::false_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(boost::container::stable_vector<T>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
-
-    template<typename T, typename Alloc>
-    static std::size_t size(const std::vector<T, Alloc>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::false_type;
 };
+template<typename T, typename Alloc>
+inline void resize(boost::container::stable_vector<T, Alloc>& cont, std::size_t N)
+{
+    cont.resize(N);
+    return;
+}
+template<typename T, typename Alloc>
+inline std::size_t
+size(const boost::container::stable_vector<T, Alloc>& cont) noexcept
+{
+    return cont.size();
+}
+
+// --------------------- boost::container::static_vector ---------------------//
 
 template<std::size_t N>
 struct boost_static_vec
@@ -72,30 +74,30 @@ struct boost_static_vec
     {
         typedef boost::container::static_vector<T, N> other;
     };
-
-    typedef std::true_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(boost::container::static_vector<T, N>& cont, std::size_t M)
-    {
-        cont.resize(M);
-        return;
-    }
-
-    template<typename T>
-    static const T*
-    get_ptr(const boost::container::static_vector<T, N>& cont) noexcept
-    {
-        return cont.data();
-    }
-
-    template<typename T>
-    static std::size_t
-    size(const boost::container::static_vector<T, N>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+template<typename T, std::size_t N>
+inline void resize(boost::container::static_vector<T, N>& cont, std::size_t M)
+{
+    cont.resize(M);
+    return;
+}
+
+template<typename T, std::size_t N>
+inline const T*
+get_ptr(const boost::container::static_vector<T, N>& cont) noexcept
+{
+    return cont.data();
+}
+
+template<typename T, std::size_t N>
+inline std::size_t
+size(const boost::container::static_vector<T, N>& cont) noexcept
+{
+    return cont.size();
+}
+
+//---------------------- boost::container::small_vector ----------------------//
 
 template<std::size_t N>
 struct boost_small_vec
@@ -106,29 +108,28 @@ struct boost_small_vec
         typedef boost::container::small_vector<T, N> other;
     };
 
-    typedef std::true_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(boost::container::small_vector<T, N>& cont, std::size_t M)
-    {
-        cont.resize(M);
-        return;
-    }
-
-    template<typename T>
-    static const T*
-    get_ptr(const boost::container::small_vector<T, N>& cont) noexcept
-    {
-        return cont.data();
-    }
-
-    template<typename T>
-    static std::size_t
-    size(const boost::container::small_vector<T, N>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+template<typename T, std::size_t N, typename Alloc>
+inline void resize(boost::container::small_vector<T, N, Alloc>& cont, std::size_t M)
+{
+    cont.resize(M);
+    return;
+}
+template<typename T, std::size_t N, typename Alloc>
+inline const T*
+get_ptr(const boost::container::small_vector<T, N, Alloc>& cont) noexcept
+{
+    return cont.data();
+}
+template<typename T, std::size_t N, typename Alloc>
+inline std::size_t
+size(const boost::container::small_vector<T, N, Alloc>& cont) noexcept
+{
+    return cont.size();
+}
+
+//------------------------- boost::container::deque -------------------------//
 
 struct boost_deq
 {
@@ -138,22 +139,25 @@ struct boost_deq
         typedef boost::container::deque<T> other;
     };
 
-    typedef std::false_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(boost::container::deque<T, N>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
-
-    template<typename T>
-    static std::size_t
-    size(const boost::container::deque<T, N>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::false_type;
 };
+
+template<typename T, typename Alloc>
+inline void resize(boost::container::deque<T, Alloc>& cont, std::size_t N)
+{
+    cont.resize(N);
+    return;
+}
+
+template<typename T, typename Alloc>
+inline std::size_t size(const boost::container::deque<T, Alloc>& cont) noexcept
+{
+    return cont.size();
+}
+
+// TODO : boost::container::pmr::*
+
+//------------------------------- boost::array -------------------------------//
 
 template<std::size_t N>
 struct boost_arr
@@ -164,32 +168,30 @@ struct boost_arr
         typedef boost::array<T, N> other;
     };
 
-    template<typename T>
-    static void resize(boost::array<T, N>& cont, std::size_t M)
-    {
-        if(cont.size() < M)
-        {
-            throw_exception<std::bad_alloc>(
-                    "array(size = %) has no enough storage(size = %)",
-                    cont.size(), M);
-        }
-        return;
-    }
-
-    template<typename T>
-    static const T*
-    get_ptr(const boost::array<T, N>& cont) noexcept
-    {
-        return cont.data();
-    }
-
-    template<typename T>
-    static std::size_t
-    size(const boost::array<T, N>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+template<typename T, std::size_t N>
+inline void resize(boost::array<T, N>& cont, std::size_t M)
+{
+    if(cont.size() < M)
+    {
+        throw_exception<std::bad_alloc>(
+                "array(size = %) has no enough storage(%)", cont.size(), M);
+    }
+    return;
+}
+template<typename T, std::size_t N>
+inline const T* get_ptr(const boost::array<T, N>& cont) noexcept
+{
+    return cont.data();
+}
 
+template<typename T, std::size_t N>
+inline std::size_t size(const boost::array<T, N>& cont) noexcept
+{
+    return cont.size();
+}
+
+} // container
 } // asd
 #endif//LIBASD_BOOST_CONTAINER_DISPATCHER_H

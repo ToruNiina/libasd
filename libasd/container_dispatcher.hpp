@@ -10,6 +10,8 @@ namespace asd
 namespace container
 {
 
+// ---------------------------------- vector ---------------------------------//
+
 struct vec
 {
     template<typename T>
@@ -17,28 +19,25 @@ struct vec
     {
         typedef std::vector<T, std::allocator<T>> other;
     };
-
-    typedef std::true_type ptr_accessibility;
-
-    template<typename T, typename Alloc>
-    static void resize(std::vector<T, Alloc>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
-
-    template<typename T, typename Alloc>
-    static const T* get_ptr(const std::vector<T, Alloc>& cont) noexcept
-    {
-        return cont.data();
-    }
-
-    template<typename T, typename Alloc>
-    static std::size_t size(const std::vector<T, Alloc>& cont) noexcept
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+template<typename T, typename Alloc>
+inline T const* get_ptr(const std::vector<T, Alloc>& v) noexcept
+{
+    return v.data();
+}
+template<typename T, typename Alloc>
+inline std::size_t size(const std::vector<T, Alloc>& v) noexcept
+{
+    return v.size();
+}
+template<typename T, typename Alloc>
+inline void resize(std::vector<T, Alloc>& v, const std::size_t N)
+{
+    return v.resize(N);
+}
+
+// ---------------------------------- deque ----------------------------------//
 
 struct deq
 {
@@ -47,24 +46,20 @@ struct deq
     {
         typedef std::deque<T, std::allocator<T>> other;
     };
-
-    typedef std::false_type ptr_accessibility;
-
-    template<typename T, typename Alloc>
-    static void resize(std::deque<T, Alloc>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
-
-    // pointer cannot be extracted...
-
-    template<typename T, typename Alloc>
-    static std::size_t size(const std::deque<T, Alloc>& cont)
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::false_type;
 };
+template<typename T, typename Alloc>
+inline std::size_t size(const std::deque<T, Alloc>& v) noexcept
+{
+    return v.size();
+}
+template<typename T, typename Alloc>
+inline void resize(std::deque<T, Alloc>& v, const std::size_t N)
+{
+    return v.resize(N);
+}
+
+// ---------------------------------- array ----------------------------------//
 
 template<std::size_t N>
 struct arr
@@ -74,33 +69,31 @@ struct arr
     {
         typedef std::array<T, N> other;
     };
-
-    typedef std::true_type ptr_accessibility;
-
-    template<typename T>
-    static void resize(std::array<T, N>& cont, std::size_t M)
-    {
-        if(cont.size() < M)
-        {
-            throw_exception<std::bad_alloc>(
-                    "array(size = %) has no enough storage(size = %)",
-                    cont.size(), M);
-        }
-        return;
-    }
-
-    template<typename T>
-    static const T* get_ptr(const std::array<T, N>& cont)
-    {
-        return cont.data();
-    }
-
-    template<typename T>
-    static std::size_t size(const std::array<T, N>& cont)
-    {
-        return cont.size();
-    }
+    using ptr_accessibility = std::true_type;
 };
+
+template<typename T, std::size_t N>
+inline T const* get_ptr(const std::array<T, N>& v) noexcept
+{
+    return v.data();
+}
+
+template<typename T, std::size_t N>
+inline void resize(std::array<T, N>& v, const std::size_t N)
+{
+    if(v.size() < M)
+    {
+        throw_exception<std::bad_alloc>(
+                "array(size = %) has no enough storage(%)", v.size(), M);
+    }
+    return;
+}
+
+template<typename T, std::size_t N>
+inline constexpr std::size_t size(const std::array<T, N>& v) noexcept
+{
+    return v.size();
+}
 
 } // container
 } // asd
