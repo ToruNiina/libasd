@@ -1,7 +1,7 @@
 #ifndef LIBASD_WRITE_HEADER_H
 #define LIBASD_WRITE_HEADER_H
-#include <libasd/write_as_binary.hpp>
-#include <libasd/header.hpp>
+#include <libasd/io/write_as_binary.hpp>
+#include <libasd/io/header.hpp>
 #include <ostream>
 
 namespace asd

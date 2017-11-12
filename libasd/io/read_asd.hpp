@@ -1,8 +1,8 @@
 #ifndef LIBASD_READ_ASD_H
 #define LIBASD_READ_ASD_H
-#include <libasd/read_header.hpp>
-#include <libasd/read_frame.hpp>
-#include <libasd/data.hpp>
+#include <libasd/io/read_header.hpp>
+#include <libasd/io/read_frame.hpp>
+#include <libasd/io/data.hpp>
 
 namespace asd
 {

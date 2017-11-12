@@ -1,9 +1,9 @@
 #ifndef LIBASD_WRITE_FRAME_H
 #define LIBASD_WRITE_FRAME_H
-#include <libasd/write_binary_as.hpp>
-#include <libasd/frame_header.hpp>
-#include <libasd/frame_data.hpp>
-#include <libasd/frame.hpp>
+#include <libasd/io/write_binary_as.hpp>
+#include <libasd/io/frame_header.hpp>
+#include <libasd/io/frame_data.hpp>
+#include <libasd/io/frame.hpp>
 
 namespace asd
 {

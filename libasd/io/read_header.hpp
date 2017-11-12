@@ -1,8 +1,7 @@
 #ifndef LIBASD_READ_HEADER_H
 #define LIBASD_READ_HEADER_H
-#include <libasd/debug_macro.hpp>
-#include <libasd/read_binary_as.hpp>
-#include <libasd/header.hpp>
+#include <libasd/io/read_binary_as.hpp>
+#include <libasd/io/header.hpp>
 #include <istream>
 
 namespace asd

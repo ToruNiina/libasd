@@ -12,11 +12,11 @@ Otherwise, it contains an array of FrameData, std::array<FrameData, Channel>.
 
 #ifndef LIBASD_FRAME_H
 #define LIBASD_FRAME_H
-#include <libasd/exception_thrower.hpp>
-#include <libasd/container_dispatcher.hpp>
-#include <libasd/frame_header.hpp>
-#include <libasd/frame_data.hpp>
-#include <libasd/tag.hpp>
+#include <libasd/util/exception_thrower.hpp>
+#include <libasd/io/container_dispatcher.hpp>
+#include <libasd/io/frame_header.hpp>
+#include <libasd/io/frame_data.hpp>
+#include <libasd/io/tag.hpp>
 #include <type_traits>
 #include <stdexcept>
 #include <array>

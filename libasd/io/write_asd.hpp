@@ -1,8 +1,8 @@
 #ifndef LIBASD_WRITE_ASD_H
 #define LIBASD_WRITE_ASD_H
-#include <libasd/write_header.hpp>
-#include <libasd/write_frame.hpp>
-#include <libasd/data.hpp>
+#include <libasd/io/write_header.hpp>
+#include <libasd/io/write_frame.hpp>
+#include <libasd/io/data.hpp>
 
 namespace asd
 {
