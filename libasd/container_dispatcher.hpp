@@ -3,7 +3,7 @@
 #include <vector>
 #include <deque>
 #include <array>
-#include <libasd/util/exception_thrower.hpp>
+#include <libasd/exception_thrower.hpp>
 
 namespace asd
 {

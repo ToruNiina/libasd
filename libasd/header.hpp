@@ -1,7 +1,7 @@
 #ifndef LIBASD_HEADER_H
 #define LIBASD_HEADER_H
-#include <libasd/io/tag.hpp>
-#include <libasd/io/container_dispatcher.hpp>
+#include <libasd/tag.hpp>
+#include <libasd/container_dispatcher.hpp>
 #include <cstdint>
 
 namespace asd

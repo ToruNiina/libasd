@@ -1,9 +1,9 @@
 #ifndef LIBASD_READ_FRAME_H
 #define LIBASD_READ_FRAME_H
-#include <libasd/io/read_binary_as.hpp>
-#include <libasd/io/frame_header.hpp>
-#include <libasd/io/frame_data.hpp>
-#include <libasd/io/frame.hpp>
+#include <libasd/read_binary_as.hpp>
+#include <libasd/frame_header.hpp>
+#include <libasd/frame_data.hpp>
+#include <libasd/frame.hpp>
 
 namespace asd
 {
