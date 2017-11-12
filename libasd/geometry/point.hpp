@@ -1,6 +1,6 @@
 #ifndef LIBASD_POINT_H
 #define LIBASD_POINT_H
-#include <libasd/type_traits.hpp>
+#include <libasd/util/type_traits.hpp>
 #include <utility>
 #include <array>
 #include <ostream>

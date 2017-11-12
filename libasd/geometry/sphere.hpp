@@ -1,6 +1,6 @@
 #ifndef LIBASD_SPHERE_H
 #define LIBASD_SPHERE_H
-#include <libasd/point.hpp>
+#include <libasd/geometry/point.hpp>
 
 namespace asd
 {
