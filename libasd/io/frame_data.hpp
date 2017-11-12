@@ -1,8 +1,8 @@
 #ifndef LIBASD_FRAME_DATA_H
 #define LIBASD_FRAME_DATA_H
 #include <libasd/util/exception_thrower.hpp>
+#include <libasd/util/line_proxy.hpp>
 #include <libasd/io/container_dispatcher.hpp>
-#include <libasd/io/line_proxy.hpp>
 #include <cstdint>
 
 namespace asd
