@@ -21,7 +21,6 @@ struct boost_vec
     {
         typedef boost::container::vector<T> other;
     };
-    using ptr_accessibility = std::true_type;
 };
 template<typename T, typename Alloc>
 inline void resize(boost::container::vector<T, Alloc>& cont, std::size_t N)
@@ -49,7 +48,6 @@ struct boost_stable_vec
     {
         typedef boost::container::stable_vector<T> other;
     };
-    using ptr_accessibility = std::false_type;
 };
 template<typename T, typename Alloc>
 inline void resize(boost::container::stable_vector<T, Alloc>& cont, std::size_t N)
@@ -74,7 +72,6 @@ struct boost_static_vec
     {
         typedef boost::container::static_vector<T, N> other;
     };
-    using ptr_accessibility = std::true_type;
 };
 template<typename T, std::size_t N>
 inline void resize(boost::container::static_vector<T, N>& cont, std::size_t M)
@@ -108,7 +105,6 @@ struct boost_small_vec
         typedef boost::container::small_vector<T, N> other;
     };
 
-    using ptr_accessibility = std::true_type;
 };
 template<typename T, std::size_t N, typename Alloc>
 inline void resize(boost::container::small_vector<T, N, Alloc>& cont, std::size_t M)
@@ -139,7 +135,6 @@ struct boost_deq
         typedef boost::container::deque<T> other;
     };
 
-    using ptr_accessibility = std::false_type;
 };
 
 template<typename T, typename Alloc>
@@ -167,8 +162,6 @@ struct boost_arr
     {
         typedef boost::array<T, N> other;
     };
-
-    using ptr_accessibility = std::true_type;
 };
 template<typename T, std::size_t N>
 inline void resize(boost::array<T, N>& cont, std::size_t M)
