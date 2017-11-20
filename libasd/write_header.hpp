@@ -9,10 +9,9 @@ namespace asd
 namespace detail
 {
 
-template<typename contT, typename sourceT>
-void write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
+template<typename sourceT>
+void write_header_impl(sourceT& source, const Header<version<0>>& header)
 {
-    typedef Header<version<0>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version       );
     write_as_binary<std::int16_t>(source, header.data_type_1ch      );
     write_as_binary<std::int16_t>(source, header.data_type_2ch      );
@@ -50,22 +49,19 @@ void write_header_impl(sourceT& source, const Header<version<0>, contT>& header)
     write_as_binary<std::int32_t>(source, header.machine_id         );
     write_as_binary<std::int32_t>(source, header.file_id            );
 
-    write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.operator_name, std::true_type{});
 
     write_as_binary<float       >(source, header.sensor_sensitivity);
     write_as_binary<float       >(source, header.phase_sensitivity);
     write_as_binary<std::int32_t>(source, header.scannig_direction);
 
-    write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.comment, std::true_type{});
     return;
 }
 
-template<typename contT, typename sourceT>
-void write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
+template<typename sourceT>
+void write_header_impl(sourceT& source, const Header<version<1>>& header)
 {
-    typedef Header<version<1>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version         );
     write_as_binary<std::int32_t>(source, header.file_header_size     );
     write_as_binary<std::int32_t>(source, header.frame_header_size    );
@@ -107,18 +103,15 @@ void write_header_impl(sourceT& source, const Header<version<1>, contT>& header)
     write_as_binary<float       >(source, header.z_piezo_extension   );
     write_as_binary<float       >(source, header.z_piezo_gain        );
 
-    write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
-    write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.operator_name, std::true_type{});
+    write_as_binary(source, header.comment,       std::true_type{});
 
     return;
 }
 
-template<typename contT, typename sourceT>
-void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
+template<typename sourceT>
+void write_header_impl(sourceT& source, const Header<version<2>>& header)
 {
-    typedef Header<version<2>, contT> header_type;
     write_as_binary<std::int32_t>(source, header.file_version         );
     write_as_binary<std::int32_t>(source, header.file_header_size     );
     write_as_binary<std::int32_t>(source, header.frame_header_size    );
@@ -160,10 +153,8 @@ void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
     write_as_binary<float       >(source, header.z_piezo_extension   );
     write_as_binary<float       >(source, header.z_piezo_gain        );
 
-    write_as_binary(source, header.operator_name,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
-    write_as_binary(source, header.comment,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.operator_name, std::true_type{});
+    write_as_binary(source, header.comment,       std::true_type{});
 
     write_as_binary<std::int32_t>(source, header.number_of_frames       );
     write_as_binary<std::int32_t>(source, header.is_x_feed_forward      );
@@ -175,34 +166,28 @@ void write_header_impl(sourceT& source, const Header<version<2>, contT>& header)
     write_as_binary<std::int32_t>(source, header.anchor_point_size_green);
     write_as_binary<std::int32_t>(source, header.anchor_point_size_blue );
 
-    write_as_binary(source, header.x_anchor_points_red,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
-    write_as_binary(source, header.y_anchor_points_red,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.x_anchor_points_red, std::true_type{});
+    write_as_binary(source, header.y_anchor_points_red, std::true_type{});
 
-    write_as_binary(source, header.x_anchor_points_green,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
-    write_as_binary(source, header.y_anchor_points_green,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.x_anchor_points_green, std::true_type{});
+    write_as_binary(source, header.y_anchor_points_green, std::true_type{});
 
-    write_as_binary(source, header.x_anchor_points_blue,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
-    write_as_binary(source, header.y_anchor_points_blue,
-        typename header_type::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, header.x_anchor_points_blue, std::true_type{});
+    write_as_binary(source, header.y_anchor_points_blue, std::true_type{});
 
     return;
 }
 }// detail
 
-template<typename verT, typename contT = container::vec>
-char* write_header(char* ptr, const Header<verT, contT>& header)
+template<typename verT>
+char* write_header(char* ptr, const Header<verT>& header)
 {
     detail::write_header_impl(ptr, header);
     return ptr;
 }
 
-template<typename verT, typename contT = container::vec>
-std::ostream& write_header(std::ostream& os, const Header<verT, contT>& header)
+template<typename verT>
+std::ostream& write_header(std::ostream& os, const Header<verT>& header)
 {
     detail::write_header_impl(os, header);
     return os;

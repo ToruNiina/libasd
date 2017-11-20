@@ -35,8 +35,8 @@ struct Data
     static constexpr std::size_t num_channel = channel_tag::value;
     static constexpr std::size_t num_version = version_tag::value;
 
-    typedef Header<version_tag, contT> header_type;
-    typedef Frame<channel_tag, contT>  frame_type;
+    typedef Header<version_tag>       header_type;
+    typedef Frame<channel_tag, contT> frame_type;
     typedef typename frame_type::header_type     frame_header_type;
     typedef typename frame_type::frame_data_type frame_data_type;
 

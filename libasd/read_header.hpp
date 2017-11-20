@@ -9,9 +9,9 @@ namespace asd
 namespace detail
 {
 
-template<typename contT, typename sourceT>
+template<typename sourceT>
 sourceT&
-read_header_impl(Header<version<0>, contT>& header, sourceT& source)
+read_header_impl(Header<version<0>>& header, sourceT& source)
 {
     header.file_version        = read_binary_as<std::int32_t>(source);
     header.data_type_1ch       = read_binary_as<std::int16_t>(source);
@@ -73,9 +73,9 @@ read_header_impl(Header<version<0>, contT>& header, sourceT& source)
     return source;
 }
 
-template<typename contT, typename sourceT>
+template<typename sourceT>
 sourceT&
-read_header_impl(Header<version<1>, contT>& header, sourceT& source)
+read_header_impl(Header<version<1>>& header, sourceT& source)
 {
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
@@ -134,9 +134,9 @@ read_header_impl(Header<version<1>, contT>& header, sourceT& source)
     return source;
 }
 
-template<typename contT, typename sourceT>
+template<typename sourceT>
 sourceT&
-read_header_impl(Header<version<2>, contT>& header, sourceT& source)
+read_header_impl(Header<version<2>>& header, sourceT& source)
 {
     header.file_version         = read_binary_as<std::int32_t>(source);
     header.file_header_size     = read_binary_as<std::int32_t>(source);
@@ -251,18 +251,18 @@ read_header_impl(Header<version<2>, contT>& header, sourceT& source)
 
 } // detail
 
-template<typename verT = version<1>, typename contT = container::vec>
-Header<verT, contT> read_header(const char* ptr)
+template<typename verT = version<1>>
+Header<verT> read_header(const char* ptr)
 {
-    Header<verT, contT> header;
+    Header<verT> header;
     detail::read_header_impl(header, ptr);
     return header;
 }
 
-template<typename verT = version<1>, typename contT = container::vec>
-Header<verT, contT> read_header(std::istream& is)
+template<typename verT = version<1>>
+Header<verT> read_header(std::istream& is)
 {
-    Header<verT, contT> header;
+    Header<verT> header;
     detail::read_header_impl(header, is);
     return header;
 }

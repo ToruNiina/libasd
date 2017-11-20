@@ -7,7 +7,7 @@
 namespace asd
 {
 
-template<typename verT, typename contT = container::vec>
+template<typename verT>
 struct Header
 {
     static_assert(std::is_same<verT, version<0>>::value ||
@@ -16,14 +16,12 @@ struct Header
                   "currently, version 0, 1, and 2 are supported.");
 };
 
-template<typename contT>
-struct Header<version<0>, contT>
+template<>
+struct Header<version<0>>
 {
     typedef version<0> version_tag;
     static constexpr std::size_t num_version = version_tag::value;
-
-    typedef contT container_dispatcher_type;
-    typedef typename contT::template rebind<std::int8_t>::other byte_array;
+    typedef std::vector<std::int8_t> byte_array;
 
     std::int32_t file_version;        //!< file version
     std::int16_t data_type_1ch;       //!< AFM data type of 1ch
@@ -68,15 +66,14 @@ struct Header<version<0>, contT>
     byte_array   comment;             //!< Comment
 };
 
-template<typename contT>
-struct Header<version<1>, contT>
+template<>
+struct Header<version<1>>
 {
     typedef version<1> version_tag;
     static constexpr std::size_t num_version = version_tag::value;
 
-    typedef contT container_dispatcher_type;
-    typedef typename contT::template rebind<std::int8_t>::other byte_array;
-    //! XXX because text encoding is not known here, we can't use std::string.
+    //XXX because text encoding is not known here, we can't use std::string.
+    typedef std::vector<std::int8_t> byte_array;
 
     std::int32_t file_version;         //!< File version
     std::int32_t file_header_size;     //!< Size of the file header
@@ -122,15 +119,14 @@ struct Header<version<1>, contT>
     byte_array comment;                //!< Comment
 };
 
-template<typename contT>
-struct Header<version<2>, contT>
+template<>
+struct Header<version<2>>
 {
     typedef version<2> version_tag;
     static constexpr std::size_t num_version = version_tag::value;
 
-    typedef contT container_dispatcher_type;
-    typedef typename contT::template rebind<std::int8_t>::other byte_array;
-    typedef typename contT::template rebind<std::int32_t>::other i32_array;
+    typedef std::vector<std::int8_t> byte_array;
+    typedef std::vector<std::int32_t> i32_array;
 
     std::int32_t file_version;         //!< File version
     std::int32_t file_header_size;     //!< Size of the file header
