@@ -19,7 +19,6 @@ struct vec
     {
         typedef std::vector<T, std::allocator<T>> other;
     };
-    using ptr_accessibility = std::true_type;
 };
 template<typename T, typename Alloc>
 inline T const* get_ptr(const std::vector<T, Alloc>& v) noexcept
@@ -46,7 +45,6 @@ struct deq
     {
         typedef std::deque<T, std::allocator<T>> other;
     };
-    using ptr_accessibility = std::false_type;
 };
 template<typename T, typename Alloc>
 inline std::size_t size(const std::deque<T, Alloc>& v) noexcept
@@ -69,7 +67,6 @@ struct arr
     {
         typedef std::array<T, N> other;
     };
-    using ptr_accessibility = std::true_type;
 };
 
 template<typename T, std::size_t N>

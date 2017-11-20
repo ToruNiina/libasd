@@ -1,5 +1,6 @@
 #ifndef LIBASD_WRITE_FRAME_H
 #define LIBASD_WRITE_FRAME_H
+#include <libasd/container_traits.hpp>
 #include <libasd/write_binary_as.hpp>
 #include <libasd/frame_header.hpp>
 #include <libasd/frame_data.hpp>
@@ -31,8 +32,8 @@ void write_frame_header_impl(sourceT& source, const FrameHeader& fh)
 template<typename sourceT, typename contT>
 void write_frame_data_impl(sourceT& source, const FrameData<contT>& fd)
 {
-    write_as_binary(source, fd.data, typename
-            FrameData<contT>::container_dispatcher_type::ptr_accessibility{});
+    write_as_binary(source, fd.data, typename container_traits<
+            typename FrameData<contT>::container_type>::ptr_accessibility{});
     return;
 }
 
