@@ -41,7 +41,8 @@ struct Data
     typedef typename frame_type::frame_data_type frame_data_type;
 
     typedef contT container_dispatcher_type;
-    typedef typename contT::template rebind<frame_type>::other frame_container_type;
+    typedef typename contT::template rebind<frame_type>::other
+            frame_container_type;
 
     header_type          header; //!< header information
     frame_container_type frames; //!< an array of frame
