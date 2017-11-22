@@ -8,10 +8,10 @@
 namespace asd
 {
 
-template<typename contT = container::vec>
+template<typename dataT, typename contT = container::vec>
 struct FrameData
 {
-    typedef std::int16_t data_type;
+    typedef dataT data_type;
     typedef contT container_dispatcher_type;
     typedef FrameData<container_dispatcher_type> self_type;
     typedef typename contT::template rebind<data_type>::other container_type;
@@ -81,9 +81,9 @@ struct FrameData
                 i, this->y_pixel_);
         }
         const std::size_t offset = i * x_pixel_;
-        return proxy_type(
-            this->raw_begin() + offset, this->raw_begin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return proxy_type(this->raw_begin() + offset,
+                          this->raw_begin() + offset + x_pixel_,
+                          i, x_pixel_, y_pixel_);
     }
     const_proxy_type at(std::size_t i) const
     {
@@ -94,23 +94,23 @@ struct FrameData
                 i, this->y_pixel_);
         }
         const std::size_t offset = i * x_pixel_;
-        return const_proxy_type(
-            this->raw_cbegin() + offset, this->raw_cbegin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return const_proxy_type(this->raw_cbegin() + offset,
+                                this->raw_cbegin() + offset + x_pixel_,
+                                i, x_pixel_, y_pixel_);
     }
     proxy_type operator[](std::size_t i) noexcept
     {
         const std::size_t offset = i * x_pixel_;
-        return proxy_type(
-            this->raw_begin() + offset, this->raw_begin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return proxy_type(this->raw_begin() + offset,
+                          this->raw_begin() + offset + x_pixel_,
+                          i, x_pixel_, y_pixel_);
     }
     const_proxy_type operator[](std::size_t i) const noexcept
     {
         const std::size_t offset = i * x_pixel_;
-        return const_proxy_type(
-            this->raw_cbegin() + offset, this->raw_cbegin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return const_proxy_type(this->raw_cbegin() + offset,
+                                this->raw_cbegin() + offset + x_pixel_,
+                                i, x_pixel_, y_pixel_);
     }
 
     proxy_type       front()       noexcept {return (*this)[0];}
