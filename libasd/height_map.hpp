@@ -1,5 +1,5 @@
-#ifndef LIBASD_FRAME_DATA_H
-#define LIBASD_FRAME_DATA_H
+#ifndef LIBASD_HEIGHT_MAP_H
+#define LIBASD_HEIGHT_MAP_H
 #include <libasd/exception_thrower.hpp>
 #include <libasd/line_proxy.hpp>
 #include <libasd/container_dispatcher.hpp>
@@ -8,12 +8,13 @@
 namespace asd
 {
 
-template<typename contT = container::vec>
-struct FrameData
+template<typename realT, typename contT = container::vec>
+struct HeightMap
 {
-    typedef std::int16_t data_type;
+    typedef realT real_type;
+    typedef real_type data_type;
     typedef contT container_dispatcher_type;
-    typedef FrameData<container_dispatcher_type> self_type;
+    typedef HeightMap<realT, contT> self_type;
     typedef typename contT::template rebind<data_type>::other container_type;
     typedef typename container_type::iterator               raw_iterator;
     typedef typename container_type::const_iterator         raw_const_iterator;
@@ -29,15 +30,15 @@ struct FrameData
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    FrameData(const std::size_t x, const std::size_t y)
+    HeightMap(const std::size_t x, const std::size_t y)
         : x_pixel_(x), y_pixel_(y), data(x * y)
     {}
 
-    FrameData(const FrameData&) = default;
-    FrameData(FrameData&&)      = default;
-    FrameData& operator=(const FrameData&) = default;
-    FrameData& operator=(FrameData&&)      = default;
-    ~FrameData() = default;
+    HeightMap(const HeightMap&) = default;
+    HeightMap(HeightMap&&)      = default;
+    HeightMap& operator=(const HeightMap&) = default;
+    HeightMap& operator=(HeightMap&&)      = default;
+    ~HeightMap() = default;
 
     // ------------------------------------------------------------------------
     // raw interface
@@ -70,47 +71,48 @@ struct FrameData
 
     std::size_t x_pixel() const noexcept {return x_pixel_;}
     std::size_t y_pixel() const noexcept {return y_pixel_;}
-    std::size_t size()    const noexcept {return y_pixel_;}
+
+    std::size_t size() const noexcept {return y_pixel_;}
 
     proxy_type at(std::size_t i)
     {
-        if(i >= y_pixel_)
+        if(i >= y_pixel)
         {
             throw_exception<std::out_of_range>(
                 "libasd: Frame::at: index(%) exceeds y_pixel(%)",
-                i, this->y_pixel_);
+                i, this->y_pixel);
         }
         const std::size_t offset = i * x_pixel_;
-        return proxy_type(
-            this->raw_begin() + offset, this->raw_begin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return proxy_type(this->raw_begin() + offset,
+                          this->raw_begin() + offset + x_pixel_,
+                          i, x_pixel_, y_pixel_);
     }
     const_proxy_type at(std::size_t i) const
     {
-        if(i >= y_pixel_)
+        if(i >= y_pixel)
         {
             throw_exception<std::out_of_range>(
                 "libasd: Frame::at: index(%) exceeds y_pixel(%)",
                 i, this->y_pixel_);
         }
         const std::size_t offset = i * x_pixel_;
-        return const_proxy_type(
-            this->raw_cbegin() + offset, this->raw_cbegin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return const_proxy_type(this->raw_cbegin() + offset,
+                                this->raw_cbegin() + offset + x_pixel_,
+                                i, x_pixel_, y_pixel_);
     }
     proxy_type operator[](std::size_t i) noexcept
     {
         const std::size_t offset = i * x_pixel_;
-        return proxy_type(
-            this->raw_begin() + offset, this->raw_begin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return proxy_type(this->raw_begin() + offset,
+                          this->raw_begin() + offset + x_pixel_,
+                          i, x_pixel_, y_pixel_);
     }
     const_proxy_type operator[](std::size_t i) const noexcept
     {
         const std::size_t offset = i * x_pixel_;
-        return const_proxy_type(
-            this->raw_cbegin() + offset, this->raw_cbegin() + offset + x_pixel_,
-            i, x_pixel_, y_pixel_);
+        return const_proxy_type(this->raw_cbegin() + offset,
+                                this->raw_cbegin() + offset + x_pixel_,
+                                i, x_pixel_, y_pixel_);
     }
 
     proxy_type       front()       noexcept {return (*this)[0];}
@@ -138,4 +140,4 @@ struct FrameData
 };
 
 } // asd
-#endif// LIBASD_FRAME_DATA_H
+#endif// LIBASD_HEIGHT_MAP_H
