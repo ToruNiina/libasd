@@ -6,20 +6,18 @@
 namespace asd
 {
 
-template<typename contT> struct FrameData;
-
 namespace detail
 {
-template<bool IsConst, typename contT>
+template<bool IsConst, typename originT>
 struct LineProxyIterator;
 
-template<bool IsConst, typename contT>
+template<bool IsConst, typename originT>
 struct LineProxy
 {
     static constexpr bool is_constant = IsConst;
-    friend LineProxyIterator<is_constant, contT>;
+    friend LineProxyIterator<is_constant, originT>;
 
-    typedef FrameData<contT> origin_type;
+    typedef originT  origin_type;
     typedef typename origin_type::raw_iterator               origin_iterator;
     typedef typename origin_type::raw_const_iterator         origin_const_iterator;
     typedef typename origin_type::raw_reverse_iterator       origin_reverse_iterator;
@@ -121,11 +119,11 @@ struct LineProxy
     std::size_t y_pixel;
 };
 
-template<bool IsConst, typename contT>
+template<bool IsConst, typename originT>
 struct LineProxyIterator
 {
     static constexpr bool is_constant = IsConst;
-    typedef LineProxy<is_constant, contT> proxy_type;
+    typedef LineProxy<is_constant, originT> proxy_type;
     typedef proxy_type             value_type;
     typedef value_type const*      pointer;
     typedef value_type const&      reference;
