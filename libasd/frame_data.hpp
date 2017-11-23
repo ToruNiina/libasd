@@ -29,6 +29,9 @@ struct FrameData
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+    FrameData() = default;
+    ~FrameData() = default;
+
     FrameData(const std::size_t x, const std::size_t y)
         : x_pixel_(x), y_pixel_(y), data(x * y)
     {}
@@ -37,7 +40,13 @@ struct FrameData
     FrameData(FrameData&&)      = default;
     FrameData& operator=(const FrameData&) = default;
     FrameData& operator=(FrameData&&)      = default;
-    ~FrameData() = default;
+
+    void reset(const std::size_t x, const std::size_t y)
+    {
+        container::clear(this->data);
+        container::resize(this->data, x * y);
+        return;
+    }
 
     // ------------------------------------------------------------------------
     // raw interface
@@ -62,7 +71,7 @@ struct FrameData
     data_type& raw_access(std::size_t i)       noexcept {return data[i];}
     data_type  raw_access(std::size_t i) const noexcept {return data[i];}
 
-    std::size_t raw_size() const noexcept {return data.size();}
+    std::size_t raw_size() const noexcept {return container::size(this->data);}
 
     // ------------------------------------------------------------------------
     // proxy interface
