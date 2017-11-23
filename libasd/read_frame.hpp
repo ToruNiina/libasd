@@ -29,32 +29,28 @@ void read_frame_header_impl(FrameHeader& fh, sourceT& source)
 }
 
 template<typename contT>
-void read_frame_data_impl(FrameData<contT>& fd, const char*& ptr,
+void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, const char*& ptr,
                           const std::size_t x, const std::size_t y)
 {
-    fd.x_pixel = x; fd.y_pixel = y;
-
-    std::size_t total_size = x * y;
-    ::asd::container::resize(fd.data, total_size);
-
+    fd.reset(x, y);
+    const std::size_t total_size = x * y;
     const std::int16_t* init = reinterpret_cast<const std::int16_t*>(ptr);
     const std::int16_t* last = reinterpret_cast<const std::int16_t*>(ptr);
     last += total_size;
 
-    std::copy(init, last, fd.data.begin());
+    std::copy(init, last, fd.data().begin());
 
     ptr += total_size;
     return;
 }
 
 template<typename contT>
-void read_frame_data_impl(FrameData<contT>& fd, std::istream& is,
+void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, std::istream& is,
                           const std::size_t x, const std::size_t y)
 {
-    fd.x_pixel = x; fd.y_pixel = y;
-    std::size_t total_size = x * y;
-    ::asd::container::resize(fd.data, total_size);
-    is.read(reinterpret_cast<char*>(fd.data.data()),
+    fd.reset(x, y);
+    const std::size_t total_size = x * y;
+    is.read(reinterpret_cast<char*>(fd.data().data()),
             total_size * sizeof(std::int16_t));
     return;
 }
@@ -63,14 +59,14 @@ template<typename channelT, typename contT>
 struct read_frame_impl
 {
     template<typename sourceT>
-    static Frame<channelT, contT>
+    static Frame<std::int16_t, channelT, contT>
     invoke(sourceT& source, const std::size_t x, const std::size_t y)
     {
-        Frame<channelT, contT> f;
+        Frame<std::int16_t, channelT, contT> f;
         read_frame_header_impl(f.header, source);
         for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
         {
-            read_frame_data_impl(f.data[i], source, x, y);
+            read_frame_data_impl(f.raw_access(i), source, x, y);
         }
         return f;
     }
@@ -80,10 +76,10 @@ template<typename contT>
 struct read_frame_impl<channel<1>, contT>
 {
     template<typename sourceT>
-    static Frame<channel<1>, contT>
+    static Frame<std::int16_t, channel<1>, contT>
     invoke(sourceT& source, const std::size_t x, const std::size_t y)
     {
-        Frame<channel<1>, contT> f;
+        Frame<std::int16_t, channel<1>, contT> f;
         read_frame_header_impl(f.header, source);
         read_frame_data_impl(f.data, source, x, y);
         return f;
@@ -106,29 +102,29 @@ inline FrameHeader read_frame_header(std::istream& is)
 }
 
 template<typename contT = container::vec>
-FrameData<contT>
+FrameData<std::int16_t, contT>
 read_frame_data(const char* ptr, std::size_t x, std::size_t y)
 {
-    FrameData<contT> fd;
+    FrameData<std::int16_t, contT> fd;
     detail::read_frame_data_impl<contT>(fd, ptr, x, y);
     return fd;
 }
 template<typename contT = container::vec>
-FrameData<contT>
+FrameData<std::int16_t, contT>
 read_frame_data(std::istream& is, std::size_t x, std::size_t y)
 {
-    FrameData<contT> fd;
+    FrameData<std::int16_t, contT> fd;
     detail::read_frame_data_impl<contT>(fd, is, x, y);
     return fd;
 }
 
 template<typename chT = channel<1>, typename contT = container::vec>
-Frame<chT, contT> read_frame(const char* ptr, std::size_t x, std::size_t y)
+Frame<std::int16_t, chT, contT> read_frame(const char* ptr, std::size_t x, std::size_t y)
 {
     return detail::read_frame_impl<chT, contT>::invoke(ptr, x, y);
 }
 template<typename chT = channel<1>, typename contT = container::vec>
-Frame<chT, contT> read_frame(std::istream& is, std::size_t x, std::size_t y)
+Frame<std::int16_t, chT, contT> read_frame(std::istream& is, std::size_t x, std::size_t y)
 {
     return detail::read_frame_impl<chT, contT>::invoke(is, x, y);
 }
