@@ -21,11 +21,13 @@ namespace asd
 //! .asd data class.
 /*!
  * class Data contains header, frame-header, frame-data informations from asd files.
+ * @tparam dataT a value type corresponds to each pixel
  * @tparam chT   a class having the number of channel
  * @tparam verT  a class having the version information
  * @tparam contT a container-dispatcher that defines container class to be used
  * */
-template<typename chT   = channel<1>,
+template<typename dataT,
+         typename chT   = channel<1>,
          typename verT  = version<1>,
          typename contT = container::vec>
 struct Data
@@ -35,10 +37,11 @@ struct Data
     static constexpr std::size_t num_channel = channel_tag::value;
     static constexpr std::size_t num_version = version_tag::value;
 
-    typedef Header<version_tag>       header_type;
-    typedef Frame<channel_tag, contT> frame_type;
-    typedef typename frame_type::header_type     frame_header_type;
-    typedef typename frame_type::frame_data_type frame_data_type;
+    typedef dataT data_type;
+    typedef Header<version_tag> header_type;
+    typedef Frame<dataT, channel_tag, contT> frame_type;
+    typedef typename frame_type::header_type        frame_header_type;
+    typedef typename frame_type::frame_data_type    frame_data_type;
 
     typedef contT container_dispatcher_type;
     typedef typename contT::template rebind<frame_type>::other
