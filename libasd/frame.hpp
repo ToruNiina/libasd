@@ -93,7 +93,7 @@ struct Frame<datumT, channel<1>, contT>
     static constexpr std::size_t num_channel = channel_tag::value;
     typedef datumT                                     pixel_type;
     typedef FrameHeader                                header_type;
-    typedef FrameData<contT>                           frame_data_type;
+    typedef FrameData<datumT, contT>                   frame_data_type;
     typedef frame_data_type                            data_type;
     typedef typename data_type::proxy_type             proxy_type;
     typedef typename data_type::const_proxy_type       const_proxy_type;
