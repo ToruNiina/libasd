@@ -9,9 +9,9 @@ namespace asd
 
 template<typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec>
-Data<chT, verT, contT> read_asd(const char* ptr)
+Data<std::int16_t, chT, verT, contT> read_asd(const char* ptr)
 {
-    typedef Data<chT, verT, contT> data_type;
+    typedef Data<std::int16_t, chT, verT, contT> data_type;
     data_type data;
     detail::read_header_impl(data.header, ptr);
     const std::size_t x = data.header.x_pixel;
@@ -29,9 +29,9 @@ Data<chT, verT, contT> read_asd(const char* ptr)
 
 template<typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec>
-Data<chT, verT, contT> read_asd(std::istream& is)
+Data<std::int16_t, chT, verT, contT> read_asd(std::istream& is)
 {
-    typedef Data<chT, verT, contT> data_type;
+    typedef Data<std::int16_t, chT, verT, contT> data_type;
     data_type data;
     detail::read_header_impl(data.header, is);
     const std::size_t x = data.header.x_pixel;
