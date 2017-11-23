@@ -13,7 +13,7 @@ struct FrameData
 {
     typedef dataT data_type;
     typedef contT container_dispatcher_type;
-    typedef FrameData<container_dispatcher_type> self_type;
+    typedef FrameData<dataT, container_dispatcher_type> self_type;
     typedef typename contT::template rebind<data_type>::other container_type;
     typedef typename container_type::iterator               raw_iterator;
     typedef typename container_type::const_iterator         raw_const_iterator;
@@ -33,7 +33,7 @@ struct FrameData
     ~FrameData() = default;
 
     FrameData(const std::size_t x, const std::size_t y)
-        : x_pixel_(x), y_pixel_(y), data(x * y)
+        : x_pixel_(x), y_pixel_(y), data_(x * y)
     {}
 
     FrameData(const FrameData&) = default;
@@ -43,8 +43,10 @@ struct FrameData
 
     void reset(const std::size_t x, const std::size_t y)
     {
-        container::clear(this->data);
-        container::resize(this->data, x * y);
+        this->x_pixel_ = x;
+        this->y_pixel_ = y;
+        container::clear(this->data_);
+        container::resize(this->data_, x * y);
         return;
     }
 
@@ -52,26 +54,29 @@ struct FrameData
     // raw interface
     // ------------------------------------------------------------------------
 
-    raw_iterator       raw_begin()        noexcept {return data.begin();}
-    raw_iterator       raw_end()          noexcept {return data.end();}
-    raw_const_iterator raw_begin()  const noexcept {return data.begin();}
-    raw_const_iterator raw_end()    const noexcept {return data.end();}
-    raw_const_iterator raw_cbegin() const noexcept {return data.cbegin();}
-    raw_const_iterator raw_cend()   const noexcept {return data.cend();}
+    raw_iterator       raw_begin()        noexcept {return data_.begin();}
+    raw_iterator       raw_end()          noexcept {return data_.end();}
+    raw_const_iterator raw_begin()  const noexcept {return data_.begin();}
+    raw_const_iterator raw_end()    const noexcept {return data_.end();}
+    raw_const_iterator raw_cbegin() const noexcept {return data_.cbegin();}
+    raw_const_iterator raw_cend()   const noexcept {return data_.cend();}
 
-    raw_reverse_iterator       raw_rbegin()        noexcept {return data.rbegin();}
-    raw_reverse_iterator       raw_rend()          noexcept {return data.rend();}
-    raw_const_reverse_iterator raw_rbegin()  const noexcept {return data.rbegin();}
-    raw_const_reverse_iterator raw_rend()    const noexcept {return data.rend();}
-    raw_const_reverse_iterator raw_crbegin() const noexcept {return data.crbegin();}
-    raw_const_reverse_iterator raw_crend()   const noexcept {return data.crend();}
+    raw_reverse_iterator       raw_rbegin()        noexcept {return data_.rbegin();}
+    raw_reverse_iterator       raw_rend()          noexcept {return data_.rend();}
+    raw_const_reverse_iterator raw_rbegin()  const noexcept {return data_.rbegin();}
+    raw_const_reverse_iterator raw_rend()    const noexcept {return data_.rend();}
+    raw_const_reverse_iterator raw_crbegin() const noexcept {return data_.crbegin();}
+    raw_const_reverse_iterator raw_crend()   const noexcept {return data_.crend();}
 
-    data_type& raw_at(std::size_t i)       {return data.at(i);}
-    data_type  raw_at(std::size_t i) const {return data.at(i);}
-    data_type& raw_access(std::size_t i)       noexcept {return data[i];}
-    data_type  raw_access(std::size_t i) const noexcept {return data[i];}
+    data_type& raw_at(std::size_t i)       {return data_.at(i);}
+    data_type  raw_at(std::size_t i) const {return data_.at(i);}
+    data_type& raw_access(std::size_t i)       noexcept {return data_[i];}
+    data_type  raw_access(std::size_t i) const noexcept {return data_[i];}
 
-    std::size_t raw_size() const noexcept {return container::size(this->data);}
+    std::size_t raw_size() const noexcept {return container::size(this->data_);}
+
+    container_type&       data()       noexcept {return this->data_;}
+    container_type const& data() const noexcept {return this->data_;}
 
     // ------------------------------------------------------------------------
     // proxy interface
@@ -143,7 +148,7 @@ struct FrameData
 
   private:
     std::size_t    x_pixel_, y_pixel_;
-    container_type data;
+    container_type data_;
 };
 
 } // asd
