@@ -35,6 +35,11 @@ inline void resize(std::vector<T, Alloc>& v, const std::size_t N)
 {
     return v.resize(N);
 }
+template<typename T, typename Alloc>
+inline void clear(std::vector<T, Alloc>& v)
+{
+    return v.clear();
+}
 
 // ---------------------------------- deque ----------------------------------//
 
@@ -56,6 +61,13 @@ inline void resize(std::deque<T, Alloc>& v, const std::size_t N)
 {
     return v.resize(N);
 }
+template<typename T, typename Alloc>
+inline void clear(std::deque<T, Alloc>& v)
+{
+    return v.clear();
+}
+
+
 
 // ---------------------------------- array ----------------------------------//
 
@@ -83,6 +95,13 @@ inline void resize(std::array<T, N>& v, const std::size_t M)
         throw_exception<std::bad_alloc>(
                 "array(size = %) has no enough storage(%)", v.size(), M);
     }
+    return;
+}
+
+template<typename T, std::size_t N>
+inline void clear(std::array<T, N>& v)
+{
+    // do nothing
     return;
 }
 
