@@ -28,17 +28,18 @@ namespace asd
 //! .asd frame class containing frame header and frame data information.
 /*!
  * It contains an array of FrameData, std::array<FrameData, Channel>.
- * @tparam chT   a class having the number of channel
- * @tparam contT a container-dispatcher that defines container class to be used
+ * @tparam datumT type of a value corresponding to each pixel
+ * @tparam chT    a class having the number of channel
+ * @tparam contT  a container-dispatcher that defines container class to be used
  * */
-template<typename chT, typename contT = container::vec>
+template<typename datumT, typename chT, typename contT = container::vec>
 struct Frame
 {
     typedef chT channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    typedef std::int16_t                               pixel_type;
+    typedef datumT                                     pixel_type;
     typedef FrameHeader                                header_type;
-    typedef FrameData<contT>                           frame_data_type;
+    typedef FrameData<pixel_type, contT>               frame_data_type;
     typedef std::array<frame_data_type, num_channel>   data_type;
     typedef typename data_type::iterator               iterator;
     typedef typename data_type::const_iterator         const_iterator;
@@ -85,12 +86,12 @@ struct Frame
  * It contains just one FrameData. The interfaces are forwarded to FrameData.
  * @tparam contT a container-dispatcher that defines container class to be used
  */
-template<typename contT>
-struct Frame<channel<1>, contT>
+template<typename datumT, typename contT>
+struct Frame<datumT, channel<1>, contT>
 {
     typedef channel<1> channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    typedef std::int16_t                               pixel_type;
+    typedef datumT                                     pixel_type;
     typedef FrameHeader                                header_type;
     typedef FrameData<contT>                           frame_data_type;
     typedef frame_data_type                            data_type;
@@ -133,7 +134,6 @@ struct Frame<channel<1>, contT>
     const_iterator crbegin() const noexcept {return data.crbegin();}
     const_iterator crend()   const noexcept {return data.crend();}
 };
-
 
 } // asd
 #endif//LIBASD_FRAME_TAG_H
