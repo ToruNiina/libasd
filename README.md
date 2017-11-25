@@ -32,7 +32,7 @@ You can read the data with the code described below.
 int main()
 {
     std::ifstream ifs("example.asd");
-    const auto data = asd::read_asd(ifs);
+    const auto data = asd::read_asd<double>(ifs); // set real type for the data
 
     std::cout << "x_pixel = " << data.header.x_pixel << '\n';
     std::cout << "y_pixel = " << data.header.y_pixel << '\n';
@@ -43,7 +43,7 @@ int main()
         {
             for(auto const& pixel : line)
             {
-                std::cout << pixel;
+                std::cout << pixel; // height [nm] for topography, ...
             }
             std::cout << '\n';
         }
@@ -60,12 +60,10 @@ for loops.
 You can set file version and channel as a template parameter.
 
 ```cpp
-const auto data = asd::read_asd<asd::ch<2>, asd::ver<0>>(ifs);
+const auto data = asd::read_asd<double, asd::ch<2>, asd::ver<0>>(ifs);
 ```
 
 By default, these are set as channel 1, version 1 respectively.
-Currently, version 0, 1, and 2 are supported. For channel, you can set any
-number as you like (normally, 1 or 2).
 
 You can access to each pixel by index instead of range-based for loops.
 
@@ -78,7 +76,7 @@ You can access to each pixel by index instead of range-based for loops.
         {
             for(std::size_t x=0; x<x_pixel; ++x)
             {
-                std::cout << data[y][x];
+                std::cout << data[y][x]; // note: not [x][y].
             }
             std::cout << '\n';
         }
@@ -157,11 +155,11 @@ for(auto iter = frame.raw_begin(), iend = frame.raw_end(); iter != iend; ++iter)
 
 ### Can I use my awesome container with libasd?
 
-If you have a container or allocator that has a great feature,
+If you implemented or found a container or an allocator that has a great feature,
 you may want to use it with libasd instead of `std::vector<T, std::allocator<T>>`.
 
-In libasd, you can specify the container used in the classes by passing a
-`container_dispatcher` struct as a template parameter.
+In libasd, you can specify the container used in the classes by passing the
+specialized `struct container_dispatcher` as a template parameter.
 
 For example, `asd::container::vec` that is used by default is defined as follows.
 
@@ -175,29 +173,64 @@ struct vec
     {
         typedef std::vector<T, std::allocator<T>> other;
     };
-
-    template<typename T, typename Alloc>
-    static void resize(std::vector<T, Alloc>& cont, std::size_t N)
-    {
-        cont.resize(N);
-        return;
-    }
 };
+
+template<typename T, typename Alloc>
+struct container_traits<std::vector<T, Alloc>>
+{
+    using ptr_accessibility = std::true_type;
+};
+
 } // container
 } // asd
 ```
 
-Even though it has no information about actual type that will be contained,
-you can use `std::vector<T>` for any T by using this struct. For example,
+libasd uses the container to declare the container in this way.
 
 ```cpp
 typedef typename vec::template rebind<int>::other int_array;
 ```
 
-All the classes that are defined in libasd use this `container_dispatcher`
-to make their containers.
-By defining and passing this kind of structs, you can use your awesome container
-class with libasd.
+
+The struct `container_traits` provides a tag to resolve overload of utility
+functions. When the container has an interface to access a pointer that points
+the first element and the container can be accessed as a traditional C-array,
+it become `std::true_type`, otherwise, `std::false_type`.
+
+Additionally, to deal with different interfaces of containers, libasd has
+some helper functions. If it is needed(the container has a different interface
+from standard containers), you should overload these functions.
+
+```cpp
+namespace asd {
+namespace container {
+
+template<typename T, typename Alloc>
+inline T const* get_ptr(const std::vector<T, Alloc>& v) noexcept
+{
+    return v.data();
+}
+template<typename T, typename Alloc>
+inline std::size_t size(const std::vector<T, Alloc>& v) noexcept
+{
+    return v.size();
+}
+template<typename T, typename Alloc>
+inline void resize(std::vector<T, Alloc>& v, const std::size_t N)
+{
+    return v.resize(N);
+}
+template<typename T, typename Alloc>
+inline void clear(std::vector<T, Alloc>& v)
+{
+    return v.clear();
+}
+} // container
+} // asd
+```
+
+By defining and passing these structs and functions(if necessary),
+you can use your awesome container/allocator class with libasd.
 
 By default, `asd::container::vec`, `asd::container::deq`, and
 `asd::container::arr` are defined in `libasd/container_dispatcher.hpp`.
@@ -209,9 +242,9 @@ Additionally, you can find `asd::container::boost_vec`,
 `asd::container::boost_stable_vec`, `asd::container::boost_static_vec`,
 `asd::container::boost_small_vec`, `asd::container::boost_deq`, and
 `asd::container::boost_arr` in the file `libasd/boost/container_dispatcher.hpp`.
-It is not included by default, but you can manually include this file and then
-you can use containers provided by the Boost.Container library if you installed
-it.
+It is not included by default, but you can manually include this file.
+Then you can use containers provided by the Boost.Container library if you
+already installed it.
 
 ## Documents
 
