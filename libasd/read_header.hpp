@@ -104,7 +104,7 @@ read_header_impl(Header<version<1>>& header, sourceT& source)
     header.x_rounding_degree    = read_binary_as<decltype(header.x_rounding_degree   )>(source);
     header.y_rounding_degree    = read_binary_as<decltype(header.y_rounding_degree   )>(source);
     header.frame_acquision_time = read_binary_as<decltype(header.frame_acquision_time)>(source);
-    header.sensor_sensitiviy    = read_binary_as<decltype(header.sensor_sensitiviy   )>(source);
+    header.sensor_sensitivity   = read_binary_as<decltype(header.sensor_sensitivity  )>(source);
     header.phase_sensitivity    = read_binary_as<decltype(header.phase_sensitivity   )>(source);
     header.offset               = read_binary_as<decltype(header.offset              )>(source);
     ignore_bytes(source, 12); // booked region
@@ -165,7 +165,7 @@ read_header_impl(Header<version<2>>& header, sourceT& source)
     header.x_rounding_degree    = read_binary_as<decltype(header.x_rounding_degree   )>(source);
     header.y_rounding_degree    = read_binary_as<decltype(header.y_rounding_degree   )>(source);
     header.frame_acquision_time = read_binary_as<decltype(header.frame_acquision_time)>(source);
-    header.sensor_sensitiviy    = read_binary_as<decltype(header.sensor_sensitiviy   )>(source);
+    header.sensor_sensitivity   = read_binary_as<decltype(header.sensor_sensitivity  )>(source);
     header.phase_sensitivity    = read_binary_as<decltype(header.phase_sensitivity   )>(source);
     header.offset               = read_binary_as<decltype(header.offset              )>(source);
     ignore_bytes(source, 12);

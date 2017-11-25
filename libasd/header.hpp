@@ -209,7 +209,7 @@ struct Header<version<1>>
     std::int32_t   x_rounding_degree;    //!< Degree of the rounding of x-scanning signal (%)
     std::int32_t   y_rounding_degree;    //!< Degree of the rounding of y-scanning signal (%)
     float          frame_acquision_time; //!< Frame acquisition time (ms)
-    float          sensor_sensitiviy;    //!< Sensor sensitivity (nm/V)
+    float          sensor_sensitivity;   //!< Sensor sensitivity (nm/V)
     float          phase_sensitivity;    //!< Phase sensitivity (deg/V)
     std::int32_t   offset;               //!< Offset (This number is “0” in the case of file ver. 2)
     // Booked region of 12 byte here
@@ -262,7 +262,7 @@ struct Header<version<2>>
     std::int32_t   x_rounding_degree;    //!< Degree of the rounding of x-scanning signal (%)
     std::int32_t   y_rounding_degree;    //!< Degree of the rounding of y-scanning signal (%)
     float          frame_acquision_time; //!< Frame acquisition time (ms)
-    float          sensor_sensitiviy;    //!< Sensor sensitivity (nm/V)
+    float          sensor_sensitivity;   //!< Sensor sensitivity (nm/V)
     float          phase_sensitivity;    //!< Phase sensitivity (deg/V)
     std::int32_t   offset;               //!< Offset (This number is "0" in the case of file ver. 2)
     // Booked region of 12 byte
