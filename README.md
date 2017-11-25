@@ -202,6 +202,8 @@ some helper functions. If it is needed(the container has a different interface
 from standard containers), you should overload these functions.
 
 ```cpp
+// example: add overload for std::vector.
+
 namespace asd {
 namespace container {
 
@@ -229,7 +231,7 @@ inline void clear(std::vector<T, Alloc>& v)
 } // asd
 ```
 
-By defining and passing these structs and functions(if necessary),
+After implementing and passing these structs and functions(if necessary),
 you can use your awesome container/allocator class with libasd.
 
 By default, `asd::container::vec`, `asd::container::deq`, and
