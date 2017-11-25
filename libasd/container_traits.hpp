@@ -6,6 +6,54 @@
 
 namespace asd
 {
+namespace detail
+{
+template<typename T>
+class has_mem_func_data
+{
+    template<typename U>
+    static auto check(const U& u) -> decltype(
+        u.data() == declval<typename U::value_type const*>(), std::true_type{});
+    static auto check(...) -> std::false_type;
+  public:
+    using type = decltype(has_mem_func_data::check(std::declval<T>()));
+    static constexpr bool value = type::value;
+};
+
+template<typename T>
+class has_mem_func_size
+{
+    template<typename U>
+    static auto check(const U& u) -> decltype(
+        u.size() == declval<std::size_t>(), std::true_type{});
+    static auto check(...) -> std::false_type;
+  public:
+    using type = decltype(has_mem_func_size::check(std::declval<T>()));
+    static constexpr bool value = type::value;
+};
+
+template<typename T>
+class has_mem_func_resize
+{
+    template<typename U>
+    static auto check(U& u) -> decltype(u.resize(), std::true_type{});
+    static auto check(...)  -> std::false_type;
+  public:
+    using type = decltype(has_mem_func_resize::check(std::declval<T>()));
+    static constexpr bool value = type::value;
+};
+
+template<typename T>
+class has_mem_func_clear
+{
+    template<typename U>
+    static auto check(U& u) -> decltype(u.clear(), std::true_type{});
+    static auto check(...)  -> std::false_type;
+  public:
+    using type = decltype(has_mem_func_clear::check(std::declval<T>()));
+    static constexpr bool value = type::value;
+};
+} // detail
 
 template<typename T>
 struct container_traits
