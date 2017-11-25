@@ -1,8 +1,10 @@
 #ifndef LIBASD_HEADER_H
 #define LIBASD_HEADER_H
 #include <libasd/tag.hpp>
+#include <libasd/exception_thrower.hpp>
 #include <libasd/container_dispatcher.hpp>
 #include <cstdint>
+#include <cmath>
 
 namespace asd
 {
@@ -24,8 +26,103 @@ enum class AD_range : std::uint32_t
     bipolar_1_0V  = 0x00010000, //!< -1.0 ~ +1.0 [V]
     bipolar_2_5V  = 0x00020000, //!< -2.5 ~ +2.5 [V]
     bipolar_5_0V  = 0x00040000, //!< -5.0 ~ +5.0 [V]
-    dummy_value   = 0x00800000, //!< dummy value(80[V])
+    dummy_value   = 0x00800000, //!< dummy value(80[V]). & resolution -> 16bit.
 };
+
+template<typename realT>
+inline realT
+level_to_voltage(const std::int16_t lvl, const AD_range range,
+                 const std::uint64_t resolution = 4096)
+{
+    switch(range)
+    {
+        case AD_range::unipolar_1_0V:
+        {
+            return static_cast<realT>(lvl) / resolution;
+        }
+        case AD_range::unipolar_2_5V:
+        {
+            return 2.5 * static_cast<realT>(lvl) / resolution;
+        }
+        case AD_range::unipolar_5_0V:
+        {
+            return 5.0 * static_cast<realT>(lvl) / resolution;
+        }
+        case AD_range::bipolar_1_0V :
+        {
+            return 2.0 * static_cast<realT>(lvl) / resolution - 1.0;
+        }
+        case AD_range::bipolar_2_5V :
+        {
+            return 5.0 * static_cast<realT>(lvl) / resolution - 2.5;
+        }
+        case AD_range::bipolar_5_0V :
+        {
+            return 10.0 * static_cast<realT>(lvl) / resolution - 5.0;
+        }
+        case AD_range::dummy_value  :
+        {
+            //XXX dummy value means "this file is modified, not raw data".
+            //    enable to write out as bipolar-80.0.
+            return 160.0 * static_cast<realT>(lvl) / resolution - 80.0;
+        }
+        default:
+        {
+            throw_exception<std::invalid_argument>("invalid AD_range value: %",
+                    static_cast<std::uint32_t>(range));
+        }
+    }
+}
+
+template<typename realT>
+inline std::int16_t
+voltage_to_level(const realT v, const AD_range range,
+                  const std::uint64_t resolution = 4096)
+{
+    switch(range)
+    {
+        case AD_range::unipolar_1_0V:
+        {
+            return static_cast<std::int16_t>(std::floor(v * resolution));
+        }
+        case AD_range::unipolar_2_5V:
+        {
+            return static_cast<std::int16_t>(std::floor(v * resolution / 2.5));
+        }
+        case AD_range::unipolar_5_0V:
+        {
+            return static_cast<std::int16_t>(std::floor(v * resolution / 5.0));
+        }
+        case AD_range::bipolar_1_0V :
+        {
+            return static_cast<std::int16_t>(
+                    std::floor(((v + 1.0) / 2.0) * resolution));
+        }
+        case AD_range::bipolar_2_5V :
+        {
+            return static_cast<std::int16_t>(
+                    std::floor(((v + 2.5) / 5.0) * resolution));
+        }
+        case AD_range::bipolar_5_0V :
+        {
+            return static_cast<std::int16_t>(
+                    std::floor(((v + 5.0) /10.0) * resolution));
+        }
+        case AD_range::dummy_value  :
+        {
+            //XXX dummy value means "this file is modified, not raw data".
+            //    enable to write out as bipolar-80.0.
+            return static_cast<std::int16_t>(
+                    std::floor(((v + 80.0) /160.0) * resolution));
+        }
+        default:
+        {
+            throw_exception<std::invalid_argument>("invalid AD_range value: %",
+                    static_cast<std::uint32_t>(range));
+        }
+    }
+}
+
 
 template<typename charT, typename traitsT>
 std::basic_ostream<charT, traitsT>&
