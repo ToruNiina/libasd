@@ -66,7 +66,7 @@ struct read_frame_impl
         read_frame_header_impl(f.header, source);
         for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
         {
-            read_frame_data_impl(f.raw_access(i), source, x, y);
+            read_frame_data_impl(f[i], source, x, y);
         }
         return f;
     }
