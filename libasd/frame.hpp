@@ -61,8 +61,8 @@ struct Frame
     frame_data_type&       at(std::size_t i)       {return data.at(i);}
     frame_data_type const& at(std::size_t i) const {return data.at(i);}
     frame_data_type&       front()       noexcept {return data.front();}
-    frame_data_type&       back()        noexcept {return data.back();}
     frame_data_type const& front() const noexcept {return data.front();}
+    frame_data_type&       back()        noexcept {return data.back();}
     frame_data_type const& back()  const noexcept {return data.back();}
 
     iterator       begin()        noexcept {return data.begin();}
@@ -72,12 +72,12 @@ struct Frame
     const_iterator cbegin() const noexcept {return data.cbegin();}
     const_iterator cend()   const noexcept {return data.cend();}
 
-    iterator       rbegin()        noexcept {return data.rbegin();}
-    iterator       rend()          noexcept {return data.rend();}
-    const_iterator rbegin()  const noexcept {return data.rbegin();}
-    const_iterator rend()    const noexcept {return data.rend();}
-    const_iterator crbegin() const noexcept {return data.crbegin();}
-    const_iterator crend()   const noexcept {return data.crend();}
+    reverse_iterator       rbegin()        noexcept {return data.rbegin();}
+    reverse_iterator       rend()          noexcept {return data.rend();}
+    const_reverse_iterator rbegin()  const noexcept {return data.rbegin();}
+    const_reverse_iterator rend()    const noexcept {return data.rend();}
+    const_reverse_iterator crbegin() const noexcept {return data.crbegin();}
+    const_reverse_iterator crend()   const noexcept {return data.crend();}
 
 };
 
@@ -127,12 +127,12 @@ struct Frame<datumT, channel<1>, contT>
     const_iterator cbegin() const noexcept {return data.cbegin();}
     const_iterator cend()   const noexcept {return data.cend();}
 
-    iterator       rbegin()        noexcept {return data.rbegin();}
-    iterator       rend()          noexcept {return data.rend();}
-    const_iterator rbegin()  const noexcept {return data.rbegin();}
-    const_iterator rend()    const noexcept {return data.rend();}
-    const_iterator crbegin() const noexcept {return data.crbegin();}
-    const_iterator crend()   const noexcept {return data.crend();}
+    reverse_iterator       rbegin()        noexcept {return data.rbegin();}
+    reverse_iterator       rend()          noexcept {return data.rend();}
+    const_reverse_iterator rbegin()  const noexcept {return data.rbegin();}
+    const_reverse_iterator rend()    const noexcept {return data.rend();}
+    const_reverse_iterator crbegin() const noexcept {return data.crbegin();}
+    const_reverse_iterator crend()   const noexcept {return data.crend();}
 };
 
 } // asd
