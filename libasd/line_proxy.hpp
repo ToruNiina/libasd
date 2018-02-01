@@ -68,8 +68,8 @@ struct LineProxy
     bool        empty()      const noexcept {return false;}
     std::size_t y_position() const noexcept {return line;}
 
-    iterator begin() const noexcept {return begin_;}
-    iterator end()   const noexcept {return end_;}
+    iterator       begin()  const noexcept {return begin_;}
+    iterator       end()    const noexcept {return end_;}
     const_iterator cbegin() const noexcept {return begin_;}
     const_iterator cend()   const noexcept {return end_;}
 
@@ -84,7 +84,7 @@ struct LineProxy
     bool operator==(LineProxy const& rhs) const noexcept
     {
         return this->begin_  == rhs.begin_  && this->end_ == rhs.end_ &&
-               this->line == rhs.line &&
+               this->line    == rhs.line    &&
                this->x_pixel == rhs.x_pixel && this->y_pixel == rhs.y_pixel;
     }
     bool operator!=(LineProxy const& rhs) const noexcept
@@ -141,12 +141,14 @@ struct LineProxyIterator
         this->proxy.line   += 1;
         this->proxy.begin_ += this->proxy.x_pixel;
         this->proxy.end_   += this->proxy.x_pixel;
+        return *this;
     }
     LineProxyIterator& operator--() noexcept
     {
         this->proxy.line   -= 1;
         this->proxy.begin_ -= this->proxy.x_pixel;
         this->proxy.end_   -= this->proxy.x_pixel;
+        return *this;
     }
     LineProxyIterator  operator++(int) noexcept
     {
