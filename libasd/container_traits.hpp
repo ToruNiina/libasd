@@ -61,17 +61,20 @@ template<typename T>
 struct container_traits
 {
     using ptr_accessibility = std::false_type;
+    using value_type        = typename T::value_type;
 };
 
 template<typename T, typename Alloc>
 struct container_traits<std::vector<T, Alloc>>
 {
     using ptr_accessibility = std::true_type;
+    using value_type        = typename T::value_type;
 };
 template<typename T, std::size_t N>
 struct container_traits<std::array<T, N>>
 {
     using ptr_accessibility = std::true_type;
+    using value_type        = typename T::value_type;
 };
 
 } //asd
