@@ -1,9 +1,10 @@
 set(TEST_NAMES
     test_container_dispatches
     test_throw_exception
+    test_frame_data
     )
 
-add_definitions("-O3 -std=c++11")
+add_definitions("-O2 -std=c++11")
 
 foreach(TEST_NAME ${TEST_NAMES})
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
