@@ -28,16 +28,16 @@ namespace asd
 //! .asd frame class containing frame header and frame data information.
 /*!
  * It contains an array of FrameData, std::array<FrameData, Channel>.
- * @tparam datumT type of a value corresponding to each pixel
+ * @tparam valueT type of a value corresponding to each pixel
  * @tparam chT    a class having the number of channel
  * @tparam contT  a container-dispatcher that defines container class to be used
  * */
-template<typename datumT, typename chT, typename contT = container::vec>
+template<typename valueT, typename chT, typename contT = container::vec>
 struct Frame
 {
     typedef chT channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    typedef datumT                                     pixel_type;
+    typedef valueT                                     pixel_type;
     typedef FrameHeader                                header_type;
     typedef FrameData<pixel_type, contT>               frame_data_type;
     typedef std::array<frame_data_type, num_channel>   data_type;
@@ -80,22 +80,22 @@ struct Frame
     const_reverse_iterator crend()   const noexcept {return data.crend();}
 
 };
-template<typename datumT, typename chT, typename contT>
-constexpr std::size_t Frame<datumT, chT, contT>::num_channel;
+template<typename valueT, typename chT, typename contT>
+constexpr std::size_t Frame<valueT, chT, contT>::num_channel;
 
 //! .asd frame class containing frame header and frame data information.
 /*!
  * It contains just one FrameData. The interfaces are forwarded to FrameData.
  * @tparam contT a container-dispatcher that defines container class to be used
  */
-template<typename datumT, typename contT>
-struct Frame<datumT, channel<1>, contT>
+template<typename valueT, typename contT>
+struct Frame<valueT, channel<1>, contT>
 {
     typedef channel<1> channel_tag;
     static constexpr std::size_t num_channel = channel_tag::value;
-    typedef datumT                                     pixel_type;
+    typedef valueT                                     pixel_type;
     typedef FrameHeader                                header_type;
-    typedef FrameData<datumT, contT>                   frame_data_type;
+    typedef FrameData<valueT, contT>                   frame_data_type;
     typedef typename frame_data_type::proxy_type             proxy_type;
     typedef typename frame_data_type::const_proxy_type       const_proxy_type;
     typedef typename frame_data_type::iterator               iterator;
@@ -135,8 +135,8 @@ struct Frame<datumT, channel<1>, contT>
     const_reverse_iterator crbegin() const noexcept {return data.crbegin();}
     const_reverse_iterator crend()   const noexcept {return data.crend();}
 };
-template<typename datumT, typename contT>
-constexpr std::size_t Frame<datumT, channel<1>, contT>::num_channel;
+template<typename valueT, typename contT>
+constexpr std::size_t Frame<valueT, channel<1>, contT>::num_channel;
 
 } // asd
 #endif//LIBASD_FRAME_TAG_H
