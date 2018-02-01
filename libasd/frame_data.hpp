@@ -26,8 +26,13 @@ struct FrameData
     typedef detail::LineProxyIterator<true,  self_type> const_proxy_iterator;
     typedef proxy_iterator       iterator;
     typedef const_proxy_iterator const_iterator;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+    // XXX
+    // Since std::reverse_iterator returns address of local value, ProxyIterator
+    // cannot be wrapped by std::reverse_iterator. New ProxyReverseIterator
+    // type is needed.
+//     typedef std::reverse_iterator<proxy_iterator>       reverse_iterator;
+//     typedef std::reverse_iterator<const_proxy_iterator> const_reverse_iterator;
 
     FrameData() = default;
     ~FrameData() = default;
@@ -139,12 +144,13 @@ struct FrameData
     const_iterator cbegin() const noexcept {return const_iterator((*this)[0]);}
     const_iterator cend()   const noexcept {return const_iterator((*this)[y_pixel_]);}
 
-    reverse_iterator rbegin()              noexcept {return reverse_iterator(this->end());}
-    reverse_iterator rend()                noexcept {return reverse_iterator(this->begin());}
-    const_reverse_iterator rbegin()  const noexcept {return const_reverse_iterator(this->end());}
-    const_reverse_iterator rend()    const noexcept {return const_reverse_iterator(this->begin());}
-    const_reverse_iterator crbegin() const noexcept {return const_reverse_iterator(this->cend());}
-    const_reverse_iterator crend()   const noexcept {return const_reverse_iterator(this->cbegin());}
+    // see comment above.
+//     reverse_iterator rbegin()              noexcept {return reverse_iterator(this->end());}
+//     reverse_iterator rend()                noexcept {return reverse_iterator(this->begin());}
+//     const_reverse_iterator rbegin()  const noexcept {return const_reverse_iterator(this->end());}
+//     const_reverse_iterator rend()    const noexcept {return const_reverse_iterator(this->begin());}
+//     const_reverse_iterator crbegin() const noexcept {return const_reverse_iterator(this->cend());}
+//     const_reverse_iterator crend()   const noexcept {return const_reverse_iterator(this->cbegin());}
 
   private:
     std::size_t    x_pixel_, y_pixel_;
