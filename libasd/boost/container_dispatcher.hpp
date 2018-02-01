@@ -76,8 +76,9 @@ inline void resize(boost::array<T, N>& cont, std::size_t M)
 {
     if(cont.size() < M)
     {
-        throw_exception<std::bad_alloc>(
-                "array(size = %) has no enough storage(%)", cont.size(), M);
+        throw_exception<std::out_of_range>("libasd::container::resize: "
+                "boost::array(size = %) has no enough storage(%)",
+                cont.size(), M);
     }
     return;
 }
