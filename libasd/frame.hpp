@@ -65,12 +65,12 @@ struct Frame
     frame_data_type&       back()        noexcept {return data.back();}
     frame_data_type const& back()  const noexcept {return data.back();}
 
-    iterator       begin()        noexcept {return data.begin();}
-    iterator       end()          noexcept {return data.end();}
-    const_iterator begin()  const noexcept {return data.begin();}
-    const_iterator end()    const noexcept {return data.end();}
-    const_iterator cbegin() const noexcept {return data.cbegin();}
-    const_iterator cend()   const noexcept {return data.cend();}
+    iterator       begin()         noexcept {return data.begin();}
+    iterator       end()           noexcept {return data.end();}
+    const_iterator begin()   const noexcept {return data.begin();}
+    const_iterator end()     const noexcept {return data.end();}
+    const_iterator cbegin()  const noexcept {return data.cbegin();}
+    const_iterator cend()    const noexcept {return data.cend();}
 
     reverse_iterator       rbegin()        noexcept {return data.rbegin();}
     reverse_iterator       rend()          noexcept {return data.rend();}
@@ -80,6 +80,8 @@ struct Frame
     const_reverse_iterator crend()   const noexcept {return data.crend();}
 
 };
+template<typename datumT, typename chT, typename contT>
+constexpr std::size_t Frame<datumT, chT, contT>::num_channel;
 
 //! .asd frame class containing frame header and frame data information.
 /*!
@@ -94,16 +96,15 @@ struct Frame<datumT, channel<1>, contT>
     typedef datumT                                     pixel_type;
     typedef FrameHeader                                header_type;
     typedef FrameData<datumT, contT>                   frame_data_type;
-    typedef frame_data_type                            data_type;
-    typedef typename data_type::proxy_type             proxy_type;
-    typedef typename data_type::const_proxy_type       const_proxy_type;
-    typedef typename data_type::iterator               iterator;
-    typedef typename data_type::const_iterator         const_iterator;
-    typedef typename data_type::reverse_iterator       reverse_iterator;
-    typedef typename data_type::const_reverse_iterator const_reverse_iterator;
+    typedef typename frame_data_type::proxy_type             proxy_type;
+    typedef typename frame_data_type::const_proxy_type       const_proxy_type;
+    typedef typename frame_data_type::iterator               iterator;
+    typedef typename frame_data_type::const_iterator         const_iterator;
+    typedef typename frame_data_type::reverse_iterator       reverse_iterator;
+    typedef typename frame_data_type::const_reverse_iterator const_reverse_iterator;
 
-    header_type header;
-    data_type   data;
+    header_type     header;
+    frame_data_type data;
 
     // ------------------------------------------------------------------------
     // container-interface as a framedata
@@ -134,6 +135,8 @@ struct Frame<datumT, channel<1>, contT>
     const_reverse_iterator crbegin() const noexcept {return data.crbegin();}
     const_reverse_iterator crend()   const noexcept {return data.crend();}
 };
+template<typename datumT, typename contT>
+constexpr std::size_t Frame<datumT, channel<1>, contT>::num_channel;
 
 } // asd
 #endif//LIBASD_FRAME_TAG_H
