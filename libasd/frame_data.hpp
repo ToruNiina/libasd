@@ -8,13 +8,13 @@
 namespace asd
 {
 
-template<typename dataT, typename contT = container::vec>
+template<typename valueT, typename contT = container::vec>
 struct FrameData
 {
-    typedef dataT data_type;
+    typedef valueT value_type;
     typedef contT container_dispatcher_type;
-    typedef FrameData<dataT, container_dispatcher_type> self_type;
-    typedef typename contT::template rebind<data_type>::other container_type;
+    typedef FrameData<value_type, container_dispatcher_type> self_type;
+    typedef typename contT::template rebind<value_type>::other container_type;
     typedef typename container_type::iterator               raw_iterator;
     typedef typename container_type::const_iterator         raw_const_iterator;
     typedef typename container_type::reverse_iterator       raw_reverse_iterator;
@@ -68,10 +68,10 @@ struct FrameData
     raw_const_reverse_iterator raw_crbegin() const noexcept {return data_.crbegin();}
     raw_const_reverse_iterator raw_crend()   const noexcept {return data_.crend();}
 
-    data_type& raw_at(std::size_t i)       {return data_.at(i);}
-    data_type  raw_at(std::size_t i) const {return data_.at(i);}
-    data_type& raw_access(std::size_t i)       noexcept {return data_[i];}
-    data_type  raw_access(std::size_t i) const noexcept {return data_[i];}
+    value_type& raw_at(std::size_t i)       {return data_.at(i);}
+    value_type  raw_at(std::size_t i) const {return data_.at(i);}
+    value_type& raw_at(std::size_t i, std::nothrow_t)       noexcept {return data_[i];}
+    value_type  raw_at(std::size_t i, std::nothrow_t) const noexcept {return data_[i];}
 
     std::size_t raw_size() const noexcept {return container::size(this->data_);}
 
@@ -128,8 +128,8 @@ struct FrameData
     }
 
     proxy_type       front()       noexcept {return (*this)[0];}
-    proxy_type       back()        noexcept {return (*this)[y_pixel_ - 1];}
     const_proxy_type front() const noexcept {return (*this)[0];}
+    proxy_type       back()        noexcept {return (*this)[y_pixel_ - 1];}
     const_proxy_type back()  const noexcept {return (*this)[y_pixel_ - 1];}
 
     iterator begin()              noexcept {return iterator((*this)[0]);}
