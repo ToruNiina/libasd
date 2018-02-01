@@ -46,6 +46,12 @@ struct LineProxy
               std::size_t l, std::size_t x, std::size_t y) noexcept
         : begin_(b), end_(e), line(l), x_pixel(x), y_pixel(y)
     {}
+    ~LineProxy() = default;
+
+    LineProxy(const LineProxy&) = default;
+    LineProxy(LineProxy&&)      = default;
+    LineProxy& operator=(const LineProxy&) = default;
+    LineProxy& operator=(LineProxy&&)      = default;
 
     reference operator[](const std::size_t i) const noexcept
     {
@@ -133,6 +139,12 @@ struct LineProxyIterator
     LineProxyIterator(const proxy_type& p) : proxy(p) {}
     LineProxyIterator(proxy_type&& p) : proxy(std::move(p)) {}
 
+    ~LineProxyIterator() = default;
+    LineProxyIterator(const LineProxyIterator&) = default;
+    LineProxyIterator(LineProxyIterator&&) = default;
+    LineProxyIterator& operator=(const LineProxyIterator&) = default;
+    LineProxyIterator& operator=(LineProxyIterator&&) = default;
+
     reference operator* () const noexcept {return this->proxy;}
     pointer   operator->() const noexcept {return std::addressof(this->proxy);}
 
@@ -161,15 +173,17 @@ struct LineProxyIterator
 
     LineProxyIterator& operator+=(const difference_type d) noexcept
     {
-        this->proxy.line  += d;
-        this->proxy.begin += this->proxy.x_pixel * d;
-        this->proxy.end   += this->proxy.x_pixel * d;
+        this->proxy.line   += d;
+        this->proxy.begin_ += this->proxy.x_pixel * d;
+        this->proxy.end_   += this->proxy.x_pixel * d;
+        return *this;
     }
     LineProxyIterator& operator-=(const difference_type d) noexcept
     {
-        this->proxy.line  -= d;
-        this->proxy.begin -= this->proxy.x_pixel * d;
-        this->proxy.end   -= this->proxy.x_pixel * d;
+        this->proxy.line   -= d;
+        this->proxy.begin_ -= this->proxy.x_pixel * d;
+        this->proxy.end_   -= this->proxy.x_pixel * d;
+        return *this;
     }
 
     bool operator==(LineProxyIterator const& rhs) const noexcept
