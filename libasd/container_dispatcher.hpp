@@ -54,28 +54,6 @@ struct vec
         typedef std::vector<T, std::allocator<T>> other;
     };
 };
-// not needed
-//
-// template<typename T, typename Alloc>
-// inline T const* get_ptr(const std::vector<T, Alloc>& v) noexcept
-// {
-//     return v.data();
-// }
-// template<typename T, typename Alloc>
-// inline std::size_t size(const std::vector<T, Alloc>& v) noexcept
-// {
-//     return v.size();
-// }
-// template<typename T, typename Alloc>
-// inline void resize(std::vector<T, Alloc>& v, const std::size_t N)
-// {
-//     return v.resize(N);
-// }
-// template<typename T, typename Alloc>
-// inline void clear(std::vector<T, Alloc>& v)
-// {
-//     return v.clear();
-// }
 
 // ---------------------------------- deque ----------------------------------//
 
@@ -114,7 +92,6 @@ inline void resize(std::array<T, N>& v, const std::size_t M)
 template<typename T, std::size_t N>
 inline void clear(std::array<T, N>& v)
 {
-    // do nothing
     return;
 }
 
