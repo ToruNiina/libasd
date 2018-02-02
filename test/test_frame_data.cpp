@@ -97,14 +97,14 @@ BOOST_AUTO_TEST_CASE(iterator)
         }
         ++y;
     }
-//     for(auto i(data.rbegin()), ie(data.rend()); i!=ie; ++i)
-//     {
-//         for(auto j(i->rbegin()), je(i->rend()); j!=je; ++j)
-//         {
-//             --v;
-//             BOOST_CHECK_EQUAL(*j, v);
-//         }
-//     }
+    for(auto i(data.rbegin()), ie(data.rend()); i!=ie; ++i)
+    {
+        for(auto j(i->rbegin()), je(i->rend()); j!=je; ++j)
+        {
+            --v;
+            BOOST_CHECK_EQUAL(*j, v);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(range_based_for)
