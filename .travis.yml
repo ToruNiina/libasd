@@ -12,7 +12,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - libboost-test-dev
+        - libboost-all-dev
         - g++-5
         - build-essential
         - cmake
@@ -23,7 +23,7 @@ matrix:
     addons:
       apt:
         sources:
-        - libboost-test-dev
+        - libboost-all-dev
         - ubuntu-toolchain-r-test
         packages:
         - build-essential
