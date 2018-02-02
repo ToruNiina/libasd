@@ -1,11 +1,11 @@
-#define BOOST_TEST_MODULE "test_frame_data"
-#include <libasd/frame_data.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <boost/mpl/list.hpp>
+#include <libasd/frame_data.hpp>
 
-BOOST_AUTO_TEST_CASE(access_interface)
+BOOST_TEST_CASE_TEMPLATE_FUNCTION(access_interface, T)
 {
     {
-        asd::FrameData<std::uint8_t> data(10, 10);
+        asd::FrameData<std::uint8_t, T> data(10, 10);
 
         for(std::uint8_t i=0; i<100; ++i)
         {
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(access_interface)
     }
 
     {
-        asd::FrameData<std::uint8_t> data(10, 10);
+        asd::FrameData<std::uint8_t, T> data(10, 10);
 
         for(std::uint8_t i=0; i<100; ++i)
         {
@@ -51,9 +51,9 @@ BOOST_AUTO_TEST_CASE(access_interface)
     }
 }
 
-BOOST_AUTO_TEST_CASE(reset)
+BOOST_TEST_CASE_TEMPLATE_FUNCTION(reset, T)
 {
-    asd::FrameData<std::uint8_t> data(10, 10);
+    asd::FrameData<std::uint8_t, T> data(10, 10);
     BOOST_CHECK(data.raw_size() == 100);
     BOOST_CHECK(data.x_pixel()  == 10);
     BOOST_CHECK(data.y_pixel()  == 10);
@@ -66,9 +66,9 @@ BOOST_AUTO_TEST_CASE(reset)
     BOOST_CHECK(data.size()     == data.y_pixel());
 }
 
-BOOST_AUTO_TEST_CASE(iterator)
+BOOST_TEST_CASE_TEMPLATE_FUNCTION(iterator, T)
 {
-    asd::FrameData<std::uint8_t> data(10, 10);
+    asd::FrameData<std::uint8_t, T> data(10, 10);
 
     for(std::uint8_t i=0; i<100; ++i)
     {
@@ -107,9 +107,9 @@ BOOST_AUTO_TEST_CASE(iterator)
     }
 }
 
-BOOST_AUTO_TEST_CASE(range_based_for)
+BOOST_TEST_CASE_TEMPLATE_FUNCTION(range_based_for, T)
 {
-    asd::FrameData<std::uint8_t> data(10, 10);
+    asd::FrameData<std::uint8_t, T> data(10, 10);
 
     for(std::uint8_t i=0; i<100; ++i)
     {
@@ -126,3 +126,23 @@ BOOST_AUTO_TEST_CASE(range_based_for)
         }
     }
 }
+
+boost::unit_test::test_suite*
+init_unit_test_suite(int argc, char** argv)
+{
+    typedef boost::mpl::list<asd::container::vec, asd::container::deq> list;
+    boost::unit_test::framework::master_test_suite()
+        .add(BOOST_TEST_CASE_TEMPLATE(access_interface, list));
+
+    boost::unit_test::framework::master_test_suite()
+        .add(BOOST_TEST_CASE_TEMPLATE(reset, list));
+
+    boost::unit_test::framework::master_test_suite()
+        .add(BOOST_TEST_CASE_TEMPLATE(iterator, list));
+
+    boost::unit_test::framework::master_test_suite()
+        .add(BOOST_TEST_CASE_TEMPLATE(range_based_for, list));
+    return 0;
+}
+
+
