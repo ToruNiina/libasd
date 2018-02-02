@@ -1,6 +1,8 @@
 #include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 #include <libasd/frame_data.hpp>
+#include <libasd/boost/container_dispatcher.hpp>
+#include <libasd/boost/container_traits.hpp>
 
 BOOST_TEST_CASE_TEMPLATE_FUNCTION(access_interface, T)
 {
@@ -130,7 +132,15 @@ BOOST_TEST_CASE_TEMPLATE_FUNCTION(range_based_for, T)
 boost::unit_test::test_suite*
 init_unit_test_suite(int, char**)
 {
-    typedef boost::mpl::list<asd::container::vec, asd::container::deq> list;
+    typedef boost::mpl::list<
+        asd::container::vec,
+        asd::container::deq,
+        asd::container::boost_vec,
+        asd::container::boost_deq,
+        asd::container::boost_small_vec<100>,
+        asd::container::boost_static_vec<200>
+        > list;
+
     boost::unit_test::framework::master_test_suite()
         .add(BOOST_TEST_CASE_TEMPLATE(access_interface, list));
 
