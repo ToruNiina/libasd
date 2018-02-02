@@ -12,7 +12,6 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - libboost-all-dev
         - g++-5
         - build-essential
         - cmake
@@ -23,7 +22,6 @@ matrix:
     addons:
       apt:
         sources:
-        - libboost-all-dev
         - ubuntu-toolchain-r-test
         packages:
         - build-essential
@@ -35,6 +33,8 @@ matrix:
 script:
 - mkdir build
 - cd build
-- cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
+- wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
+- tar xvf boost_1_66_0.tar.bz2
+- cmake -DCMAKE_INCLUDE_PATH=./boost_1_66_0/boost -DCMAKE_CXX_COMPILER=$COMPILER ..
 - make
 - ctest --output-on-failure
