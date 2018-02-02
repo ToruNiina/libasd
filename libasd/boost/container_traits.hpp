@@ -1,5 +1,5 @@
-#ifndef LIBASD_BOOST_CONTAINER_DISPATCHER_H
-#define LIBASD_BOOST_CONTAINER_DISPATCHER_H
+#ifndef LIBASD_BOOST_CONTAINER_TRAITS_H
+#define LIBASD_BOOST_CONTAINER_TRAITS_H
 
 #include <libasd/container_traits.hpp>
 #include <boost/container/vector.hpp>
