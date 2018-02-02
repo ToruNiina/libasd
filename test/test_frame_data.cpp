@@ -128,7 +128,7 @@ BOOST_TEST_CASE_TEMPLATE_FUNCTION(range_based_for, T)
 }
 
 boost::unit_test::test_suite*
-init_unit_test_suite(int argc, char** argv)
+init_unit_test_suite(int, char**)
 {
     typedef boost::mpl::list<asd::container::vec, asd::container::deq> list;
     boost::unit_test::framework::master_test_suite()

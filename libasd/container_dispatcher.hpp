@@ -85,7 +85,7 @@ inline void resize(std::array<T, N>& v, const std::size_t M)
 }
 
 template<typename T, std::size_t N>
-inline void clear(std::array<T, N>& v)
+inline void clear(std::array<T, N>&)
 {
     return;
 }
