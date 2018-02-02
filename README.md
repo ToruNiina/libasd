@@ -179,6 +179,7 @@ template<typename T, typename Alloc>
 struct container_traits<std::vector<T, Alloc>>
 {
     using ptr_accessibility = std::true_type;
+    using value_type = T;
 };
 
 } // container
@@ -227,6 +228,7 @@ inline void clear(std::vector<T, Alloc>& v)
 {
     return v.clear();
 }
+
 } // container
 } // asd
 ```
