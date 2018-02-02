@@ -10,12 +10,15 @@ namespace detail
 {
 template<bool IsConst, typename originT>
 struct LineProxyIterator;
+template<bool IsConst, typename originT>
+struct LineProxyReverseIterator;
 
 template<bool IsConst, typename originT>
 struct LineProxy
 {
     static constexpr bool is_constant = IsConst;
     friend LineProxyIterator<is_constant, originT>;
+    friend LineProxyReverseIterator<is_constant, originT>;
 
     typedef originT  origin_type;
     typedef typename origin_type::raw_iterator               origin_iterator;
@@ -217,6 +220,107 @@ struct LineProxyIterator
 
     proxy_type proxy;
 };
+
+template<bool IsConst, typename originT>
+struct LineProxyReverseIterator
+{
+    static constexpr bool is_constant = IsConst;
+    typedef LineProxy<is_constant, originT> proxy_type;
+    typedef proxy_type             value_type;
+    typedef value_type const*      pointer;
+    typedef value_type const&      reference;
+    typedef std::ptrdiff_t         difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
+    // XXX
+    LineProxyReverseIterator(const proxy_type& p) : proxy(p) {++(*this);}
+    LineProxyReverseIterator(proxy_type&& p) : proxy(std::move(p)) {++(*this);}
+
+    ~LineProxyReverseIterator() = default;
+    LineProxyReverseIterator(const LineProxyReverseIterator&)     = default;
+    LineProxyReverseIterator(LineProxyReverseIterator&&)          = default;
+    LineProxyReverseIterator& operator=(const LineProxyReverseIterator&) = default;
+    LineProxyReverseIterator& operator=(LineProxyReverseIterator&&)      = default;
+
+    reference operator* () const noexcept
+    {
+        return this->proxy;
+    }
+    pointer   operator->() const noexcept
+    {
+        return std::addressof(this->proxy);
+    }
+
+    LineProxyReverseIterator& operator++() noexcept
+    {
+        this->proxy.line   -= 1;
+        this->proxy.begin_ -= this->proxy.x_pixel;
+        this->proxy.end_   -= this->proxy.x_pixel;
+        return *this;
+    }
+    LineProxyReverseIterator& operator--() noexcept
+    {
+        this->proxy.line   += 1;
+        this->proxy.begin_ += this->proxy.x_pixel;
+        this->proxy.end_   += this->proxy.x_pixel;
+        return *this;
+    }
+    LineProxyReverseIterator  operator++(int) noexcept
+    {
+        const auto tmp(*this); --(*this); return tmp;
+    }
+    LineProxyReverseIterator  operator--(int) noexcept
+    {
+        const auto tmp(*this); ++(*this); return tmp;
+    }
+
+    LineProxyReverseIterator& operator+=(const difference_type d) noexcept
+    {
+        this->proxy.line   -= d;
+        this->proxy.begin_ -= this->proxy.x_pixel * d;
+        this->proxy.end_   -= this->proxy.x_pixel * d;
+        return *this;
+    }
+    LineProxyReverseIterator& operator-=(const difference_type d) noexcept
+    {
+        this->proxy.line   += d;
+        this->proxy.begin_ += this->proxy.x_pixel * d;
+        this->proxy.end_   += this->proxy.x_pixel * d;
+        return *this;
+    }
+
+    bool operator==(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy == rhs.proxy;
+    }
+    bool operator!=(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy != rhs.proxy;
+    }
+
+    bool operator<=(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy <= rhs.proxy;
+    }
+    bool operator<(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy < rhs.proxy;
+    }
+
+    bool operator>=(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy >= rhs.proxy;
+    }
+    bool operator>(LineProxyReverseIterator const& rhs) const noexcept
+    {
+        return this->proxy > rhs.proxy;
+    }
+
+  private:
+
+    proxy_type proxy;
+};
+
 
 } // detail
 } // asd
