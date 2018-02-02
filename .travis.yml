@@ -35,6 +35,6 @@ script:
 - cd build
 - wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
 - tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
-- cmake -DCMAKE_INCLUDE_PATH=./boost_1_66_0/boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DON_TRAVIS=ON ..
 - make
 - ctest --output-on-failure
