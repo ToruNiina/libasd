@@ -6,7 +6,6 @@
 #include <boost/container/static_vector.hpp>
 #include <boost/container/small_vector.hpp>
 #include <boost/container/deque.hpp>
-#include <boost/array.hpp>
 
 namespace asd
 {
@@ -15,21 +14,19 @@ template<typename T, typename Alloc>
 struct container_traits<boost::container::vector<T, Alloc>>
 {
     using ptr_accessibility = std::true_type;
+    using value_type = T;
 };
 template<typename T, std::size_t N>
 struct container_traits<boost::container::static_vector<T, N>>
 {
     using ptr_accessibility = std::true_type;
+    using value_type = T;
 };
 template<typename T, std::size_t N, typename Alloc>
 struct container_traits<boost::container::small_vector<T, N, Alloc>>
 {
     using ptr_accessibility = std::true_type;
-};
-template<typename T, std::size_t N>
-struct container_traits<boost::array<T, N>>
-{
-    using ptr_accessibility = std::true_type;
+    using value_type = T;
 };
 
 } // asd
