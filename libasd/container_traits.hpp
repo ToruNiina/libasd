@@ -2,7 +2,6 @@
 #define LIBASD_CONTAINER_TRAITS_H
 #include <type_traits>
 #include <vector>
-#include <array>
 
 namespace asd
 {
@@ -66,12 +65,6 @@ struct container_traits
 
 template<typename T, typename Alloc>
 struct container_traits<std::vector<T, Alloc>>
-{
-    using ptr_accessibility = std::true_type;
-    using value_type        = T;
-};
-template<typename T, std::size_t N>
-struct container_traits<std::array<T, N>>
 {
     using ptr_accessibility = std::true_type;
     using value_type        = T;
