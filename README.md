@@ -192,7 +192,6 @@ libasd uses the container to declare the container in this way.
 typedef typename vec::template rebind<int>::other int_array;
 ```
 
-
 The struct `container_traits` provides a tag to resolve overload of utility
 functions. When the container has an interface to access a pointer that points
 the first element and the container can be accessed as a traditional C-array,
@@ -236,16 +235,16 @@ inline void clear(std::vector<T, Alloc>& v)
 After implementing and passing these structs and functions(if necessary),
 you can use your awesome container/allocator class with libasd.
 
-By default, `asd::container::vec`, `asd::container::deq`, and
-`asd::container::arr` are defined in `libasd/container_dispatcher.hpp`.
-They are corresponds to `std::vector`, `std::deque`, `std::array`, respectively.
+By default, `asd::container::vec` and `asd::container::deq` are defined in
+`libasd/container_dispatcher.hpp`.
+They are corresponds to `std::vector` and `std::deque`, respectively.
 It should be noted that only randomly accessible containers can be used with
 libasd.
 
 Additionally, you can find `asd::container::boost_vec`,
-`asd::container::boost_stable_vec`, `asd::container::boost_static_vec`,
-`asd::container::boost_small_vec`, `asd::container::boost_deq`, and
-`asd::container::boost_arr` in the file `libasd/boost/container_dispatcher.hpp`.
+`asd::container::boost_static_vec`, `asd::container::boost_small_vec`
+and `asd::container::boost_deq` in the file
+`libasd/boost/container_dispatcher.hpp`.
 It is not included by default, but you can manually include this file.
 Then you can use containers provided by the Boost.Container library if you
 already installed it.
