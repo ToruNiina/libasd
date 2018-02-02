@@ -5,7 +5,6 @@
 #include <boost/container/static_vector.hpp>
 #include <boost/container/small_vector.hpp>
 #include <boost/container/deque.hpp>
-#include <boost/array.hpp>
 
 namespace asd
 {
@@ -60,28 +59,6 @@ struct boost_deq
     };
 
 };
-
-template<std::size_t N>
-struct boost_arr
-{
-    template<typename T>
-    struct rebind
-    {
-        typedef boost::array<T, N> other;
-    };
-};
-
-template<typename T, std::size_t N>
-inline void resize(boost::array<T, N>& cont, std::size_t M)
-{
-    if(cont.size() < M)
-    {
-        throw_exception<std::out_of_range>("libasd::container::resize: "
-                "boost::array(size = %) has no enough storage(%)",
-                cont.size(), M);
-    }
-    return;
-}
 
 } // container
 } // asd

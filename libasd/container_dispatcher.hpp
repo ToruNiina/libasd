@@ -4,7 +4,6 @@
 #include <libasd/container_traits.hpp>
 #include <vector>
 #include <deque>
-#include <array>
 
 namespace asd
 {
@@ -62,33 +61,6 @@ struct deq
         typedef std::deque<T, std::allocator<T>> other;
     };
 };
-
-template<std::size_t N>
-struct arr
-{
-    template<typename T>
-    struct rebind
-    {
-        typedef std::array<T, N> other;
-    };
-};
-
-template<typename T, std::size_t N>
-inline void resize(std::array<T, N>& v, const std::size_t M)
-{
-    if(v.size() < M)
-    {
-        throw_exception<std::out_of_range>("libasd::container::resize: "
-                "std::array(size = %) has no enough storage(%)", v.size(), M);
-    }
-    return;
-}
-
-template<typename T, std::size_t N>
-inline void clear(std::array<T, N>&)
-{
-    return;
-}
 
 } // container
 } // asd
