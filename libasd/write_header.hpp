@@ -26,7 +26,7 @@ void write_header_impl(sourceT& source, const Header<version<0>>& header)
     write_as_binary<std::int32_t>(source, header.y_scanning_range   );
     write_as_binary<float       >(source, header.frame_rate         );
     write_as_binary<float       >(source, header.z_piezo_extension  );
-    write_as_binary<float       >(source, header.z_piexo_gain       );
+    write_as_binary<float       >(source, header.z_piezo_gain       );
     write_as_binary<std::int32_t>(source, header.ad_range           );
     write_as_binary<std::int32_t>(source, header.bits_data          );
     write_as_binary<bool        >(source, header.is_averaged        );
@@ -89,13 +89,13 @@ void write_header_impl(sourceT& source, const Header<version<1>>& header)
     write_as_binary<std::int32_t>(source, header.x_rounding_degree    );
     write_as_binary<std::int32_t>(source, header.y_rounding_degree    );
     write_as_binary<float       >(source, header.frame_acquision_time );
-    write_as_binary<float       >(source, header.sensor_sensitiviy    );
+    write_as_binary<float       >(source, header.sensor_sensitivity   );
     write_as_binary<float       >(source, header.phase_sensitivity    );
     write_as_binary<std::int32_t>(source, header.offset               );
     skip_bytes(source, 12); // booked region
     write_as_binary<std::int32_t>(source, header.machine_id          );
-    write_as_binary<std::int32_t>(source, header.AD_range            );
-    write_as_binary<std::int32_t>(source, header.AD_resolution       );
+    write_as_binary<std::int32_t>(source, header.ad_range            );
+    write_as_binary<std::int32_t>(source, header.ad_resolution       );
     write_as_binary<float       >(source, header.x_max_scanning_range);
     write_as_binary<float       >(source, header.y_max_scanning_range);
     write_as_binary<float       >(source, header.x_piezo_extension   );
@@ -139,13 +139,13 @@ void write_header_impl(sourceT& source, const Header<version<2>>& header)
     write_as_binary<std::int32_t>(source, header.x_rounding_degree    );
     write_as_binary<std::int32_t>(source, header.y_rounding_degree    );
     write_as_binary<float       >(source, header.frame_acquision_time );
-    write_as_binary<float       >(source, header.sensor_sensitiviy    );
+    write_as_binary<float       >(source, header.sensor_sensitivity   );
     write_as_binary<float       >(source, header.phase_sensitivity    );
     write_as_binary<std::int32_t>(source, header.offset               );
     skip_bytes(source, 12); // booked region
     write_as_binary<std::int32_t>(source, header.machine_id          );
-    write_as_binary<std::int32_t>(source, header.AD_range            );
-    write_as_binary<std::int32_t>(source, header.AD_resolution       );
+    write_as_binary<std::int32_t>(source, header.ad_range            );
+    write_as_binary<std::int32_t>(source, header.ad_resolution       );
     write_as_binary<float       >(source, header.x_max_scanning_range);
     write_as_binary<float       >(source, header.y_max_scanning_range);
     write_as_binary<float       >(source, header.x_piezo_extension   );
