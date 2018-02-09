@@ -21,7 +21,7 @@ char* write_asd(char* ptr, const Data<chT, verT, contT>& dat)
 
 template<typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec>
-std::ostream& write_asd(std::ostream& is, const Data<chT, verT, contT>& dat)
+std::ostream& write_asd(std::ostream& os, const Data<chT, verT, contT>& dat)
 {
     detail::write_header_impl(os, dat.header);
     for(const auto& frm : dat.frames)
