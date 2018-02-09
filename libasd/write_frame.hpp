@@ -1,7 +1,7 @@
 #ifndef LIBASD_WRITE_FRAME_H
 #define LIBASD_WRITE_FRAME_H
 #include <libasd/container_traits.hpp>
-#include <libasd/write_binary_as.hpp>
+#include <libasd/write_as_binary.hpp>
 #include <libasd/frame_header.hpp>
 #include <libasd/frame_data.hpp>
 #include <libasd/frame.hpp>
@@ -44,9 +44,9 @@ struct write_frame_impl
     static void invoke(sourceT& source, const Frame<channelT, contT>& frm)
     {
         write_frame_header_impl(source, frm.header);
-        for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
+        for(std::size_t i=0; i<frm.data.size(); ++i) // for each channel
         {
-            write_frame_data_impl(source, f.data[i]);
+            write_frame_data_impl(source, frm.data[i]);
         }
         return;
     }
@@ -93,13 +93,13 @@ write_frame_data(std::ostream& os, const FrameData<contT>& fd)
 template<typename channelT, typename contT = container::vec>
 char* write_frame(char* ptr, const Frame<channelT, contT>& frm)
 {
-    detail::write_frame_impl<contT>::invoke(ptr, frm);
+    detail::write_frame_impl<channelT, contT>::invoke(ptr, frm);
     return ptr;
 }
 template<typename channelT, typename contT = container::vec>
 std::ostream& write_frame(std::ostream& os, const Frame<channelT, contT>& frm)
 {
-    detail::write_frame_impl<contT>::invoke(os, frm);
+    detail::write_frame_impl<channelT, contT>::invoke(os, frm);
     return os;
 }
 
