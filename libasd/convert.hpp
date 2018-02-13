@@ -29,15 +29,15 @@ level_to_voltage(const std::int16_t lvl, const AD_range range,
         }
         case AD_range::bipolar_1_0V :
         {
-            return 2.0 * static_cast<realT>(lvl) / resolution - 1.0;
+            return 1.0 - 2.0 * static_cast<realT>(lvl) / resolution;
         }
         case AD_range::bipolar_2_5V :
         {
-            return 5.0 * static_cast<realT>(lvl) / resolution - 2.5;
+            return 2.5 - 5.0 * static_cast<realT>(lvl) / resolution;
         }
         case AD_range::bipolar_5_0V :
         {
-            return 10.0 * static_cast<realT>(lvl) / resolution - 5.0;
+            return 5.0 - 10.0 * static_cast<realT>(lvl) / resolution;
         }
         case AD_range::dummy_value  :
         {
@@ -101,9 +101,6 @@ voltage_to_level(const realT v, const AD_range range,
         }
     }
 }
-
-
-
 
 template<typename realT, typename contT>
 FrameData<realT, contT>
