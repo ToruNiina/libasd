@@ -3,96 +3,124 @@
 #include <libasd/exception_thrower.hpp>
 #include <libasd/header.hpp>
 #include <libasd/frame_data.hpp>
+#include <memory>
+#include <iostream>
 #include <algorithm>
 
 namespace asd
 {
 
 template<typename realT>
-inline realT
-level_to_voltage(const std::int16_t lvl, const AD_range range,
-                 const std::uint64_t resolution = 4096)
+struct voltage_level_converter
 {
-    switch(range)
-    {
-        case AD_range::unipolar_1_0V:
-        {
-            return static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::unipolar_2_5V:
-        {
-            return 2.5 * static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::unipolar_5_0V:
-        {
-            return 5.0 * static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::bipolar_1_0V :
-        {
-            return 1.0 - 2.0 * static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::bipolar_2_5V :
-        {
-            return 2.5 - 5.0 * static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::bipolar_5_0V :
-        {
-            return 5.0 - 10.0 * static_cast<realT>(lvl) / resolution;
-        }
-        case AD_range::dummy_value  :
-        {
-            //XXX dummy value means "this file is modified, not raw data".
-            //    enable to write out as bipolar-80.0.
-            return 160.0 * static_cast<realT>(lvl) / resolution - 80.0;
-        }
-        default:
-        {
-            throw_exception<std::invalid_argument>("invalid AD_range value: %",
-                    static_cast<std::uint32_t>(range));
-        }
-    }
-}
+    typedef realT        real_type;
+    typedef std::int16_t level_type;
+
+    voltage_level_converter() noexcept = default;
+    virtual ~voltage_level_converter() noexcept = default;
+
+    virtual level_type voltage_to_level(const real_type  v) const noexcept = 0;
+    virtual real_type  level_to_voltage(const level_type l) const noexcept = 0;
+
+    virtual bool is_unipolar() const noexcept = 0;
+};
 
 template<typename realT>
-inline std::int16_t
-voltage_to_level(const realT v, const AD_range range,
-                  const std::uint64_t resolution = 4096)
+struct unipolar_converter : public voltage_level_converter<realT>
 {
+    typedef voltage_level_converter<realT> base_type;
+    typedef typename base_type::real_type  real_type;
+    typedef typename base_type::level_type level_type;
+
+    unipolar_converter(const real_type rg) noexcept
+        : range(rg), resolution(4096ull)
+    {}
+    unipolar_converter(const real_type rg, const std::uint64_t resol) noexcept
+        : range(rg), resolution(resol)
+    {}
+    ~unipolar_converter() noexcept override = default;
+
+    level_type voltage_to_level(const real_type  v) const noexcept override
+    {
+        return static_cast<level_type>(std::floor(v * resolution));
+    }
+    real_type  level_to_voltage(const level_type l) const noexcept override
+    {
+        return range * l / resolution;
+    }
+    bool is_unipolar() const noexcept override {return true;}
+
+    const real_type     range;     // 10 for range [0, 10]
+    const std::uint64_t resolution;
+};
+
+template<typename realT>
+struct bipolar_converter : public voltage_level_converter<realT>
+{
+    typedef voltage_level_converter<realT> base_type;
+    typedef typename base_type::real_type  real_type;
+    typedef typename base_type::level_type level_type;
+
+    bipolar_converter(const real_type rg) noexcept
+        : range(rg), resolution(4096ull)
+    {}
+    bipolar_converter(const real_type rg, const std::uint64_t resol) noexcept
+        : range(rg), resolution(resol)
+    {}
+    ~bipolar_converter() noexcept override = default;
+
+    level_type voltage_to_level(const real_type  v) const noexcept override
+    {
+        return static_cast<level_type>(std::floor(
+                    ((v + range) / (2 * range)) * resolution));
+    }
+    real_type  level_to_voltage(const level_type l) const noexcept override
+    {
+        return range - 2 * l * range / resolution;
+    }
+    bool is_unipolar() const noexcept override {return false;}
+
+    const real_type     range;      // 5 for range [-5, 5].
+    const std::uint64_t resolution; // normally, 4096
+};
+
+template<typename realT>
+inline std::unique_ptr<voltage_level_converter<realT>>
+make_voltage_level_converter(
+        const AD_range range, const std::uint64_t resolution = 4096)
+{
+    using result_type = std::unique_ptr<voltage_level_converter<realT>>;
     switch(range)
     {
         case AD_range::unipolar_1_0V:
         {
-            return static_cast<std::int16_t>(std::floor(v * resolution));
+            return result_type(new unipolar_converter<realT>(1.0, resolution));
         }
         case AD_range::unipolar_2_5V:
         {
-            return static_cast<std::int16_t>(std::floor(v * resolution / 2.5));
+            return result_type(new unipolar_converter<realT>(2.5, resolution));
         }
         case AD_range::unipolar_5_0V:
         {
-            return static_cast<std::int16_t>(std::floor(v * resolution / 5.0));
+            return result_type(new unipolar_converter<realT>(5.0, resolution));
         }
         case AD_range::bipolar_1_0V :
         {
-            return static_cast<std::int16_t>(
-                    std::floor(((v + 1.0) / 2.0) * resolution));
+            return result_type(new bipolar_converter<realT>(1.0, resolution));
         }
         case AD_range::bipolar_2_5V :
         {
-            return static_cast<std::int16_t>(
-                    std::floor(((v + 2.5) / 5.0) * resolution));
+            return result_type(new bipolar_converter<realT>(2.5, resolution));
         }
         case AD_range::bipolar_5_0V :
         {
-            return static_cast<std::int16_t>(
-                    std::floor(((v + 5.0) /10.0) * resolution));
+            return result_type(new bipolar_converter<realT>(5.0, resolution));
         }
         case AD_range::dummy_value  :
         {
             //XXX dummy value means "this file is modified, not raw data".
             //    enable to write out as bipolar-80.0.
-            return static_cast<std::int16_t>(
-                    std::floor(((v + 80.0) /160.0) * resolution));
+            return result_type(new bipolar_converter<realT>(80.0, resolution));
         }
         default:
         {
@@ -109,40 +137,52 @@ convert_data(const FrameData<std::int16_t, contT>& data,
 {
     FrameData<realT, contT> retval(data.x_pixel(), data.y_pixel());
 
-    // int16_t -> voltage
-    const auto          ADrg = header.ad_range;
-    const std::uint64_t resl = (1ul << header.ad_resolution);
+    const auto converter = make_voltage_level_converter<realT>(
+            header.ad_range, (1ul << header.ad_resolution));
 
     // voltage -> data
-    const auto kind = [ch](const Header<version<1>>& hdr)
+    if(ch != 0 && ch != 1)
     {
-             if(ch == 0){return hdr.data_kind_1ch;}
-        else if(ch == 1){return hdr.data_kind_2ch;}
-        else throw_exception<std::invalid_argument>("invalid channel: %", ch);
-    }(header);
-    const auto coef = [kind](const Header<version<1>>& hdr) -> realT
+        throw_exception<std::invalid_argument>("channel must be 0 or 1: %", ch);
+    }
+    const auto kind = (ch == 0) ? header.data_kind_1ch : header.data_kind_2ch;
+
+    realT coef = 0.0;
+    switch(kind)
     {
-        switch(kind)
+        case data_kind::topography:
         {
-            case data_kind::topography:
-                return hdr.z_piezo_gain * hdr.z_piezo_extension;
-            case data_kind::error:
-                return -1.0 * hdr.sensor_sensitivity;
-            case data_kind::phase:
-                return -1.0 * hdr.phase_sensitivity;
-            case data_kind::none:
-                return 0.0;
-            default:
-                throw_exception<std::invalid_argument>("invalid data_kind: %",
-                        static_cast<std::int32_t>(kind));
+            coef = header.z_piezo_gain * header.z_piezo_extension;
+            break;
         }
-    }(header);
+        case data_kind::error:
+        {
+            coef = -1.0 * header.sensor_sensitivity;
+            break;
+        }
+        case data_kind::phase:
+        {
+            coef = -1.0 * header.phase_sensitivity;
+            break;
+        }
+        case data_kind::none:
+        {
+            std::cerr << "WARNING: data kind is 'none'. coefficient was set 0\n";
+            coef = 0.0;
+            break;
+        }
+        default:
+        {
+            throw_exception<std::invalid_argument>(
+                    "invalid data kind(%) for channel(%)",
+                    static_cast<std::int32_t>(kind), ch);
+        }
+    }
 
     std::transform(data.raw_begin(), data.raw_end(), retval.raw_begin(),
-                   [ADrg, resl, coef](const std::int16_t i){
-                       const auto volt = level_to_voltage<realT>(i, ADrg, resl);
-                       return volt * coef;
-                   });
+        [&converter, coef](const std::int16_t i) noexcept -> realT {
+            return coef * converter->level_to_voltage(i);
+        });
     return retval;
 }
 
