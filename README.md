@@ -22,7 +22,13 @@ WIP
 
 ## Usage in C++
 
-You can read the data with the code described below.
+Firstly, add `path/to/libasd` to your `include_dir` like
+
+```sh
+$ g++ -I/path/to/libasd -std=c++11 main.cpp
+```
+
+Then you can read the data with the code described below.
 
 ```cpp
 #include <libasd/libasd.hpp>
@@ -32,7 +38,7 @@ You can read the data with the code described below.
 int main()
 {
     std::ifstream ifs("example.asd");
-    const auto data = asd::read_asd<double>(ifs); // set real type for the data
+    const auto data = asd::read_asd<double>(ifs);
 
     std::cout << "x_pixel = " << data.header.x_pixel << '\n';
     std::cout << "y_pixel = " << data.header.y_pixel << '\n';
@@ -43,7 +49,7 @@ int main()
         {
             for(auto const& pixel : line)
             {
-                std::cout << pixel; // height [nm] for topography, ...
+                std::cout << pixel << ','; // height [nm] for topography, ...
             }
             std::cout << '\n';
         }
@@ -86,6 +92,8 @@ You can access to each pixel by index instead of range-based for loops.
 
 Be careful with the order of index. `Frame[y]` returns a `Line` at y.
 So first you must specify `y` value of the pixel, not `x`.
+
+## FAQ
 
 ### How to access the data?
 
