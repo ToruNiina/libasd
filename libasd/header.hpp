@@ -90,9 +90,9 @@ operator<<(std::basic_ostream<charT, traitsT>& os, const encode scd)
 
 enum class data_kind : std::int32_t
 {
-    topography = 0x5054, //!< from ascii code "TP".
-    error      = 0x5245, //!< from ascii code "ER".
-    phase      = 0x4850, //!< from ascii code "PH".
+    topography = 0x5054, //!< from ascii code "TP" (reversed because of the endian).
+    error      = 0x5245, //!< from ascii code "ER" (reversed because of the endian).
+    phase      = 0x4850, //!< from ascii code "PH" (reversed because of the endian).
     none       = 0x0000, //!< nothing.
 };
 
@@ -181,7 +181,7 @@ struct Header<version<1>>
     typedef version<1> version_tag;
     static constexpr std::size_t num_version = version_tag::value;
 
-    //XXX because text encoding is not known here, we can't use std::string.
+    //XXX because text encoding is unknown here, std::string and its variants cannot be used.
     typedef std::vector<std::int8_t> byte_array;
 
     std::int32_t   file_version;         //!< File version
