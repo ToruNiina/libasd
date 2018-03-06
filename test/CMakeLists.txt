@@ -1,6 +1,7 @@
 set(TEST_NAMES
     test_container_dispatches
     test_throw_exception
+    test_read_binary_as
     test_frame_data
     )
 
