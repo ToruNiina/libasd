@@ -36,6 +36,54 @@ inline void ignore_bytes(std::istream& is, std::ptrdiff_t pdiff)
     return;
 }
 
+// read array of value
+
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(std::istream& is, const std::size_t N, std::true_type)
+{
+    constexpr std::size_t sz = sizeof(Value);
+    typename ContainerDispatcher::template rebind<Value>::other retval(N);
+    is.read(reinterpret_cast<char*>(::asd::container::get_ptr(retval)),
+            sz * N);
+    return retval;
+}
+
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(std::istream& is, const std::size_t N, std::false_type)
+{
+    constexpr std::size_t sz = sizeof(Value);
+    std::vector<char> buffer(sz * N);
+    is.read(buffer.data(), sz * N);
+
+    const Value* const first = reinterpret_cast<const Value*>(buffer.data());
+    const Value* const last  = reinterpret_cast<const Value*>(buffer.data())+N;
+
+    return typename ContainerDispatcher::template
+        rebind<Value>::other(first, last);
+}
+
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(std::istream& is, const std::size_t N)
+{
+    return read_binary_as_container<Value, ContainerDispatcher>(is, N,
+        container_traits<
+            typename ContainerDispatcher::template rebind<Value>::other
+        >::ptr_accessibility);
+}
+
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(const char*& ptr, const std::size_t N)
+{
+    const Value* const first = reinterpret_cast<const Value*>(ptr);
+    const Value* const last  = reinterpret_cast<const Value*>(ptr) + N;
+
+    return typename ContainerDispatcher::template
+        rebind<Value>::other(first, last);
+}
 
 } // detail
 }// asd
