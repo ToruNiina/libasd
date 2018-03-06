@@ -20,6 +20,15 @@ get_ptr(const containerT& c) noexcept(noexcept(c.data()))
 }
 
 template<typename containerT, typename std::enable_if<
+    ::asd::detail::has_mem_func_data<containerT>::value,
+    std::nullptr_t>::type = nullptr>
+inline typename container_traits<containerT>::value_type*
+get_ptr(containerT& c) noexcept(noexcept(c.data()))
+{
+    return c.data();
+}
+
+template<typename containerT, typename std::enable_if<
     ::asd::detail::has_mem_func_size<containerT>::value,
     std::nullptr_t>::type = nullptr>
 inline std::size_t size(const containerT& c) noexcept(noexcept(c.size()))
