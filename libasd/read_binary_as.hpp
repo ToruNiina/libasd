@@ -1,6 +1,7 @@
 #ifndef LIBASD_READ_BINARY_AS_H
 #define LIBASD_READ_BINARY_AS_H
 #include <istream>
+#include <libasd/container_dispatcher.hpp>
 
 namespace asd
 {
@@ -68,10 +69,10 @@ template<typename Value, typename ContainerDispatcher>
 typename ContainerDispatcher::template rebind<Value>::other
 read_binary_as(std::istream& is, const std::size_t N)
 {
-    return read_binary_as_container<Value, ContainerDispatcher>(is, N,
-        container_traits<
+    return read_binary_as<Value, ContainerDispatcher>(is, N,
+        typename container_traits<
             typename ContainerDispatcher::template rebind<Value>::other
-        >::ptr_accessibility);
+        >::ptr_accessibility{});
 }
 
 template<typename Value, typename ContainerDispatcher>
