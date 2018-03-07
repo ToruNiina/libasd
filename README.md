@@ -38,9 +38,11 @@ $ make
 It also build test codes. you can run tests by
 
 ```sh
-$ make test
+$ make test # optional
 ```
-.
+
+You may need to add path/to/libasd.so to PYTHONPATH.
+It usually generated in `build/python/`. Install script is comming soon.
 
 ### Example Code
 
@@ -60,13 +62,16 @@ WIP
 
 ## Usage in C++
 
-Firstly, add `path/to/libasd` to your `include_dir` like
+libasd is a header-only library, so you don't need to build anything if you use
+it as a C++ library, not python library.
+
+The only thing you have to do is adding `path/to/libasd` to your include path like
 
 ```sh
-$ g++ -I/path/to/libasd -std=c++11 main.cpp
+$ g++ -I/path/to/libasd -std=c++11 your_code_main.cpp
 ```
 
-Then you can read the data with the code described below.
+Then you can read the data in the way described below.
 
 ```cpp
 #include <libasd/libasd.hpp>
@@ -133,17 +138,9 @@ So first you must specify `y` value of the pixel, not `x`.
 
 ## FAQ
 
-### How to access the data?
-
-See documents.
-
-### I don't want to use streams. What can I do?
-
-You can pass a `char const*` to `read_asd` function in exactly the same way as streams.
-
 ### I need only file-header information. Frame data are not needed.
 
-libasd provides `asd::read_header` function.
+libasd provides `asd::read_header` function (`libasd.read_header` in python).
 It reads only file-header information.
 You can use this function in the same way as `read_asd`.
 
@@ -155,18 +152,37 @@ You can use this function in the same way as `read_asd`.
 int main()
 {
     std::ifstream ifs("example.asd");
-    const auto data = asd::read_header<asd::ver<1>, asd::ch<1>>(ifs);
+    const auto data = asd::read_header(ifs);
+    // If you want to set file version information,
+    // data = libasd.read_header<asd::ver<2>>("example.asd");
+    // file version is set as asd::ver<1> by default.
     return 0;
 }
+```
+
+```python
+import libasd
+
+data = libasd.read_header("example.asd");
+# If you want to set file version information,
+# data = libasd.read_header("example.asd", 2);
 ```
 
 Note: It simply ignore the channel information because header format does not
 depend on channel number. You can set channel number as unrealistic value here,
 but it is not recommended because it is confusing.
 
+### How to access the data in header/frame\_header object?
+
+See documents.
+
+### I don't want to use streams. What can I do?
+
+You can pass a `char const*` to `read_asd` function in exactly the same way as streams.
+
 ### How it contains data?
 
-You may think that libasd contains a frame as an array of arrays.
+You might think that libasd contains a frame as an array of arrays.
 
 ```cpp
 typedef std::int16_t            pixel_type;
