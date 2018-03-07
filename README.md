@@ -12,10 +12,16 @@ libasd has a binding to python3.
 
 - [libasd](#libasd)
 - [Python usage](#usage-in-python3)
-- [C++ usage](#usage-in-c++)
+    - [Building Python Library](#building-python-library)
+    - [Example Code](#example-code)
+    - [With Numpy](#with-numpy)
+- [C++ usage](#usage-in-c)
 - [FAQ](#faq)
-- [LICENSE](#licencing-terms)
-
+    - [Read only file Header](#i-need-only-file-header-information-frame-data-are-not-needed)
+    - [Without iostreams](#i-dont-want-to-use-streams-what-can-i-do)
+    - [Way to contain data](#how-it-contains-data)
+    - [Customize Container and Allocator](#can-i-use-my-awesome-container-with-libasd)
+- [LICENSE](#licensing-terms)
 
 ## Usage in Python3
 
