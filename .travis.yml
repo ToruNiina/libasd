@@ -36,6 +36,6 @@ script:
 - wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
 - echo "5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9  boost_1_66_0.tar.bz2" | sha256sum --check - && tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
 - ls
-- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=./boost_1_66_0 ..
+- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/boost_1_66_0 ..
 - make
 - ctest --output-on-failure
