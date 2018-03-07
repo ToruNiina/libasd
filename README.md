@@ -41,7 +41,7 @@ __The APIs used in this example is likely to be changed.__
 ```python
 import libasd
 
-header = libasd.read_header_v1("example.asd")
+header = libasd.read_header(file_name = "example.asd", version = 1)
 print("image size = {}x{} ".format(header.x_pixel, header.y_pixel))
 ```
 
