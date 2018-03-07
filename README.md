@@ -10,11 +10,11 @@ libasd has a binding to python3.
 
 ## Table of Contents
 
-* [libasd](#libasd)
-* [Python usage](#Usage-in-Python3)
-* [C++ usage](#Usage-in-C++)
-* [FAQ](#FAQ)
-* [LICENSE](#Licencing-terms)
+- [libasd](#libasd)
+- [Python usage](#usage-in-python3)
+- [C++ usage](#usage-in-c++)
+- [FAQ](#faq)
+- [LICENSE](#licencing-terms)
 
 
 ## Usage in Python3
