@@ -4,8 +4,8 @@ language: cpp
 matrix:
   include:
   - os: linux
-    language: cpp
     compiler: gcc
+    language: python
     python: "3.6"
     env: PYTHON=3.6 COMPILER="g++-5"
     addons:
@@ -19,8 +19,8 @@ matrix:
         - python3
         - python3-dev
   - os: linux
-    language: cpp
     compiler: clang
+    language: python
     python: "3.6"
     env: PYTHON=3.6 COMPILER="clang++"
     addons:
@@ -46,6 +46,8 @@ before_install:
 - apt search python3
 - which python
 - python --version
+- which python3
+- python3 --version
 
 script:
 - mkdir build
