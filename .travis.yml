@@ -6,8 +6,7 @@ matrix:
   - os: linux
     language: cpp
     compiler: gcc
-    python: "3.6"
-    env: COMPILER="g++-5"
+    env: PYTHON=3.6 COMPILER="g++-5"
     addons:
       apt:
         sources:
@@ -20,7 +19,7 @@ matrix:
     language: cpp
     compiler: clang
     python: "3.6"
-    env: COMPILER="clang++"
+    env: PYTHON=3.6 COMPILER="clang++"
     addons:
       apt:
         sources:
@@ -39,6 +38,8 @@ before_install:
     sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum;
   fi
 - which sha256sum
+- which python
+- python --version
 
 script:
 - mkdir build
@@ -46,6 +47,6 @@ script:
 - wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
 - echo "5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9  boost_1_66_0.tar.bz2" | sha256sum --check - && tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
 - ls
-- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/boost_1_66_0 ..
+- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/boost_1_66_0 -DPYBIND11_PYTHON_VERSION=$PYTHON ..
 - make
 - ctest --output-on-failure
