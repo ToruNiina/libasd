@@ -43,7 +43,6 @@ before_install:
     sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum;
   fi
 - which sha256sum
-- apt search python3
 - which python
 - python --version
 - which python3
