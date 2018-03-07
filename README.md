@@ -10,13 +10,40 @@ libasd has a binding to python3.
 
 ## Usage in Python3
 
+__Especially, Python3 bindings are really unstable now.__
+__These features might drastically change in future release.__
+
 ### Building Python Library
 
-WIP
+Using CMake and [pybind11](https://github.com/pybind/pybind11).
+CMake automatically download pybind11 as a git submodule, so it can be built
+by running following scripts.
+
+```sh
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+It also build test codes. you can run tests by
+
+```sh
+$ make test
+```
+.
 
 ### Example Code
 
-WIP
+__Especially, Python3 bindings are really unstable now.__
+__The APIs used in this example is likely to be changed.__
+
+```python
+import libasd
+
+header = libasd.read_header_v1("example.asd")
+print("image size = {}x{} ".format(header.x_pixel, header.y_pixel))
+```
 
 ### With NumPy
 
