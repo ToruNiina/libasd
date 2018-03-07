@@ -195,9 +195,32 @@ PYBIND11_MODULE(libasd, mod) {
         ;
 
         mod.def("read_header_v0", &py_read_header<asd::version<0>>,
-                "A function which reads only header information of asd file version 0");
+                py::arg("file_name"),
+                "A function which reads only header information of asd file.");
         mod.def("read_header_v1", &py_read_header<asd::version<1>>,
-                "A function which reads only header information of asd file version 1");
+                py::arg("file_name"),
+                "A function which reads only header information of asd file.");
         mod.def("read_header_v2", &py_read_header<asd::version<2>>,
-              "A function which reads only header information of asd file version 2");
+                py::arg("file_name"),
+                "A function which reads only header information of asd file.");
+
+        const auto py_read_header_dynamic =
+            [](const std::string& fname, std::uint32_t v) -> py::object {
+                switch(v)
+                {
+                    case 0: return py::cast(py_read_header<asd::version<0>>(fname));
+                    case 1: return py::cast(py_read_header<asd::version<1>>(fname));
+                    case 2: return py::cast(py_read_header<asd::version<2>>(fname));
+                    default: throw std::invalid_argument(
+                                 "the available versions are only 0, 1, and 2.");
+                }
+            };
+
+        mod.def("read_header", py_read_header_dynamic,
+                "A function which reads only header information of asd file.\n"
+                "When 0 is passed as a version, it reads file as asd version 0"
+                "and returns Header_v0.\nThere are only version 0, 1, and 2. "
+                "If you passed the other value as the version of the file, "
+                "ValueError will be thrown.\n",
+                py::arg("file_name"), py::arg("version") = 1);
 }
