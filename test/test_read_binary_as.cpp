@@ -68,7 +68,7 @@ BOOST_TEST_CASE_TEMPLATE_FUNCTION(test_array_of_value_stream, T)
 
     for(std::size_t i=0; i<1000; ++i)
     {
-        const std::size_t N = 10000;
+        const std::size_t N = 100;
         constexpr std::size_t size = sizeof(T);
         std::vector<T> values(N);
         for(std::size_t i=0; i<values.size(); ++i)
@@ -96,8 +96,7 @@ BOOST_TEST_CASE_TEMPLATE_FUNCTION(test_array_of_value_ptr, T)
 
     for(std::size_t i=0; i<1000; ++i)
     {
-        const std::size_t N = 10000;
-        constexpr std::size_t size = sizeof(T);
+        const std::size_t N = 100;
         std::vector<T> values(N);
         for(std::size_t i=0; i<values.size(); ++i)
         {
