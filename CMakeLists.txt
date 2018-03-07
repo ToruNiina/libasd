@@ -13,5 +13,8 @@ else()
     message(STATUS "current BOOST_ROOT = ${BOOST_ROOT}")
 endif()
 
+add_subdirectory(extlib)
+
 include_directories(${PROJECT_SOURCE_DIR})
 add_subdirectory(test)
+add_subdirectory(python)
