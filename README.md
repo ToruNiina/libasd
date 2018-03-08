@@ -184,9 +184,12 @@ See documents.
 
 ### I don't want to use streams. What can I do?
 
-You can pass a `char const*` to `read_asd` function in exactly the same way as streams.
+You can pass a `char const*` to `read_asd` function in exactly the same way as
+iostreams.
 
 ### How it contains data?
+
+It contains pixels in one frame data by one, contiguous container.
 
 You might think that libasd contains a frame as an array of arrays.
 
@@ -197,8 +200,9 @@ typedef std::vector<line_type>  frame_type;
 ```
 
 You might be afraid of the performance loss that is owing to a cache-miss
-while you access to each line. But it is __not__ true.
-Although the usage is easy, you don't have to be afraid of the performance cost.
+while you access to each line. But it is __NOT__ true.
+Although the usage is as easy as array of arrays,
+you don't have to be afraid of the performance cost.
 Libasd contains frames as a single array, not an array of arrays.
 
 ```cpp
@@ -226,8 +230,8 @@ for(auto iter = frame.raw_begin(), iend = frame.raw_end(); iter != iend; ++iter)
 If you implemented or found a container or an allocator that has a great feature,
 you may want to use it with libasd instead of `std::vector<T, std::allocator<T>>`.
 
-In libasd, you can specify the container used in the classes by passing the
-specialized `struct container_dispatcher` as a template parameter.
+In libasd, you can specify the container used to store pixel data by passing the
+special struct as a template parameter.
 
 For example, `asd::container::vec` that is used by default is defined as follows.
 
@@ -260,14 +264,17 @@ libasd uses the container to declare the container in this way.
 typedef typename vec::template rebind<int>::other int_array;
 ```
 
-The struct `container_traits` provides a tag to resolve overload of utility
-functions. When the container has an interface to access a pointer that points
+The struct `container_traits` provides a tag to dispatch utility functions.
+
+For example, if the container has an interface to access a pointer that points
 the first element and the container can be accessed as a traditional C-array,
-it become `std::true_type`, otherwise, `std::false_type`.
+`ptr_accessibility` is set as `std::true_type`, otherwise, `std::false_type`.
 
 Additionally, to deal with different interfaces of containers, libasd has
-some helper functions. If it is needed(the container has a different interface
-from standard containers), you should overload these functions.
+some helper functions. If it is needed (the container has a different interface
+from standard containers), you should overload these functions. If your awesome
+container has ordinal member functions (e.g. `data()`, `size()`, `resize()` and
+`clear()`), libasd automatically uses them.
 
 ```cpp
 // example: add overload for std::vector.
@@ -300,12 +307,13 @@ inline void clear(std::vector<T, Alloc>& v)
 } // asd
 ```
 
-After implementing and passing these structs and functions(if necessary),
-you can use your awesome container/allocator class with libasd.
+After implementing these structs and functions,
+you can use your awesome container/allocator class with libasd by passing
+dispatcher to `read_asd` function.
 
 By default, `asd::container::vec` and `asd::container::deq` are defined in
 `libasd/container_dispatcher.hpp`.
-They are corresponds to `std::vector` and `std::deque`, respectively.
+They correspond to `std::vector` and `std::deque`, respectively.
 It should be noted that only randomly accessible containers can be used with
 libasd.
 
