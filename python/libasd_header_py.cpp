@@ -212,22 +212,29 @@ void add_header_io_funcs(py::module& mod)
             "A function which reads only header information of asd file.");
 
     const auto py_read_header_dynamic =
-        [](const std::string& fname, std::uint32_t v) -> py::object {
+        [](const std::string& fname) -> py::object {
+            std::ifstream ifs(fname);
+            if(!ifs.good())
+            {
+                throw std::runtime_error("file open error: " + fname);
+            }
+
+            const auto v = asd::read_version(ifs);
             switch(v)
             {
-                case 0: return py::cast(py_read_header<asd::version<0>>(fname));
-                case 1: return py::cast(py_read_header<asd::version<1>>(fname));
-                case 2: return py::cast(py_read_header<asd::version<2>>(fname));
+                case 0: return py::cast(asd::read_header<asd::version<0>>(ifs));
+                case 1: return py::cast(asd::read_header<asd::version<1>>(ifs));
+                case 2: return py::cast(asd::read_header<asd::version<2>>(ifs));
                 default: throw std::invalid_argument(
-                             "the available versions are only 0, 1, and 2.");
+                             "invalid asd version: " + std::to_string(v));
             }
         };
 
     mod.def("read_header", py_read_header_dynamic,
             "A function which reads only header information of asd file.\n"
-            "When 0 is passed as a version, it reads file as asd version 0"
-            "and returns Header_v0.\nThere are only version 0, 1, and 2. "
-            "If you passed the other value as the version of the file, "
-            "ValueError will be thrown.\n",
-            py::arg("file_name"), py::arg("version") = 1);
+            "It automatically reads the version information, and returns an "
+            "appropreate header class.\n"
+            "If the file you passed has invalid signature or some error occured "
+            "while opening file, ValueError will be thrown.\n",
+            py::arg("file_name"));
 }
