@@ -253,12 +253,12 @@ read_header_impl(Header<version<2>>& header, sourceT& source)
 
 inline std::int32_t read_version(const char* ptr)
 {
-    return read_binary_as<std::int32_t>(ptr);
+    return detail::read_binary_as<std::int32_t>(ptr);
 }
 inline std::int32_t read_version(std::istream& is)
 {
     const auto pos = is.tellg();
-    const auto v   = read_binary_as<std::int32_t>(is);
+    const auto v   = detail::read_binary_as<std::int32_t>(is);
     is.seekg(pos);
     return v;
 }
