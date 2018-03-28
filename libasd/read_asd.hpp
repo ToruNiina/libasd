@@ -21,7 +21,7 @@ struct read_and_convert_frame_impl
         read_frame_header_impl(f.header, source);
         for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
         {
-            const FrameData<std::int16_t, contT> fd;
+            FrameData<std::int16_t, contT> fd;
             read_frame_data_impl(fd, source, x, y);
             f[i] = convert_data<realT>(fd, hdr, i);
         }
