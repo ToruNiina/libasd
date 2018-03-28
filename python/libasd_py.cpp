@@ -334,6 +334,202 @@ void add_frame_classes(py::module& mod) // {{{
     return;
 } // }}}
 
+template<typename dataT>
+void add_data_class(py::module& mod, const char* name) // {{{
+{
+    py::class_<dataT>(mod, name)
+        .def(py::init<>())
+        .def_readwrite("header", &dataT::header)
+        .def_readwrite("frames", &dataT::frames)
+        ;
+    return;
+} // }}}
+
+void add_data_classes(py::module& mod) // {{{
+{
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<1>, asd::ver<0>, asd::container::vec>
+        >(mod, "RawData1ch_v0");
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<1>, asd::ver<1>, asd::container::vec>
+        >(mod, "RawData1ch_v1");
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<1>, asd::ver<2>, asd::container::vec>
+        >(mod, "RawData1ch_v2");
+
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<2>, asd::ver<0>, asd::container::vec>
+        >(mod, "RawData2ch_v0");
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<2>, asd::ver<1>, asd::container::vec>
+        >(mod, "RawData2ch_v1");
+    add_data_class<
+        asd::Data<std::int16_t, asd::ch<2>, asd::ver<2>, asd::container::vec>
+        >(mod, "RawData2ch_v2");
+
+    add_data_class<
+        asd::Data<double, asd::ch<1>, asd::ver<0>, asd::container::vec>
+        >(mod, "Data1ch_v0");
+    add_data_class<
+        asd::Data<double, asd::ch<1>, asd::ver<1>, asd::container::vec>
+        >(mod, "Data1ch_v1");
+    add_data_class<
+        asd::Data<double, asd::ch<1>, asd::ver<2>, asd::container::vec>
+        >(mod, "Data1ch_v2");
+
+    add_data_class<
+        asd::Data<double, asd::ch<2>, asd::ver<0>, asd::container::vec>
+        >(mod, "Data2ch_v0");
+    add_data_class<
+        asd::Data<double, asd::ch<2>, asd::ver<1>, asd::container::vec>
+        >(mod, "Data2ch_v1");
+    add_data_class<
+        asd::Data<double, asd::ch<2>, asd::ver<2>, asd::container::vec>
+        >(mod, "Data2ch_v2");
+    return;
+} // }}}
+
+void add_read_asd(py::module& mod) // {{{
+{
+    mod.def("read_raw_data",
+        [](const std::string& fname) -> py::object {
+            std::ifstream ifs(fname);
+            if(!ifs.good())
+            {
+                throw std::runtime_error("file open error: " + fname);
+            }
+
+            const auto v = asd::read_version(ifs);
+            switch(v)
+            {
+//                 case 0:
+//                 {
+//                     if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
+//                             asd::data_kind::none)
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_raw_data<
+//                             asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
+//                     }
+//                     else
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_raw_data<
+//                             asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
+//                     }
+//                 }
+                case 1:
+                {
+                    if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<1>, asd::ver<1>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<2>, asd::ver<1>, asd::container::vec>(ifs));
+                    }
+                }
+//                 case 2:
+//                 {
+//                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
+//                             asd::data_kind::none)
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_raw_data<
+//                             asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
+//                     }
+//                     else
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_raw_data<
+//                             asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
+//                     }
+//                 }
+//                 default: throw std::invalid_argument(
+//                              "invalid asd version: " + std::to_string(v));
+//             }
+        },
+        py::arg("file_name"),
+        "This function reads `.asd` file without converting signal "
+        "to height information."
+        );
+
+    mod.def("read_asd",
+        [](const std::string& fname) -> py::object {
+            std::ifstream ifs(fname);
+            if(!ifs.good())
+            {
+                throw std::runtime_error("file open error: " + fname);
+            }
+
+            const auto v = asd::read_version(ifs);
+            switch(v)
+            {
+//                 case 0:
+//                 {
+//                     if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
+//                             asd::data_kind::none)
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_asd<double,
+//                             asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
+//                     }
+//                     else
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_asd<double,
+//                             asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
+//                     }
+//                 }
+                case 1:
+                {
+                    if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<1>, asd::ver<1>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<2>, asd::ver<1>, asd::container::vec>(ifs));
+                    }
+                }
+//                 case 2:
+//                 {
+//                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
+//                             asd::data_kind::none)
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_asd<double,
+//                             asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
+//                     }
+//                     else
+//                     {
+//                         ifs.seekg(0, std::ios_base::beg);
+//                         return py::cast(asd::read_asd<double,
+//                             asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
+//                     }
+//                 }
+//                 default: throw std::invalid_argument(
+//                              "invalid asd version: " + std::to_string(v));
+//             }
+        },
+        py::arg("file_name"),
+        "This function reads `.asd` file after converting signal "
+        "to height information."
+        );
+
+    return;
+} // }}}
+
 PYBIND11_MODULE(libasd, mod)
 {
     mod.doc() = "libasd -- library to read and write .asd format file";
@@ -343,7 +539,7 @@ PYBIND11_MODULE(libasd, mod)
     add_frame_headers (mod);
     add_frame_data    (mod);
     add_frame_classes (mod);
-
+    add_data_classes  (mod);
     add_read_header   (mod);
-//     add_readasd       (mod);
+    add_read_asd      (mod);
 }
