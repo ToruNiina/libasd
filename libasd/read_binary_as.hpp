@@ -43,6 +43,7 @@ template<typename Value, typename ContainerDispatcher>
 typename ContainerDispatcher::template rebind<Value>::other
 read_binary_as(std::istream& is, const std::size_t N, std::true_type)
 {
+    // the traditional C-array form is available. write directory into the ptr.
     constexpr std::size_t sz = sizeof(Value);
     typename ContainerDispatcher::template rebind<Value>::other retval(N);
     is.read(reinterpret_cast<char*>(::asd::container::get_ptr(retval)),
@@ -54,6 +55,7 @@ template<typename Value, typename ContainerDispatcher>
 typename ContainerDispatcher::template rebind<Value>::other
 read_binary_as(std::istream& is, const std::size_t N, std::false_type)
 {
+    // the traditional C-array form is not available, use Iterator.
     constexpr std::size_t sz = sizeof(Value);
     std::vector<char> buffer(sz * N);
     is.read(buffer.data(), sz * N);
