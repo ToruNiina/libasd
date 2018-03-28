@@ -133,7 +133,119 @@ make_voltage_level_converter(
 template<typename realT, typename contT>
 FrameData<realT, contT>
 convert_data(const FrameData<std::int16_t, contT>& data,
+             const Header<version<0>>& header, const std::size_t ch)
+{
+    FrameData<realT, contT> retval(data.x_pixel(), data.y_pixel());
+
+    const auto converter = make_voltage_level_converter<realT>(
+            header.ad_range, (1ul << header.bits_data));
+
+    // voltage -> data
+    if(ch != 0 && ch != 1)
+    {
+        throw_exception<std::invalid_argument>("channel must be 0 or 1: %", ch);
+    }
+    const auto kind = (ch == 0) ? header.data_type_1ch : header.data_type_2ch;
+
+    realT coef = 0.0;
+    switch(kind)
+    {
+        case data_kind::topography:
+        {
+            coef = header.z_piezo_gain * header.z_piezo_extension;
+            break;
+        }
+        case data_kind::error:
+        {
+            coef = -1.0 * header.sensor_sensitivity;
+            break;
+        }
+        case data_kind::phase:
+        {
+            coef = -1.0 * header.phase_sensitivity;
+            break;
+        }
+        case data_kind::none:
+        {
+            std::cerr << "WARNING: data kind is 'none'. coefficient was set 0\n";
+            coef = 0.0;
+            break;
+        }
+        default:
+        {
+            throw_exception<std::invalid_argument>(
+                    "invalid data kind(%) for channel(%)",
+                    static_cast<std::int32_t>(kind), ch);
+        }
+    }
+
+    std::transform(data.raw_begin(), data.raw_end(), retval.raw_begin(),
+        [&converter, coef](const std::int16_t i) noexcept -> realT {
+            return coef * converter->level_to_voltage(i);
+        });
+    return retval;
+}
+
+template<typename realT, typename contT>
+FrameData<realT, contT>
+convert_data(const FrameData<std::int16_t, contT>& data,
              const Header<version<1>>& header, const std::size_t ch)
+{
+    FrameData<realT, contT> retval(data.x_pixel(), data.y_pixel());
+
+    const auto converter = make_voltage_level_converter<realT>(
+            header.ad_range, (1ul << header.ad_resolution));
+
+    // voltage -> data
+    if(ch != 0 && ch != 1)
+    {
+        throw_exception<std::invalid_argument>("channel must be 0 or 1: %", ch);
+    }
+    const auto kind = (ch == 0) ? header.data_kind_1ch : header.data_kind_2ch;
+
+    realT coef = 0.0;
+    switch(kind)
+    {
+        case data_kind::topography:
+        {
+            coef = header.z_piezo_gain * header.z_piezo_extension;
+            break;
+        }
+        case data_kind::error:
+        {
+            coef = -1.0 * header.sensor_sensitivity;
+            break;
+        }
+        case data_kind::phase:
+        {
+            coef = -1.0 * header.phase_sensitivity;
+            break;
+        }
+        case data_kind::none:
+        {
+            std::cerr << "WARNING: data kind is 'none'. coefficient was set 0\n";
+            coef = 0.0;
+            break;
+        }
+        default:
+        {
+            throw_exception<std::invalid_argument>(
+                    "invalid data kind(%) for channel(%)",
+                    static_cast<std::int32_t>(kind), ch);
+        }
+    }
+
+    std::transform(data.raw_begin(), data.raw_end(), retval.raw_begin(),
+        [&converter, coef](const std::int16_t i) noexcept -> realT {
+            return coef * converter->level_to_voltage(i);
+        });
+    return retval;
+}
+
+template<typename realT, typename contT>
+FrameData<realT, contT>
+convert_data(const FrameData<std::int16_t, contT>& data,
+             const Header<version<2>>& header, const std::size_t ch)
 {
     FrameData<realT, contT> retval(data.x_pixel(), data.y_pixel());
 
