@@ -257,12 +257,93 @@ void add_read_header(py::module& mod) // {{{
         "while opening file, ValueError will be thrown.");
 } // }}}
 
-PYBIND11_MODULE(libasd, mod) {
+void add_frame_headers(py::module& mod) // {{{
+{
+    py::class_<asd::FrameHeader>(mod, "FrameHeader")
+        .def(py::init<>())
+        .def_readwrite("number",        &asd::FrameHeader::number)
+        .def_readwrite("max_data",      &asd::FrameHeader::max_data)
+        .def_readwrite("max_data",      &asd::FrameHeader::max_data)
+        .def_readwrite("x_offset",      &asd::FrameHeader::x_offset)
+        .def_readwrite("y_offset",      &asd::FrameHeader::y_offset)
+        .def_readwrite("x_tilt",        &asd::FrameHeader::x_tilt)
+        .def_readwrite("y_tilt",        &asd::FrameHeader::y_tilt)
+        .def_readwrite("is_stimulated", &asd::FrameHeader::is_stimulated)
+        ;
+    return;
+} // }}}
+
+void add_frame_data(py::module& mod) // {{{
+{
+    py::class_<asd::FrameData<std::int16_t, asd::container::vec>
+        >(mod, "RawFrameData", py::buffer_protocol())
+        .def_buffer([](asd::FrameData<std::int16_t, asd::container::vec>& fd)
+            -> py::buffer_info {
+            return py::buffer_info(
+                fd.base().data(), sizeof(std::int16_t),
+                py::format_descriptor<std::int16_t>::format(),
+                2, {fd.x_pixel(), fd.y_pixel()},
+                {sizeof(std::int16_t) * fd.x_pixel(), sizeof(std::int16_t)}
+            );
+        });
+
+    py::class_<asd::FrameData<double, asd::container::vec>
+        >(mod, "FrameData", py::buffer_protocol())
+        .def_buffer([](asd::FrameData<double, asd::container::vec>& fd)
+            -> py::buffer_info {
+            return py::buffer_info(
+                fd.base().data(), sizeof(double),
+                py::format_descriptor<double>::format(),
+                2, {fd.x_pixel(), fd.y_pixel()},
+                {sizeof(double) * fd.x_pixel(), sizeof(double)}
+            );
+        });
+    return;
+} // }}}
+
+void add_frame_classes(py::module& mod) // {{{
+{
+    py::class_<asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>
+        >(mod, "RawFrame1ch")
+        .def(py::init<>())
+        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::header)
+        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::data)
+        ;
+
+    py::class_<asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>
+        >(mod, "RawFrame2ch")
+        .def(py::init<>())
+        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::header)
+        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::data)
+        ;
+
+    py::class_<asd::Frame<double, asd::ch<1>, asd::container::vec>
+        >(mod, "Frame1ch")
+        .def(py::init<>())
+        .def_readwrite("header", &asd::Frame<double, asd::ch<1>, asd::container::vec>::header)
+        .def_readwrite("data",   &asd::Frame<double, asd::ch<1>, asd::container::vec>::data)
+        ;
+
+    py::class_<asd::Frame<double, asd::ch<2>, asd::container::vec>
+        >(mod, "Frame2ch")
+        .def(py::init<>())
+        .def_readwrite("header", &asd::Frame<double, asd::ch<2>, asd::container::vec>::header)
+        .def_readwrite("data",   &asd::Frame<double, asd::ch<2>, asd::container::vec>::data)
+        ;
+
+    return;
+} // }}}
+
+PYBIND11_MODULE(libasd, mod)
+{
     mod.doc() = "libasd -- library to read and write .asd format file";
 
-    add_header_enums    (mod);
-    add_header_classes  (mod);
-//     add_frame_headers   (mod);
-//     add_frame_datas     (mod);
-    add_read_header     (mod);
+    add_header_enums  (mod);
+    add_header_classes(mod);
+    add_frame_headers (mod);
+    add_frame_data    (mod);
+    add_frame_classes (mod);
+
+    add_read_header   (mod);
+//     add_readasd       (mod);
 }
