@@ -9,7 +9,7 @@ namespace asd
 
 template<typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec>
-Data<std::int16_t, chT, verT, contT> read_raw_data(const char* ptr)
+Data<std::int16_t, chT, verT, contT> read_raw_data(const char*& ptr)
 {
     typedef Data<std::int16_t, chT, verT, contT> data_type;
     data_type data;

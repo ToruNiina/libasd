@@ -86,7 +86,7 @@ struct read_frame_impl<channel<1>, contT>
 
 } // detail
 
-inline FrameHeader read_frame_header(const char* ptr)
+inline FrameHeader read_frame_header(const char*& ptr)
 {
     FrameHeader fh;
     detail::read_frame_header_impl(fh, ptr);
@@ -101,7 +101,7 @@ inline FrameHeader read_frame_header(std::istream& is)
 
 template<typename contT = container::vec>
 FrameData<std::int16_t, contT>
-read_frame_data(const char* ptr, std::size_t x, std::size_t y)
+read_frame_data(const char*& ptr, std::size_t x, std::size_t y)
 {
     FrameData<std::int16_t, contT> fd;
     detail::read_frame_data_impl<contT>(fd, ptr, x, y);
@@ -117,7 +117,7 @@ read_frame_data(std::istream& is, std::size_t x, std::size_t y)
 }
 
 template<typename chT = channel<1>, typename contT = container::vec>
-Frame<std::int16_t, chT, contT> read_frame(const char* ptr, std::size_t x, std::size_t y)
+Frame<std::int16_t, chT, contT> read_frame(const char*& ptr, std::size_t x, std::size_t y)
 {
     return detail::read_frame_impl<chT, contT>::invoke(ptr, x, y);
 }

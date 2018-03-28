@@ -251,10 +251,12 @@ read_header_impl(Header<version<2>>& header, sourceT& source)
 
 } // detail
 
+// XXX it does not change the position of the ptr!
 inline std::int32_t read_version(const char* ptr)
 {
     return detail::read_binary_as<std::int32_t>(ptr);
 }
+// XXX it does not change the position of the is!
 inline std::int32_t read_version(std::istream& is)
 {
     const auto pos = is.tellg();
@@ -264,7 +266,7 @@ inline std::int32_t read_version(std::istream& is)
 }
 
 template<typename verT = version<1>>
-Header<verT> read_header(const char* ptr)
+Header<verT> read_header(const char*& ptr)
 {
     Header<verT> header;
     detail::read_header_impl(header, ptr);

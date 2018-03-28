@@ -51,7 +51,7 @@ struct read_and_convert_frame_impl<realT, channel<1>, versionT, contT>
 template<typename realT,
          typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec>
-Data<realT, chT, verT, contT> read_asd(const char* ptr)
+Data<realT, chT, verT, contT> read_asd(const char*& ptr)
 {
     typedef Data<realT, chT, verT, contT> data_type;
     data_type data;
