@@ -38,7 +38,7 @@ void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, const char*& ptr,
     const std::int16_t* last = reinterpret_cast<const std::int16_t*>(ptr);
     last += total_size;
 
-    std::copy(init, last, fd.data().begin());
+    std::copy(init, last, fd.raw_begin());
 
     ptr += total_size;
     return;
@@ -49,9 +49,7 @@ void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, std::istream& is,
                           const std::size_t x, const std::size_t y)
 {
     fd.reset(x, y);
-    const std::size_t total_size = x * y;
-    is.read(reinterpret_cast<char*>(fd.data().data()),
-            total_size * sizeof(std::int16_t));
+    fd.base() = read_binary_as<std::int16_t, contT>(is, x * y);
     return;
 }
 
