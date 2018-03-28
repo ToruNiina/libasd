@@ -24,7 +24,7 @@ libasd has a wrapper library for Python3 depending on
     - [Without iostreams](#i-dont-want-to-use-streams-what-can-i-do)
     - [How does it contain data](#how-it-contains-data)
     - [Hook Container and Allocator](#can-i-use-my-awesome-container-with-libasd)
-- [LICENSE](#licensing-terms)
+- [Licensing terms and Citation](#licensing-terms)
 
 ## Usage in Python3
 
@@ -373,6 +373,12 @@ already installed it.
 
 Author
 - Toru Niina
+
+cite as
+
+```
+Toru Niina. (2018, March 28). ToruNiina/libasd v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.1209119
+```
 
 This product is licensed under the terms of the [MIT License](LICENSE).
 
