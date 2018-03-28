@@ -84,8 +84,8 @@ struct FrameData
 
     std::size_t raw_size() const noexcept {return container::size(this->data_);}
 
-    container_type&       data()       noexcept {return this->data_;}
-    container_type const& data() const noexcept {return this->data_;}
+    container_type&       base()       noexcept {return this->data_;}
+    container_type const& base() const noexcept {return this->data_;}
 
     // ------------------------------------------------------------------------
     // proxy interface
