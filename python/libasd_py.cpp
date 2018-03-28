@@ -402,22 +402,22 @@ void add_read_asd(py::module& mod) // {{{
             const auto v = asd::read_version(ifs);
             switch(v)
             {
-//                 case 0:
-//                 {
-//                     if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
-//                             asd::data_kind::none)
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_raw_data<
-//                             asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
-//                     }
-//                     else
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_raw_data<
-//                             asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
-//                     }
-//                 }
+                case 0:
+                {
+                    if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
+                    }
+                }
                 case 1:
                 {
                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
@@ -434,25 +434,25 @@ void add_read_asd(py::module& mod) // {{{
                             asd::ch<2>, asd::ver<1>, asd::container::vec>(ifs));
                     }
                 }
-//                 case 2:
-//                 {
-//                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
-//                             asd::data_kind::none)
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_raw_data<
-//                             asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
-//                     }
-//                     else
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_raw_data<
-//                             asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
-//                     }
-//                 }
-//                 default: throw std::invalid_argument(
-//                              "invalid asd version: " + std::to_string(v));
-//             }
+                case 2:
+                {
+                    if(asd::read_header<asd::version<2>>(ifs).data_kind_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_raw_data<
+                            asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
+                    }
+                }
+                default: throw std::invalid_argument(
+                             "invalid asd version: " + std::to_string(v));
+            }
         },
         py::arg("file_name"),
         "This function reads `.asd` file without converting signal "
@@ -470,22 +470,22 @@ void add_read_asd(py::module& mod) // {{{
             const auto v = asd::read_version(ifs);
             switch(v)
             {
-//                 case 0:
-//                 {
-//                     if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
-//                             asd::data_kind::none)
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_asd<double,
-//                             asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
-//                     }
-//                     else
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_asd<double,
-//                             asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
-//                     }
-//                 }
+                case 0:
+                {
+                    if(asd::read_header<asd::version<0>>(ifs).data_type_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<1>, asd::ver<0>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<2>, asd::ver<0>, asd::container::vec>(ifs));
+                    }
+                }
                 case 1:
                 {
                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
@@ -502,25 +502,25 @@ void add_read_asd(py::module& mod) // {{{
                             asd::ch<2>, asd::ver<1>, asd::container::vec>(ifs));
                     }
                 }
-//                 case 2:
-//                 {
-//                     if(asd::read_header<asd::version<1>>(ifs).data_kind_2ch ==
-//                             asd::data_kind::none)
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_asd<double,
-//                             asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
-//                     }
-//                     else
-//                     {
-//                         ifs.seekg(0, std::ios_base::beg);
-//                         return py::cast(asd::read_asd<double,
-//                             asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
-//                     }
-//                 }
-//                 default: throw std::invalid_argument(
-//                              "invalid asd version: " + std::to_string(v));
-//             }
+                case 2:
+                {
+                    if(asd::read_header<asd::version<2>>(ifs).data_kind_2ch ==
+                            asd::data_kind::none)
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<1>, asd::ver<2>, asd::container::vec>(ifs));
+                    }
+                    else
+                    {
+                        ifs.seekg(0, std::ios_base::beg);
+                        return py::cast(asd::read_asd<double,
+                            asd::ch<2>, asd::ver<2>, asd::container::vec>(ifs));
+                    }
+                }
+                default: throw std::invalid_argument(
+                             "invalid asd version: " + std::to_string(v));
+            }
         },
         py::arg("file_name"),
         "This function reads `.asd` file after converting signal "
