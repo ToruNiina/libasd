@@ -43,13 +43,13 @@ before_install:
     sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum;
   fi
 - which sha256sum
+- wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
+- echo "5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9  boost_1_66_0.tar.bz2" | sha256sum --check - && tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
 
 script:
 - mkdir build
 - cd build
-- wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
-- echo "5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9  boost_1_66_0.tar.bz2" | sha256sum --check - && tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
 - ls
-- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/boost_1_66_0 -DPYBIND11_PYTHON_VERSION=$PYTHON ..
+- cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/../boost_1_66_0 -DPYBIND11_PYTHON_VERSION=$PYTHON ..
 - make
 - ctest --output-on-failure
