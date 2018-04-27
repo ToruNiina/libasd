@@ -180,7 +180,7 @@ void write_header_impl(sourceT& source, const Header<version<2>>& header)
 }// detail
 
 template<typename verT>
-char* write_header(char* ptr, const Header<verT>& header)
+char*& write_header(char*& ptr, const Header<verT>& header)
 {
     detail::write_header_impl(ptr, header);
     return ptr;

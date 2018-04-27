@@ -65,7 +65,7 @@ struct write_frame_impl<channel<1>, contT>
 };
 } // detail
 
-inline char* write_frame_header(char* ptr, const FrameHeader& fh)
+inline char*& write_frame_header(char*& ptr, const FrameHeader& fh)
 {
     detail::write_frame_header_impl(ptr, fh);
     return ptr;
@@ -77,7 +77,7 @@ inline std::ostream& write_frame_header(std::ostream& os, const FrameHeader& fh)
 }
 
 template<typename contT = container::vec>
-char* write_frame_data(char* ptr, const FrameData<contT>& fd)
+char*& write_frame_data(char*& ptr, const FrameData<contT>& fd)
 {
     detail::write_frame_data_impl<contT>(ptr, fd);
     return ptr;
@@ -91,7 +91,7 @@ write_frame_data(std::ostream& os, const FrameData<contT>& fd)
 }
 
 template<typename channelT, typename contT = container::vec>
-char* write_frame(char* ptr, const Frame<channelT, contT>& frm)
+char*& write_frame(char*& ptr, const Frame<channelT, contT>& frm)
 {
     detail::write_frame_impl<channelT, contT>::invoke(ptr, frm);
     return ptr;
