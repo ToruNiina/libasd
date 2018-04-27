@@ -19,10 +19,8 @@ T read_binary_as(const char*& ptr) noexcept
 template<typename T>
 T read_binary_as(std::istream& is)
 {
-    constexpr std::size_t sz = sizeof(T);
-    alignas(alignof(T)) char cbytes[sz];
-    is.read(cbytes, sz);
-    const T retval = *reinterpret_cast<const T*>(cbytes);
+    T retval;
+    is.read(reinterpret_cast<char*>(std::addressof(retval)), sizeof(T));
     return retval;
 }
 
