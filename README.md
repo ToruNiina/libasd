@@ -9,6 +9,8 @@ depending only on the C++ standard library.
 libasd provides a binding for Python3 depending on
 [pybind11](https://github.com/pybind/pybind11).
 
+![logo](./misc/logo.png)
+
 ## Table of Contents
 
 - [libasd](#libasd)
