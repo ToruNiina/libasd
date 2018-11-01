@@ -140,10 +140,10 @@ struct Header<version<0>>
     std::int32_t   operator_name_size;  //!< Size of the operator name
     std::int32_t   comment_offset_size; //!< Size of the offset to the comment
     std::int32_t   comment_size;        //!< Size of the comment
-    std::int32_t   x_pixel;             //!< X pixel
-    std::int32_t   y_pixel;             //!< Y pixel (or number of lines)
-    std::int32_t   x_scanning_range;    //!< X scanning range (nm)
-    std::int32_t   y_scanning_range;    //!< Y scanning range (nm)
+    std::int16_t   x_pixel;             //!< X pixel
+    std::int16_t   y_pixel;             //!< Y pixel (or number of lines)
+    std::int16_t   x_scanning_range;    //!< X scanning range (nm)
+    std::int16_t   y_scanning_range;    //!< Y scanning range (nm)
     float          frame_rate;          //!< Frame rate (ms/frame)
     float          z_piezo_extension;   //!< Z piezo extension coefficient (nm/V)
     float          z_piezo_gain;        //!< Z piezo driver gain
@@ -151,14 +151,14 @@ struct Header<version<0>>
     std::int32_t   bits_data;           //!< Number of bits of Data(typically, 12 -> [0, 4095])
     bool	       is_averaged;         //!< Flag of the averaging
     std::int32_t   average_window;      //!< Number of data for the averaging
-    std::int32_t   _legacy;             //!< Not booked-region, just a compliance for the previous Kodec program
+    std::int16_t   _legacy;             //!< Not booked-region, just a compliance for the previous Kodec program
     std::int16_t   year;                //!< Year when this asd file was recorded
     std::uint8_t   month;               //!< Month when this asd file was recorded
     std::uint8_t   day;                 //!< Day when this asd file was recorded
     std::uint8_t   hour;                //!< Hour when this asd file was recorded
     std::uint8_t   minute;              //!< Minute when this asd file was recorded
     std::uint8_t   second;              //!< Second when this asd file was recorded
-    std::int32_t   rounding_degree;     //!< Degree of the rounding of x-scanning signal (%)
+    std::uint8_t   rounding_degree;     //!< Degree of the rounding of x-scanning signal (%)
     float          x_max_range;         //!< X maximum scanning range (nm)
     float          y_max_range;         //!< Y maximum scanning range (nm)
     std::int32_t   _booked1;            //!< Booked-region
@@ -167,7 +167,7 @@ struct Header<version<0>>
     std::int32_t   init_frame;          //!< Number of frames when this asd file was recorded
     std::int32_t   num_frames;          //!< Number of frames contained in this asd file
     std::int32_t   machine_id;          //!< Number of the imaging machine
-    std::int32_t   file_id;             //!< Name of the asd file
+    std::int16_t   file_id;             //!< Name of the asd file
     byte_array     operator_name;       //!< Name of the operator
     float          sensor_sensitivity;  //!< Sensor sensitivity (nm/V)
     float          phase_sensitivity;   //!< Phase sensitivity (deg/V)
