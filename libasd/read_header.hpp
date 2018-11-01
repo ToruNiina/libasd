@@ -63,6 +63,9 @@ read_header_impl(Header<version<0>>& header, sourceT& source)
     header.phase_sensitivity   = read_binary_as<decltype(header.phase_sensitivity )>(source);
     header.scannig_direction   = read_binary_as<decltype(header.scannig_direction )>(source);
 
+    // comment offset is not included in the comment size
+    ignore_bytes(source, static_cast<std::size_t>(header.comment_offset_size));
+
     const std::size_t cm_sz = static_cast<std::size_t>(header.comment_size);
     ::asd::container::resize(header.comment, cm_sz);
     for(std::size_t i=0; i<cm_sz; ++i)
