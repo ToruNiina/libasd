@@ -39,7 +39,7 @@ matrix:
 before_install:
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew update;
-    brew install coreutils;
+    brew install coreutils python3;
     sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum;
   fi
 - which sha256sum
@@ -53,3 +53,5 @@ script:
 - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBOOST_ROOT=`pwd`/../boost_1_66_0 -DPYBIND11_PYTHON_VERSION=$PYTHON ..
 - make
 - ctest --output-on-failure
+- cd ..
+- pip install ./
