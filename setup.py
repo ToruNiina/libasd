@@ -58,7 +58,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='libasd',
-    version='1.2.0',
+    version='1.1.1',
     author='Toru Niina',
     author_email='niina.toru.68u@gmail.com',
     description='a library to read High Speed AFM data file',
