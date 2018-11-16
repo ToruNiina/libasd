@@ -30,39 +30,15 @@ libasd provides a binding for Python3 depending on
 ## Usage in Python3
 
 The python binding part depends on [pybind11](https://github.com/pybind/pybind11).
-To use it, firstly build it, and add `PYTHONPATH`.
 
 ### Building Python Library
 
-Build it with [CMake](https://cmake.org/). CMake will automatically download
-pybind11 as a git submodule, so it can be built by running `cmake` and `make`.
+The build script uses [CMake](https://cmake.org/).
+Please make sure that you have installed `cmake`.
 
-```sh
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-```
-
-It also build test codes. you can run tests by
-
-```sh
-$ make test # optional
-```
-
-To `import` libasd, you have to set `PYTHONPATH` to the shared object (`.so`)
-file that is generated under the `build/python/` directory.
-
-```sh
-$ export PYTHONPATH=$PYTHONPATH:/path/to/libasd/build/python
-```
-
-Or, you can dynamically add the path in your python code.
-
-```python
-import sys
-sys.path.append("path/to/libasd/build/python") # add the location of .so file
-import libasd
+```console
+$ git clone --recursive https://github.com/ToruNiina/libasd.git
+$ pip install --user ./libasd
 ```
 
 ### Example Code
