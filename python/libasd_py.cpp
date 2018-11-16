@@ -45,7 +45,7 @@ void add_header_enums(py::module& mod) // {{{
 
 void add_header_classes(py::module& mod) // {{{
 {
-    py::class_<asd::Header<asd::version<0>>>(mod, "Header_v0", "header of asd version 0 file.")
+    py::class_<asd::Header<asd::version<0>>>(mod, "Header_v0", "header of asd file version 0.")
         .def(py::init<>())
         .def_readwrite("file_version"       , &asd::Header<asd::version<0>>::file_version,
                        "type: Integer\nversion of the file. by definition, the value is 0.")
@@ -123,109 +123,206 @@ void add_header_classes(py::module& mod) // {{{
                        "type: byte array\ncomments!")
         ;
 
-    py::class_<asd::Header<asd::version<1>>>(mod, "Header_v1")
+    py::class_<asd::Header<asd::version<1>>>(mod, "Header_v1", "header of asd file version 1.")
         .def(py::init<>())
-        .def_readwrite("file_version"        , &asd::Header<asd::version<1>>::file_version)
-        .def_readwrite("file_header_size"    , &asd::Header<asd::version<1>>::file_header_size)
-        .def_readwrite("frame_header_size"   , &asd::Header<asd::version<1>>::frame_header_size)
-        .def_readwrite("text_encoding"       , &asd::Header<asd::version<1>>::text_encoding)
-        .def_readwrite("operator_name_size"  , &asd::Header<asd::version<1>>::operator_name_size)
-        .def_readwrite("comment_size"        , &asd::Header<asd::version<1>>::comment_size)
-        .def_readwrite("data_kind_1ch"       , &asd::Header<asd::version<1>>::data_kind_1ch)
-        .def_readwrite("data_kind_2ch"       , &asd::Header<asd::version<1>>::data_kind_2ch)
-        .def_readwrite("init_frame"          , &asd::Header<asd::version<1>>::init_frame)
-        .def_readwrite("num_frames"          , &asd::Header<asd::version<1>>::num_frames)
-        .def_readwrite("scanning_direction"  , &asd::Header<asd::version<1>>::scanning_direction)
-        .def_readwrite("file_id"             , &asd::Header<asd::version<1>>::file_id)
-        .def_readwrite("x_pixel"             , &asd::Header<asd::version<1>>::x_pixel)
-        .def_readwrite("y_pixel"             , &asd::Header<asd::version<1>>::y_pixel)
-        .def_readwrite("x_scanning_range"    , &asd::Header<asd::version<1>>::x_scanning_range)
-        .def_readwrite("y_scanning_range"    , &asd::Header<asd::version<1>>::y_scanning_range)
-        .def_readwrite("is_averaged"         , &asd::Header<asd::version<1>>::is_averaged)
-        .def_readwrite("average_window"      , &asd::Header<asd::version<1>>::average_window)
-        .def_readwrite("year"                , &asd::Header<asd::version<1>>::year)
-        .def_readwrite("month"               , &asd::Header<asd::version<1>>::month)
-        .def_readwrite("day"                 , &asd::Header<asd::version<1>>::day)
-        .def_readwrite("hour"                , &asd::Header<asd::version<1>>::hour)
-        .def_readwrite("minute"              , &asd::Header<asd::version<1>>::minute)
-        .def_readwrite("second"              , &asd::Header<asd::version<1>>::second)
-        .def_readwrite("x_rounding_degree"   , &asd::Header<asd::version<1>>::x_rounding_degree)
-        .def_readwrite("y_rounding_degree"   , &asd::Header<asd::version<1>>::y_rounding_degree)
-        .def_readwrite("frame_acquision_time", &asd::Header<asd::version<1>>::frame_acquision_time)
-        .def_readwrite("sensor_sensitivity"  , &asd::Header<asd::version<1>>::sensor_sensitivity)
-        .def_readwrite("phase_sensitivity"   , &asd::Header<asd::version<1>>::phase_sensitivity)
-        .def_readwrite("offset"              , &asd::Header<asd::version<1>>::offset)
-        .def_readwrite("machine_id"          , &asd::Header<asd::version<1>>::machine_id)
-        .def_readwrite("ad_range"            , &asd::Header<asd::version<1>>::ad_range)
-        .def_readwrite("ad_resolution"       , &asd::Header<asd::version<1>>::ad_resolution)
-        .def_readwrite("x_max_scanning_range", &asd::Header<asd::version<1>>::x_max_scanning_range)
-        .def_readwrite("y_max_scanning_range", &asd::Header<asd::version<1>>::y_max_scanning_range)
-        .def_readwrite("x_piezo_extension"   , &asd::Header<asd::version<1>>::x_piezo_extension)
-        .def_readwrite("y_piezo_extension"   , &asd::Header<asd::version<1>>::y_piezo_extension)
-        .def_readwrite("z_piezo_extension"   , &asd::Header<asd::version<1>>::z_piezo_extension)
-        .def_readwrite("z_piezo_gain"        , &asd::Header<asd::version<1>>::z_piezo_gain)
-        .def_readwrite("operator_name"       , &asd::Header<asd::version<1>>::operator_name)
-        .def_readwrite("comment"             , &asd::Header<asd::version<1>>::comment)
+        .def_readwrite("file_version"        , &asd::Header<asd::version<1>>::file_version,
+                       "type: Integer\nversion of the file. by definition, the value is 1.")
+        .def_readwrite("file_header_size"    , &asd::Header<asd::version<1>>::file_header_size,
+                       "type: Integer\nsize of header region.")
+        .def_readwrite("frame_header_size"   , &asd::Header<asd::version<1>>::frame_header_size,
+                       "type: Integer\nsize of frame header region.")
+        .def_readwrite("text_encoding"       , &asd::Header<asd::version<1>>::text_encoding,
+                       "type: libasd.encode\ntext encoding used in this file")
+        .def_readwrite("operator_name_size"  , &asd::Header<asd::version<1>>::operator_name_size,
+                       "type: Integer\nlength of operator name")
+        .def_readwrite("comment_size"        , &asd::Header<asd::version<1>>::comment_size,
+                       "type: Integer\nlength of comment")
+        .def_readwrite("data_kind_1ch"       , &asd::Header<asd::version<1>>::data_kind_1ch,
+                       "type: libasd.data_kind\ndata type of channel 1. [topography|error|phase|none]")
+        .def_readwrite("data_kind_2ch"       , &asd::Header<asd::version<1>>::data_kind_2ch,
+                       "type: libasd.data_kind\ndata type of channel 2. [topography|error|phase|none]")
+        .def_readwrite("init_frame"          , &asd::Header<asd::version<1>>::init_frame,
+                       "type: Integer\nnumber of frames when this file was recorded")
+        .def_readwrite("num_frames"          , &asd::Header<asd::version<1>>::num_frames,
+                       "type: Integer\nnumber of frames contained in this file")
+        .def_readwrite("scanning_direction"  , &asd::Header<asd::version<1>>::scanning_direction,
+                       "type: libasd.scan_direction\nscanning direction. [x|y]_[forward|backward]")
+        .def_readwrite("file_id"             , &asd::Header<asd::version<1>>::file_id,
+                       "type: Integer\nidentifier of the file")
+        .def_readwrite("x_pixel"             , &asd::Header<asd::version<1>>::x_pixel,
+                       "type: Integer\nnumber of pixels along the x axis in one frame")
+        .def_readwrite("y_pixel"             , &asd::Header<asd::version<1>>::y_pixel,
+                       "type: Integer\nnumber of pixels along the y axis in one frame")
+        .def_readwrite("x_scanning_range"    , &asd::Header<asd::version<1>>::x_scanning_range,
+                       "type: Integer\nscanning range along x axis [nm]")
+        .def_readwrite("y_scanning_range"    , &asd::Header<asd::version<1>>::y_scanning_range,
+                       "type: Integer\nscanning range along y axis [nm]")
+        .def_readwrite("is_averaged"         , &asd::Header<asd::version<1>>::is_averaged,
+                       "type: Boolean\nwhether the frames are averaged or not")
+        .def_readwrite("average_window"      , &asd::Header<asd::version<1>>::average_window,
+                       "type: Integer\nnumber of frames used to average the frame data")
+        .def_readwrite("year"                , &asd::Header<asd::version<1>>::year,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("month"               , &asd::Header<asd::version<1>>::month,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("day"                 , &asd::Header<asd::version<1>>::day,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("hour"                , &asd::Header<asd::version<1>>::hour,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("minute"              , &asd::Header<asd::version<1>>::minute,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("second"              , &asd::Header<asd::version<1>>::second,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("x_rounding_degree"   , &asd::Header<asd::version<1>>::x_rounding_degree,
+                       "type: Integer\ndegree of the rounding of x-scanning signal [%]")
+        .def_readwrite("y_rounding_degree"   , &asd::Header<asd::version<1>>::y_rounding_degree,
+                       "type: Integer\ndegree of the rounding of y-scanning signal [%]")
+        .def_readwrite("frame_acquision_time", &asd::Header<asd::version<1>>::frame_acquision_time,
+                       "type: Float\nthe time it takes to obtain one frame [ms]")
+        .def_readwrite("sensor_sensitivity"  , &asd::Header<asd::version<1>>::sensor_sensitivity,
+                       "type: Float\nsensitivity of the sensor of canti-lever [nm/V]")
+        .def_readwrite("phase_sensitivity"   , &asd::Header<asd::version<1>>::phase_sensitivity,
+                       "type: Float\nsensitivity of the sensor of the phase [deg/V]")
+        .def_readwrite("offset"              , &asd::Header<asd::version<1>>::offset,
+                       "type: Integer\noffset. internal use only")
+        .def_readwrite("machine_id"          , &asd::Header<asd::version<1>>::machine_id,
+                       "type: Integer\nidentifier of the AFM")
+        .def_readwrite("ad_range"            , &asd::Header<asd::version<1>>::ad_range,
+                       "type: libasd.AD_range\nrange of the A-D converter used")
+        .def_readwrite("ad_resolution"       , &asd::Header<asd::version<1>>::ad_resolution,
+                       "type: Integer\nnumber of bits used in the frame data (usually 12)")
+        .def_readwrite("x_max_scanning_range", &asd::Header<asd::version<1>>::x_max_scanning_range,
+                       "type: Float\nmaximum scanning range in the X axis[nm]")
+        .def_readwrite("y_max_scanning_range", &asd::Header<asd::version<1>>::y_max_scanning_range,
+                       "type: Float\nmaximum scanning range in the Y axis[nm]")
+        .def_readwrite("x_piezo_extension"   , &asd::Header<asd::version<1>>::x_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("y_piezo_extension"   , &asd::Header<asd::version<1>>::y_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("z_piezo_extension"   , &asd::Header<asd::version<1>>::z_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("z_piezo_gain"        , &asd::Header<asd::version<1>>::z_piezo_gain,
+                       "type: Float\npiezo driver gain (electronics)")
+        .def_readwrite("operator_name"       , &asd::Header<asd::version<1>>::operator_name,
+                       "type: byte array\nwho operated the AFM while imaging")
+        .def_readwrite("comment"             , &asd::Header<asd::version<1>>::comment,
+                       "type: byte array\ncomments!")
         ;
 
     py::class_<asd::Header<asd::version<2>>>(mod, "Header_v2")
         .def(py::init<>())
-        .def_readwrite("file_version"           , &asd::Header<asd::version<2>>::file_version)
-        .def_readwrite("file_header_size"       , &asd::Header<asd::version<2>>::file_header_size)
-        .def_readwrite("frame_header_size"      , &asd::Header<asd::version<2>>::frame_header_size)
-        .def_readwrite("text_encoding"          , &asd::Header<asd::version<2>>::text_encoding)
-        .def_readwrite("operator_name_size"     , &asd::Header<asd::version<2>>::operator_name_size)
-        .def_readwrite("comment_size"           , &asd::Header<asd::version<2>>::comment_size)
-        .def_readwrite("data_kind_1ch"          , &asd::Header<asd::version<2>>::data_kind_1ch)
-        .def_readwrite("data_kind_2ch"          , &asd::Header<asd::version<2>>::data_kind_2ch)
-        .def_readwrite("init_frame"             , &asd::Header<asd::version<2>>::init_frame)
-        .def_readwrite("num_frames"             , &asd::Header<asd::version<2>>::num_frames)
-        .def_readwrite("scanning_direction"     , &asd::Header<asd::version<2>>::scanning_direction)
-        .def_readwrite("file_id"                , &asd::Header<asd::version<2>>::file_id)
-        .def_readwrite("x_pixel"                , &asd::Header<asd::version<2>>::x_pixel)
-        .def_readwrite("y_pixel"                , &asd::Header<asd::version<2>>::y_pixel)
-        .def_readwrite("x_scanning_range"       , &asd::Header<asd::version<2>>::x_scanning_range)
-        .def_readwrite("y_scanning_range"       , &asd::Header<asd::version<2>>::y_scanning_range)
-        .def_readwrite("is_averaged"            , &asd::Header<asd::version<2>>::is_averaged)
-        .def_readwrite("average_window"         , &asd::Header<asd::version<2>>::average_window)
-        .def_readwrite("year"                   , &asd::Header<asd::version<2>>::year)
-        .def_readwrite("month"                  , &asd::Header<asd::version<2>>::month)
-        .def_readwrite("day"                    , &asd::Header<asd::version<2>>::day)
-        .def_readwrite("hour"                   , &asd::Header<asd::version<2>>::hour)
-        .def_readwrite("minute"                 , &asd::Header<asd::version<2>>::minute)
-        .def_readwrite("second"                 , &asd::Header<asd::version<2>>::second)
-        .def_readwrite("x_rounding_degree"      , &asd::Header<asd::version<2>>::x_rounding_degree)
-        .def_readwrite("y_rounding_degree"      , &asd::Header<asd::version<2>>::y_rounding_degree)
-        .def_readwrite("frame_acquision_time"   , &asd::Header<asd::version<2>>::frame_acquision_time)
-        .def_readwrite("sensor_sensitivity"     , &asd::Header<asd::version<2>>::sensor_sensitivity)
-        .def_readwrite("phase_sensitivity"      , &asd::Header<asd::version<2>>::phase_sensitivity)
-        .def_readwrite("offset"                 , &asd::Header<asd::version<2>>::offset)
-        .def_readwrite("machine_id"             , &asd::Header<asd::version<2>>::machine_id)
-        .def_readwrite("ad_range"               , &asd::Header<asd::version<2>>::ad_range)
-        .def_readwrite("ad_resolution"          , &asd::Header<asd::version<2>>::ad_resolution)
-        .def_readwrite("x_max_scanning_range"   , &asd::Header<asd::version<2>>::x_max_scanning_range)
-        .def_readwrite("y_max_scanning_range"   , &asd::Header<asd::version<2>>::y_max_scanning_range)
-        .def_readwrite("x_piezo_extension"      , &asd::Header<asd::version<2>>::x_piezo_extension)
-        .def_readwrite("y_piezo_extension"      , &asd::Header<asd::version<2>>::y_piezo_extension)
-        .def_readwrite("z_piezo_extension"      , &asd::Header<asd::version<2>>::z_piezo_extension)
-        .def_readwrite("z_piezo_gain"           , &asd::Header<asd::version<2>>::z_piezo_gain)
-        .def_readwrite("operator_name"          , &asd::Header<asd::version<2>>::operator_name)
-        .def_readwrite("comment"                , &asd::Header<asd::version<2>>::comment)
-        .def_readwrite("number_of_frames"       , &asd::Header<asd::version<2>>::number_of_frames)
-        .def_readwrite("is_x_feed_forward"      , &asd::Header<asd::version<2>>::is_x_feed_forward)
-        .def_readwrite("x_feed_forward_i"       , &asd::Header<asd::version<2>>::x_feed_forward_i)
-        .def_readwrite("x_feed_forward_d"       , &asd::Header<asd::version<2>>::x_feed_forward_d)
-        .def_readwrite("max_color_scale"        , &asd::Header<asd::version<2>>::max_color_scale)
-        .def_readwrite("min_color_scale"        , &asd::Header<asd::version<2>>::min_color_scale)
-        .def_readwrite("anchor_point_size_red"  , &asd::Header<asd::version<2>>::anchor_point_size_red)
-        .def_readwrite("anchor_point_size_green", &asd::Header<asd::version<2>>::anchor_point_size_green)
-        .def_readwrite("anchor_point_size_blue ", &asd::Header<asd::version<2>>::anchor_point_size_blue)
-        .def_readwrite("x_anchor_points_red"    , &asd::Header<asd::version<2>>::x_anchor_points_red)
-        .def_readwrite("y_anchor_points_red"    , &asd::Header<asd::version<2>>::y_anchor_points_red)
-        .def_readwrite("x_anchor_points_green"  , &asd::Header<asd::version<2>>::x_anchor_points_green)
-        .def_readwrite("y_anchor_points_green"  , &asd::Header<asd::version<2>>::y_anchor_points_green)
-        .def_readwrite("x_anchor_points_blue"   , &asd::Header<asd::version<2>>::x_anchor_points_blue)
-        .def_readwrite("y_anchor_points_blue"   , &asd::Header<asd::version<2>>::y_anchor_points_blue)
+        .def_readwrite("file_version"           , &asd::Header<asd::version<2>>::file_version,
+                       "type: Integer\nversion of the file. by definition, the value is 1.")
+        .def_readwrite("file_header_size"       , &asd::Header<asd::version<2>>::file_header_size,
+                       "type: Integer\nsize of header region.")
+        .def_readwrite("frame_header_size"      , &asd::Header<asd::version<2>>::frame_header_size,
+                       "type: Integer\nsize of frame header region.")
+        .def_readwrite("text_encoding"          , &asd::Header<asd::version<2>>::text_encoding,
+                       "type: libasd.encode\ntext encoding used in this file")
+        .def_readwrite("operator_name_size"     , &asd::Header<asd::version<2>>::operator_name_size,
+                       "type: Integer\nlength of operator name")
+        .def_readwrite("comment_size"           , &asd::Header<asd::version<2>>::comment_size,
+                       "type: Integer\nlength of comment")
+        .def_readwrite("data_kind_1ch"          , &asd::Header<asd::version<2>>::data_kind_1ch,
+                       "type: libasd.data_kind\ndata type of channel 1. [topography|error|phase|none]")
+        .def_readwrite("data_kind_2ch"          , &asd::Header<asd::version<2>>::data_kind_2ch,
+                       "type: libasd.data_kind\ndata type of channel 2. [topography|error|phase|none]")
+        .def_readwrite("init_frame"             , &asd::Header<asd::version<2>>::init_frame,
+                       "type: Integer\nnumber of frames when this file was recorded")
+        .def_readwrite("num_frames"             , &asd::Header<asd::version<2>>::num_frames,
+                       "type: Integer\nnumber of frames contained in this file")
+        .def_readwrite("scanning_direction"     , &asd::Header<asd::version<2>>::scanning_direction,
+                       "type: libasd.scan_direction\nscanning direction. [x|y]_[forward|backward]")
+        .def_readwrite("file_id"                , &asd::Header<asd::version<2>>::file_id,
+                       "type: Integer\nidentifier of the file")
+        .def_readwrite("x_pixel"                , &asd::Header<asd::version<2>>::x_pixel,
+                       "type: Integer\nnumber of pixels along the x axis in one frame")
+        .def_readwrite("y_pixel"                , &asd::Header<asd::version<2>>::y_pixel,
+                       "type: Integer\nnumber of pixels along the y axis in one frame")
+        .def_readwrite("x_scanning_range"       , &asd::Header<asd::version<2>>::x_scanning_range,
+                       "type: Integer\nscanning range along x axis [nm]")
+        .def_readwrite("y_scanning_range"       , &asd::Header<asd::version<2>>::y_scanning_range,
+                       "type: Integer\nscanning range along y axis [nm]")
+        .def_readwrite("is_averaged"            , &asd::Header<asd::version<2>>::is_averaged,
+                       "type: Boolean\nwhether the frames are averaged or not")
+        .def_readwrite("average_window"         , &asd::Header<asd::version<2>>::average_window,
+                       "type: Integer\nnumber of frames used to average the frame data")
+        .def_readwrite("year"                   , &asd::Header<asd::version<2>>::year,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("month"                  , &asd::Header<asd::version<2>>::month,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("day"                    , &asd::Header<asd::version<2>>::day,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("hour"                   , &asd::Header<asd::version<2>>::hour,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("minute"                 , &asd::Header<asd::version<2>>::minute,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("second"                 , &asd::Header<asd::version<2>>::second,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("x_rounding_degree"      , &asd::Header<asd::version<2>>::x_rounding_degree,
+                       "type: Integer\ndegree of the rounding of x-scanning signal [%]")
+        .def_readwrite("y_rounding_degree"      , &asd::Header<asd::version<2>>::y_rounding_degree,
+                       "type: Integer\ndegree of the rounding of y-scanning signal [%]")
+        .def_readwrite("frame_acquision_time"   , &asd::Header<asd::version<2>>::frame_acquision_time,
+                       "type: Float\nthe time it takes to obtain one frame [ms]")
+        .def_readwrite("sensor_sensitivity"     , &asd::Header<asd::version<2>>::sensor_sensitivity,
+                       "type: Float\nsensitivity of the sensor of canti-lever [nm/V]")
+        .def_readwrite("phase_sensitivity"      , &asd::Header<asd::version<2>>::phase_sensitivity,
+                       "type: Float\nsensitivity of the sensor of the phase [deg/V]")
+        .def_readwrite("offset"                 , &asd::Header<asd::version<2>>::offset,
+                       "type: Integer\noffset. internal use only")
+        .def_readwrite("machine_id"             , &asd::Header<asd::version<2>>::machine_id,
+                       "type: Integer\nidentifier of the AFM")
+        .def_readwrite("ad_range"               , &asd::Header<asd::version<2>>::ad_range,
+                       "type: libasd.AD_range\nrange of the A-D converter used")
+        .def_readwrite("ad_resolution"          , &asd::Header<asd::version<2>>::ad_resolution,
+                       "type: Integer\nnumber of bits used in the frame data (usually 12)")
+        .def_readwrite("x_max_scanning_range"   , &asd::Header<asd::version<2>>::x_max_scanning_range,
+                       "type: Float\nmaximum scanning range in the X axis[nm]")
+        .def_readwrite("y_max_scanning_range"   , &asd::Header<asd::version<2>>::y_max_scanning_range,
+                       "type: Float\nmaximum scanning range in the Y axis[nm]")
+        .def_readwrite("x_piezo_extension"      , &asd::Header<asd::version<2>>::x_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("y_piezo_extension"      , &asd::Header<asd::version<2>>::y_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("z_piezo_extension"      , &asd::Header<asd::version<2>>::z_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("z_piezo_gain"           , &asd::Header<asd::version<2>>::z_piezo_gain,
+                       "type: Float\npiezo driver gain (electronics)")
+        .def_readwrite("operator_name"          , &asd::Header<asd::version<2>>::operator_name,
+                       "type: byte array\nwho operated the AFM while imaging")
+        .def_readwrite("comment"                , &asd::Header<asd::version<2>>::comment,
+                       "type: byte array\ncomments!")
+        .def_readwrite("number_of_frames"       , &asd::Header<asd::version<2>>::number_of_frames,
+                       "type: Integer\nnumber of frames contained in this file (same as num_frames)")
+        .def_readwrite("is_x_feed_forward"      , &asd::Header<asd::version<2>>::is_x_feed_forward,
+                       "type: Boolean\nflag for X-line feed-forward")
+        .def_readwrite("x_feed_forward_i"       , &asd::Header<asd::version<2>>::x_feed_forward_i,
+                       "type: Integer\nparameter for X-line feed-forward")
+        .def_readwrite("x_feed_forward_d"       , &asd::Header<asd::version<2>>::x_feed_forward_d,
+                       "type: Float\nparameter for X-line feed-forward")
+        .def_readwrite("max_color_scale"        , &asd::Header<asd::version<2>>::max_color_scale,
+                       "type: Integer\nmaximum value of color scale (0-255)")
+        .def_readwrite("min_color_scale"        , &asd::Header<asd::version<2>>::min_color_scale,
+                       "type: Integer\nminimum value of color scale (0-255)")
+        .def_readwrite("anchor_point_size_red"  , &asd::Header<asd::version<2>>::anchor_point_size_red,
+                       "type: Integer\nnumber of anchor points for color collection (red)")
+        .def_readwrite("anchor_point_size_green", &asd::Header<asd::version<2>>::anchor_point_size_green,
+                       "type: Integer\nnumber of anchor points for color collection (green)")
+        .def_readwrite("anchor_point_size_blue ", &asd::Header<asd::version<2>>::anchor_point_size_blue,
+                       "type: Integer\nnumber of anchor points for color collection (blue)")
+        .def_readwrite("x_anchor_points_red"    , &asd::Header<asd::version<2>>::x_anchor_points_red,
+                       "type: List of Integers\nX value of the anchor points (red)")
+        .def_readwrite("y_anchor_points_red"    , &asd::Header<asd::version<2>>::y_anchor_points_red,
+                       "type: List of Integers\nY value of the anchor points (red)")
+        .def_readwrite("x_anchor_points_green"  , &asd::Header<asd::version<2>>::x_anchor_points_green,
+                       "type: List of Integers\nX value of the anchor points (green)")
+        .def_readwrite("y_anchor_points_green"  , &asd::Header<asd::version<2>>::y_anchor_points_green,
+                       "type: List of Integers\nY value of the anchor points (green)")
+        .def_readwrite("x_anchor_points_blue"   , &asd::Header<asd::version<2>>::x_anchor_points_blue,
+                       "type: List of Integers\nX value of the anchor points (blue)")
+        .def_readwrite("y_anchor_points_blue"   , &asd::Header<asd::version<2>>::y_anchor_points_blue,
+                       "type: List of Integers\nY value of the anchor points (blue)")
         ;
 
     return;
