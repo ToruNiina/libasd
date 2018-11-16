@@ -396,14 +396,22 @@ void add_frame_headers(py::module& mod) // {{{
 {
     py::class_<asd::FrameHeader>(mod, "FrameHeader")
         .def(py::init<>())
-        .def_readwrite("number",        &asd::FrameHeader::number)
-        .def_readwrite("max_data",      &asd::FrameHeader::max_data)
-        .def_readwrite("max_data",      &asd::FrameHeader::max_data)
-        .def_readwrite("x_offset",      &asd::FrameHeader::x_offset)
-        .def_readwrite("y_offset",      &asd::FrameHeader::y_offset)
-        .def_readwrite("x_tilt",        &asd::FrameHeader::x_tilt)
-        .def_readwrite("y_tilt",        &asd::FrameHeader::y_tilt)
-        .def_readwrite("is_stimulated", &asd::FrameHeader::is_stimulated)
+        .def_readwrite("number",        &asd::FrameHeader::number,
+                       "type: Integer\nframe index")
+        .def_readwrite("max_data",      &asd::FrameHeader::max_data,
+                       "type: Integer\nmaximum value included in this frame")
+        .def_readwrite("max_data",      &asd::FrameHeader::max_data,
+                       "type: Integer\nminimum value included in this frame")
+        .def_readwrite("x_offset",      &asd::FrameHeader::x_offset,
+                       "type: Integer\ncurrent location of cantilever in X axis")
+        .def_readwrite("y_offset",      &asd::FrameHeader::y_offset,
+                       "type: Integer\ncurrent location of cantilever in Y axis")
+        .def_readwrite("x_tilt",        &asd::FrameHeader::x_tilt,
+                       "type: Float\ntilt for X")
+        .def_readwrite("y_tilt",        &asd::FrameHeader::y_tilt,
+                       "type: Float\ntilt for Y")
+        .def_readwrite("is_stimulated", &asd::FrameHeader::is_stimulated,
+                       "type: Boolean\nflag for external stimuli")
         ;
     return;
 } // }}}
