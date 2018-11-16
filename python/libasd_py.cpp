@@ -45,45 +45,82 @@ void add_header_enums(py::module& mod) // {{{
 
 void add_header_classes(py::module& mod) // {{{
 {
-    py::class_<asd::Header<asd::version<0>>>(mod, "Header_v0")
+    py::class_<asd::Header<asd::version<0>>>(mod, "Header_v0", "header of asd version 0 file.")
         .def(py::init<>())
-        .def_readwrite("file_version"       , &asd::Header<asd::version<0>>::file_version)
-        .def_readwrite("data_type_1ch"      , &asd::Header<asd::version<0>>::data_type_1ch)
-        .def_readwrite("data_type_2ch"      , &asd::Header<asd::version<0>>::data_type_2ch)
-        .def_readwrite("file_header_size"   , &asd::Header<asd::version<0>>::file_header_size)
-        .def_readwrite("frame_header_size"  , &asd::Header<asd::version<0>>::frame_header_size)
-        .def_readwrite("operator_name_size" , &asd::Header<asd::version<0>>::operator_name_size)
-        .def_readwrite("comment_offset_size", &asd::Header<asd::version<0>>::comment_offset_size)
-        .def_readwrite("comment_size"       , &asd::Header<asd::version<0>>::comment_size)
-        .def_readwrite("x_pixel"            , &asd::Header<asd::version<0>>::x_pixel)
-        .def_readwrite("y_pixel"            , &asd::Header<asd::version<0>>::y_pixel)
-        .def_readwrite("x_scanning_range"   , &asd::Header<asd::version<0>>::x_scanning_range)
-        .def_readwrite("y_scanning_range"   , &asd::Header<asd::version<0>>::y_scanning_range)
-        .def_readwrite("frame_rate"         , &asd::Header<asd::version<0>>::frame_rate)
-        .def_readwrite("z_piezo_extension"  , &asd::Header<asd::version<0>>::z_piezo_extension)
-        .def_readwrite("z_piezo_gain"       , &asd::Header<asd::version<0>>::z_piezo_gain)
-        .def_readwrite("ad_range"           , &asd::Header<asd::version<0>>::ad_range)
-        .def_readwrite("bits_data"          , &asd::Header<asd::version<0>>::bits_data)
-        .def_readwrite("is_averaged"        , &asd::Header<asd::version<0>>::is_averaged)
-        .def_readwrite("average_window"     , &asd::Header<asd::version<0>>::average_window)
-        .def_readwrite("year"               , &asd::Header<asd::version<0>>::year)
-        .def_readwrite("month"              , &asd::Header<asd::version<0>>::month)
-        .def_readwrite("day"                , &asd::Header<asd::version<0>>::day)
-        .def_readwrite("hour"               , &asd::Header<asd::version<0>>::hour)
-        .def_readwrite("minute"             , &asd::Header<asd::version<0>>::minute)
-        .def_readwrite("second"             , &asd::Header<asd::version<0>>::second)
-        .def_readwrite("rounding_degree"    , &asd::Header<asd::version<0>>::rounding_degree)
-        .def_readwrite("x_max_range"        , &asd::Header<asd::version<0>>::x_max_range)
-        .def_readwrite("y_max_range"        , &asd::Header<asd::version<0>>::y_max_range)
-        .def_readwrite("init_frame"         , &asd::Header<asd::version<0>>::init_frame)
-        .def_readwrite("num_frames"         , &asd::Header<asd::version<0>>::num_frames)
-        .def_readwrite("machine_id"         , &asd::Header<asd::version<0>>::machine_id)
-        .def_readwrite("file_id"            , &asd::Header<asd::version<0>>::file_id)
-        .def_readwrite("operator_name"      , &asd::Header<asd::version<0>>::operator_name)
-        .def_readwrite("sensor_sensitivity" , &asd::Header<asd::version<0>>::sensor_sensitivity)
-        .def_readwrite("phase_sensitivity"  , &asd::Header<asd::version<0>>::phase_sensitivity)
-        .def_readwrite("scannig_direction"  , &asd::Header<asd::version<0>>::scannig_direction)
-        .def_readwrite("comment"            , &asd::Header<asd::version<0>>::comment)
+        .def_readwrite("file_version"       , &asd::Header<asd::version<0>>::file_version,
+                       "type: Integer\nversion of the file. by definition, the value is 0.")
+        .def_readwrite("data_type_1ch"      , &asd::Header<asd::version<0>>::data_type_1ch,
+                       "type: libasd.data_kind\ndata type of channel 1. [topography|error|phase|none]")
+        .def_readwrite("data_type_2ch"      , &asd::Header<asd::version<0>>::data_type_2ch,
+                       "type: libasd.data_kind\ndata type of channel 2. [topography|error|phase|none]")
+        .def_readwrite("file_header_size"   , &asd::Header<asd::version<0>>::file_header_size,
+                       "type: Integer\nbyte size of a header of a file.")
+        .def_readwrite("frame_header_size"  , &asd::Header<asd::version<0>>::frame_header_size,
+                       "type: Integer\nbyte size of headers of frames.")
+        .def_readwrite("operator_name_size" , &asd::Header<asd::version<0>>::operator_name_size,
+                       "type: Integer\nlength of operator's name.")
+        .def_readwrite("comment_offset_size", &asd::Header<asd::version<0>>::comment_offset_size,
+                       "type: Integer\nbyte size of offset.")
+        .def_readwrite("comment_size"       , &asd::Header<asd::version<0>>::comment_size,
+                       "type: Integer\nlength of comments.")
+        .def_readwrite("x_pixel"            , &asd::Header<asd::version<0>>::x_pixel,
+                       "type: Integer\nnumber of pixels along the x axis in one frame")
+        .def_readwrite("y_pixel"            , &asd::Header<asd::version<0>>::y_pixel,
+                       "type: Integer\nnumber of pixels along the y axis in one frame")
+        .def_readwrite("x_scanning_range"   , &asd::Header<asd::version<0>>::x_scanning_range,
+                       "type: Integer\nscanning range along x axis [nm]")
+        .def_readwrite("y_scanning_range"   , &asd::Header<asd::version<0>>::y_scanning_range,
+                       "type: Integer\nscanning range along y axis [nm]")
+        .def_readwrite("frame_rate"         , &asd::Header<asd::version<0>>::frame_rate,
+                       "type: Float\nthe time it takes to obtain one frame [ms/frame]")
+        .def_readwrite("z_piezo_extension"  , &asd::Header<asd::version<0>>::z_piezo_extension,
+                       "type: Float\npiezo extention coefficient [nm/V]")
+        .def_readwrite("z_piezo_gain"       , &asd::Header<asd::version<0>>::z_piezo_gain,
+                       "type: Float\npiezo driver gain (electronics)")
+        .def_readwrite("ad_range"           , &asd::Header<asd::version<0>>::ad_range,
+                       "type: libasd.AD_range\nrange of the A-D converter used")
+        .def_readwrite("bits_data"          , &asd::Header<asd::version<0>>::bits_data,
+                       "type: Integer\nnumber of bits used in the frame data (usually 12)")
+        .def_readwrite("is_averaged"        , &asd::Header<asd::version<0>>::is_averaged,
+                       "type: Boolean\nwhether the frames are averaged or not")
+        .def_readwrite("average_window"     , &asd::Header<asd::version<0>>::average_window,
+                       "type: Integer\nnumber of frames used to average the frame data")
+        .def_readwrite("year"               , &asd::Header<asd::version<0>>::year,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("month"              , &asd::Header<asd::version<0>>::month,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("day"                , &asd::Header<asd::version<0>>::day,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("hour"               , &asd::Header<asd::version<0>>::hour,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("minute"             , &asd::Header<asd::version<0>>::minute,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("second"             , &asd::Header<asd::version<0>>::second,
+                       "type: Integer\ntime stamp")
+        .def_readwrite("rounding_degree"    , &asd::Header<asd::version<0>>::rounding_degree,
+                       "type: Integer\ndegree of the rounding of x-scanning signal [%]")
+        .def_readwrite("x_max_range"        , &asd::Header<asd::version<0>>::x_max_range,
+                       "type: Float\nmaximum scanning range in the X axis[nm]")
+        .def_readwrite("y_max_range"        , &asd::Header<asd::version<0>>::y_max_range,
+                       "type: Float\nmaximum scanning range in the Y axis[nm]")
+        .def_readwrite("init_frame"         , &asd::Header<asd::version<0>>::init_frame,
+                       "type: Integer\nnumber of frames when this file was recorded")
+        .def_readwrite("num_frames"         , &asd::Header<asd::version<0>>::num_frames,
+                       "type: Integer\nnumber of frames contained in this file")
+        .def_readwrite("machine_id"         , &asd::Header<asd::version<0>>::machine_id,
+                       "type: Integer\nidentifier of the AFM")
+        .def_readwrite("file_id"            , &asd::Header<asd::version<0>>::file_id,
+                       "type: Integer\nidentifier of the file")
+        .def_readwrite("operator_name"      , &asd::Header<asd::version<0>>::operator_name,
+                       "type: byte array\nwho operated the AFM while imaging")
+        .def_readwrite("sensor_sensitivity" , &asd::Header<asd::version<0>>::sensor_sensitivity,
+                       "type: Float\nsensitivity of the sensor of canti-lever [nm/V]")
+        .def_readwrite("phase_sensitivity"  , &asd::Header<asd::version<0>>::phase_sensitivity,
+                       "type: Float\nsensitivity of the sensor of the phase [deg/V]")
+        .def_readwrite("scannig_direction"  , &asd::Header<asd::version<0>>::scannig_direction,
+                       "type: libasd.scan_direction\nscanning direction. [x|y]_[forward|backward]")
+        .def_readwrite("comment"            , &asd::Header<asd::version<0>>::comment,
+                       "type: byte array\ncomments!")
         ;
 
     py::class_<asd::Header<asd::version<1>>>(mod, "Header_v1")
