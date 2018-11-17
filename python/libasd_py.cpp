@@ -340,7 +340,8 @@ void add_read_header(py::module& mod) // {{{
                 return asd::read_header<asd::ver<0>>(ifs);
             },
             py::arg("file_name"),
-            "A function which reads only header information of asd file.");
+            "A function which reads only header information of asd file.\n"
+            "Return:\n-- Header_v0: header information of version 0");
 
     mod.def("read_header_v1",
             [](const std::string& fname) -> asd::Header<asd::ver<1>> {
@@ -352,7 +353,8 @@ void add_read_header(py::module& mod) // {{{
                 return asd::read_header<asd::ver<1>>(ifs);
             },
             py::arg("file_name"),
-            "A function which reads only header information of asd file.");
+            "A function which reads only header information of asd file.\n"
+            "Return:\n-- Header_v1: header information of version 1");
 
     mod.def("read_header_v2",
             [](const std::string& fname) -> asd::Header<asd::ver<2>> {
@@ -364,7 +366,8 @@ void add_read_header(py::module& mod) // {{{
                 return asd::read_header<asd::ver<2>>(ifs);
             },
             py::arg("file_name"),
-            "A function which reads only header information of asd file.");
+            "A function which reads only header information of asd file."
+            "Return:\n-- Header_v2: header information of version 2");
 
     mod.def("read_header",
         [](const std::string& fname) -> py::object {
@@ -386,6 +389,7 @@ void add_read_header(py::module& mod) // {{{
         },
         py::arg("file_name"),
         "A function which reads only header information of asd file.\n"
+        "Return:\n-- Header: header information.\n"
         "It automatically reads the version information, and returns an "
         "appropreate header class.\n"
         "If the file you passed has invalid signature or some error occured "
@@ -449,41 +453,50 @@ void add_frame_classes(py::module& mod) // {{{
     py::class_<asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>
         >(mod, "RawFrame1ch")
         .def(py::init<>())
-        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::header)
-        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::data)
+        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::header,
+                       "type: FrameHeader\nheader of this frame")
+        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::data,
+                       "type: FrameData<Integer>\narray that represents the image. raw data without conversion into [nm]")
         ;
 
     py::class_<asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>
         >(mod, "RawFrame2ch")
         .def(py::init<>())
-        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::header)
-        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::data)
+        .def_readwrite("header", &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::header,
+                       "type: FrameHeader\nheader of this frame")
+        .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::data,
+                       "type: FrameData<Integer>\narray that represents the image. raw data without conversion into [nm]")
         ;
 
     py::class_<asd::Frame<double, asd::ch<1>, asd::container::vec>
         >(mod, "Frame1ch")
         .def(py::init<>())
-        .def_readwrite("header", &asd::Frame<double, asd::ch<1>, asd::container::vec>::header)
-        .def_readwrite("data",   &asd::Frame<double, asd::ch<1>, asd::container::vec>::data)
+        .def_readwrite("header", &asd::Frame<double, asd::ch<1>, asd::container::vec>::header,
+                       "type: FrameHeader\nheader of this frame")
+        .def_readwrite("data",   &asd::Frame<double, asd::ch<1>, asd::container::vec>::data,
+                       "type: FrameData<Float>\narray that represents the heights of each pixel in [nm]")
         ;
 
     py::class_<asd::Frame<double, asd::ch<2>, asd::container::vec>
         >(mod, "Frame2ch")
         .def(py::init<>())
-        .def_readwrite("header", &asd::Frame<double, asd::ch<2>, asd::container::vec>::header)
-        .def_readwrite("data",   &asd::Frame<double, asd::ch<2>, asd::container::vec>::data)
+        .def_readwrite("header", &asd::Frame<double, asd::ch<2>, asd::container::vec>::header,
+                       "type: FrameHeader\nheader of this frame")
+        .def_readwrite("data",   &asd::Frame<double, asd::ch<2>, asd::container::vec>::data,
+                       "type: FrameData<Float>\narray that represents the heights of each pixel in [nm]")
         ;
 
     return;
 } // }}}
 
 template<typename dataT>
-void add_data_class(py::module& mod, const char* name) // {{{
+void add_data_class(py::module& mod, const char* name,
+                    const char* doc_header, const char* doc_frames) // {{{
 {
     py::class_<dataT>(mod, name)
         .def(py::init<>())
-        .def_readwrite("header", &dataT::header)
-        .def_readwrite("frames", &dataT::frames)
+        .def_readwrite("header", &dataT::header, doc_header)
+        .def_readwrite("frames", &dataT::frames, doc_frames)
         ;
     return;
 } // }}}
@@ -492,43 +505,43 @@ void add_data_classes(py::module& mod) // {{{
 {
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<0>, asd::container::vec>
-        >(mod, "RawData1ch_v0");
+        >(mod, "RawData1ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<1>, asd::container::vec>
-        >(mod, "RawData1ch_v1");
+        >(mod, "RawData1ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<2>, asd::container::vec>
-        >(mod, "RawData1ch_v2");
+        >(mod, "RawData1ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
 
     add_data_class<
         asd::Data<std::int16_t, asd::ch<2>, asd::ver<0>, asd::container::vec>
-        >(mod, "RawData2ch_v0");
+        >(mod, "RawData2ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<2>, asd::ver<1>, asd::container::vec>
-        >(mod, "RawData2ch_v1");
+        >(mod, "RawData2ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<2>, asd::ver<2>, asd::container::vec>
-        >(mod, "RawData2ch_v2");
+        >(mod, "RawData2ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
 
     add_data_class<
         asd::Data<double, asd::ch<1>, asd::ver<0>, asd::container::vec>
-        >(mod, "Data1ch_v0");
+        >(mod, "Data1ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<double, asd::ch<1>, asd::ver<1>, asd::container::vec>
-        >(mod, "Data1ch_v1");
+        >(mod, "Data1ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<double, asd::ch<1>, asd::ver<2>, asd::container::vec>
-        >(mod, "Data1ch_v2");
+        >(mod, "Data1ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
 
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<0>, asd::container::vec>
-        >(mod, "Data2ch_v0");
+        >(mod, "Data2ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<1>, asd::container::vec>
-        >(mod, "Data2ch_v1");
+        >(mod, "Data2ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<2>, asd::container::vec>
-        >(mod, "Data2ch_v2");
+        >(mod, "Data2ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
     return;
 } // }}}
 
