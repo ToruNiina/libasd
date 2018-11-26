@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 #include <libasd/libasd.hpp>
 #include <fstream>
 
@@ -457,6 +458,18 @@ void add_frame_classes(py::module& mod) // {{{
                        "type: FrameHeader\nheader of this frame")
         .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>::data,
                        "type: FrameData<Integer>\narray that represents the image. raw data without conversion into [nm]")
+        .def("image", [](asd::Frame<std::int16_t, asd::ch<1>, asd::container::vec>* self)
+                -> py::array_t<std::int16_t> {
+                return py::array_t<std::int16_t>(py::buffer_info(
+                    self->data.base().data(), sizeof(std::int16_t),
+                    py::format_descriptor<std::int16_t>::format(),
+                    2, {self->data.x_pixel(), self->data.y_pixel()},
+                    {sizeof(std::int16_t) * self->data.x_pixel(), sizeof(std::int16_t)}
+                ));
+            },
+            "array that represents the image.\n"
+            "each pixel represents the heigths at that point in [nm].\n"
+            "The data is the same as `data` member variable.")
         ;
 
     py::class_<asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>
@@ -466,6 +479,20 @@ void add_frame_classes(py::module& mod) // {{{
                        "type: FrameHeader\nheader of this frame")
         .def_readwrite("data",   &asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>::data,
                        "type: FrameData<Integer>\narray that represents the image. raw data without conversion into [nm]")
+        .def("image", [](asd::Frame<std::int16_t, asd::ch<2>, asd::container::vec>* self, std::size_t i)
+                -> py::array_t<std::int16_t> {
+                return py::array_t<std::int16_t>(py::buffer_info(
+                    self->data.at(i).base().data(), sizeof(std::int16_t),
+                    py::format_descriptor<std::int16_t>::format(),
+                    2, {self->data.at(i).x_pixel(), self->data.at(i).y_pixel()},
+                    {sizeof(std::int16_t) * self->data.at(i).x_pixel(), sizeof(std::int16_t)}
+                ));
+            },
+            "parameter: index: channel index.\n"
+            "array that represents the image. each pixel represents the heigths at that point in [nm].\n"
+            "The data is the same as `data` member variable.",
+            py::arg("index")
+            )
         ;
 
     py::class_<asd::Frame<double, asd::ch<1>, asd::container::vec>
@@ -475,6 +502,18 @@ void add_frame_classes(py::module& mod) // {{{
                        "type: FrameHeader\nheader of this frame")
         .def_readwrite("data",   &asd::Frame<double, asd::ch<1>, asd::container::vec>::data,
                        "type: FrameData<Float>\narray that represents the heights of each pixel in [nm]")
+        .def("image", [](asd::Frame<double, asd::ch<1>, asd::container::vec>* self)
+                -> py::array_t<double> {
+                return py::array_t<double>(py::buffer_info(
+                    self->data.base().data(), sizeof(double),
+                    py::format_descriptor<double>::format(),
+                    2, {self->data.x_pixel(), self->data.y_pixel()},
+                    {sizeof(double) * self->data.x_pixel(), sizeof(double)}
+                ));
+            },
+            "array that represents the image.\n"
+            "each pixel represents the heigths at that point in [nm].\n"
+            "The data is the same as `data` member variable.")
         ;
 
     py::class_<asd::Frame<double, asd::ch<2>, asd::container::vec>
@@ -484,6 +523,19 @@ void add_frame_classes(py::module& mod) // {{{
                        "type: FrameHeader\nheader of this frame")
         .def_readwrite("data",   &asd::Frame<double, asd::ch<2>, asd::container::vec>::data,
                        "type: FrameData<Float>\narray that represents the heights of each pixel in [nm]")
+        .def("image", [](asd::Frame<double, asd::ch<2>, asd::container::vec>* self, std::size_t i)
+                -> py::array_t<double> {
+                return py::array_t<double>(py::buffer_info(
+                    self->data.at(i).base().data(), sizeof(double),
+                    py::format_descriptor<double>::format(),
+                    2, {self->data.at(i).x_pixel(), self->data.at(i).y_pixel()},
+                    {sizeof(double) * self->data.at(i).x_pixel(), sizeof(double)}
+                ));
+            },
+            "parameter: index: channel index.\n"
+            "array that represents the image. each pixel represents the heigths at that point in [nm].\n",
+            py::arg("index")
+            )
         ;
 
     return;
