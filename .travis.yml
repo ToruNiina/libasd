@@ -16,8 +16,32 @@ matrix:
         - g++-5
         - build-essential
         - cmake
-        - python3
-        - python3-dev
+  - os: linux
+    compiler: gcc
+    language: python
+    python: "3.5"
+    env: PYTHON=3.5 COMPILER="g++-5"
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-5
+        - build-essential
+        - cmake
+  - os: linux
+    compiler: gcc
+    language: python
+    python: "3.4"
+    env: PYTHON=3.4 COMPILER="g++-5"
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-5
+        - build-essential
+        - cmake
   - os: linux
     compiler: clang
     language: python
@@ -30,8 +54,30 @@ matrix:
         packages:
         - build-essential
         - cmake
-        - python3
-        - python3-dev
+  - os: linux
+    compiler: clang
+    language: python
+    python: "3.5"
+    env: PYTHON=3.5 COMPILER="clang++"
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - build-essential
+        - cmake
+  - os: linux
+    compiler: clang
+    language: python
+    python: "3.4"
+    env: PYTHON=3.4 COMPILER="clang++"
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - build-essential
+        - cmake
   - os: osx
     language: cpp
     compiler: clang
