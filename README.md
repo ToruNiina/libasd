@@ -56,8 +56,7 @@ print("version    = {}"     .format(data.header.file_version))
 print("image size = {}x{}"  .format(data.header.x_pixel, data.header.y_pixel))
 print("there are {} frames.".format(len(data.frames)))
 
-frame_0 = np.array(data.frames[0].data, copy = False)
-plt.imshow(frame_0)
+plt.imshow(data.frames[0].image())
 plt.show()
 ```
 
@@ -68,10 +67,18 @@ types at a compile time, statically.
 
 ### With NumPy
 
-Because libasd aims the interoperability with NumPy, libasd returns a frame object
-by using `Buffer protocol` relying on pybind11.
-It enables users to cast a `libasd.Frame` object to NumPy Array __without__
-copying all the elements in the frame (don't forget to set `copy = False`).
+Because libasd aims the interoperability with NumPy, `frame.image()` function
+returns `numpy.ndarray`.
+
+```python
+img = data.frames[0].image() # img is numpy.ndarray
+```
+
+`libasd.Frame` also has `data` object as a member that contains the same
+information as the return value of `image`.
+It uses `Buffer protocol` relying on pybind11 that enables users to cast
+a `libasd.Frame` object to NumPy Array __without__ copying all the elements
+in the frame (don't forget to set `copy = False`).
 
 ```python
 import libasd
@@ -82,7 +89,7 @@ data = libasd.read_asd("example.asd")
 
 # cast frame data into numpy Array
 frame_0 = np.array(data.frames[0].data, copy = False)
-````
+```
 
 To manipulate the frame datas, it is recommended to cast the data to the NumPy
 Arrays.
