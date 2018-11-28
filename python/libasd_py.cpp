@@ -405,7 +405,7 @@ void add_frame_headers(py::module& mod) // {{{
                        "type: Integer\nframe index")
         .def_readwrite("max_data",      &asd::FrameHeader::max_data,
                        "type: Integer\nmaximum value included in this frame")
-        .def_readwrite("max_data",      &asd::FrameHeader::max_data,
+        .def_readwrite("min_data",      &asd::FrameHeader::min_data,
                        "type: Integer\nminimum value included in this frame")
         .def_readwrite("x_offset",      &asd::FrameHeader::x_offset,
                        "type: Integer\ncurrent location of cantilever in X axis")
