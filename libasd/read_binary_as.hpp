@@ -1,6 +1,7 @@
 #ifndef LIBASD_READ_BINARY_AS_H
 #define LIBASD_READ_BINARY_AS_H
 #include <istream>
+#include <cstring>
 #include <libasd/container_dispatcher.hpp>
 
 namespace asd
@@ -11,7 +12,8 @@ namespace detail
 template<typename T>
 T read_binary_as(const char*& ptr) noexcept
 {
-    const T retval = *reinterpret_cast<const T*>(ptr);
+    T retval;
+    std::memcpy(std::addressof(retval), ptr, sizeof(T));
     ptr += sizeof(T);
     return retval;
 }
@@ -44,8 +46,7 @@ read_binary_as(std::istream& is, const std::size_t N, std::true_type)
     // the traditional C-array form is available. write directory into the ptr.
     constexpr std::size_t sz = sizeof(Value);
     typename ContainerDispatcher::template rebind<Value>::other retval(N);
-    is.read(reinterpret_cast<char*>(::asd::container::get_ptr(retval)),
-            sz * N);
+    is.read(reinterpret_cast<char*>(::asd::container::get_ptr(retval)), sz * N);
     return retval;
 }
 
@@ -54,15 +55,11 @@ typename ContainerDispatcher::template rebind<Value>::other
 read_binary_as(std::istream& is, const std::size_t N, std::false_type)
 {
     // the traditional C-array form is not available, use Iterator.
-    constexpr std::size_t sz = sizeof(Value);
-    std::vector<char> buffer(sz * N);
-    is.read(buffer.data(), sz * N);
-
-    const Value* const first = reinterpret_cast<const Value*>(buffer.data());
-    const Value* const last  = reinterpret_cast<const Value*>(buffer.data())+N;
+    std::vector<Value> buffer(N);
+    is.read(reinterpret_cast<char*>(buffer.data()), sizeof(Value) * N);
 
     return typename ContainerDispatcher::template
-        rebind<Value>::other(first, last);
+        rebind<Value>::other(buffer.begin(), buffer.end());
 }
 
 template<typename Value, typename ContainerDispatcher>
@@ -77,13 +74,34 @@ read_binary_as(std::istream& is, const std::size_t N)
 
 template<typename Value, typename ContainerDispatcher>
 typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(const char*& ptr, const std::size_t N, std::true_type)
+{
+    // the traditional C-array form is available. write directory into the ptr.
+    typename ContainerDispatcher::template rebind<Value>::other retval(N);
+    std::memcpy(::asd::container::get_ptr(retval), ptr, sizeof(Value) * N);
+    ptr += sizeof(Value) * N;
+    return retval;
+}
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
+read_binary_as(const char*& ptr, const std::size_t N, std::false_type)
+{
+    // the traditional C-array form is not available, use Iterator.
+    std::vector<Value> buffer(N);
+    std::memcpy(buffer.data(), ptr, sizeof(Value) * N);
+    ptr += sizeof(Value) * N;
+    return typename ContainerDispatcher::template
+        rebind<Value>::other(buffer.begin(), buffer.end());
+}
+
+template<typename Value, typename ContainerDispatcher>
+typename ContainerDispatcher::template rebind<Value>::other
 read_binary_as(const char*& ptr, const std::size_t N)
 {
-    const Value* const first = reinterpret_cast<const Value*>(ptr);
-    const Value* const last  = reinterpret_cast<const Value*>(ptr) + N;
-
-    return typename ContainerDispatcher::template
-        rebind<Value>::other(first, last);
+    return read_binary_as<Value, ContainerDispatcher>(ptr, N,
+        typename container_traits<
+            typename ContainerDispatcher::template rebind<Value>::other
+        >::ptr_accessibility{});
 }
 
 } // detail
