@@ -197,15 +197,15 @@ read_header_impl(Header<version<2>>& header, sourceT& source)
         header.comment[i] = read_binary_as<std::int8_t>(source);
     }
 
-    header.number_of_frames        = read_binary_as<std::int32_t>(source);
-    header.is_x_feed_forward       = read_binary_as<std::int32_t>(source);
-    header.x_feed_forward_i        = read_binary_as<std::int32_t>(source);
-    header.x_feed_forward_d        = read_binary_as<std::int32_t>(source);
-    header.max_color_scale         = read_binary_as<std::int32_t>(source);
-    header.min_color_scale         = read_binary_as<std::int32_t>(source);
-    header.anchor_point_size_red   = read_binary_as<std::int32_t>(source);
-    header.anchor_point_size_green = read_binary_as<std::int32_t>(source);
-    header.anchor_point_size_blue  = read_binary_as<std::int32_t>(source);
+    header.number_of_frames        = read_binary_as<decltype(header.number_of_frames       )>(source);
+    header.is_x_feed_forward       = read_binary_as<decltype(header.is_x_feed_forward      )>(source);
+    header.x_feed_forward_i        = read_binary_as<decltype(header.x_feed_forward_i       )>(source);
+    header.x_feed_forward_d        = read_binary_as<decltype(header.x_feed_forward_d       )>(source);
+    header.max_color_scale         = read_binary_as<decltype(header.max_color_scale        )>(source);
+    header.min_color_scale         = read_binary_as<decltype(header.min_color_scale        )>(source);
+    header.anchor_point_size_red   = read_binary_as<decltype(header.anchor_point_size_red  )>(source);
+    header.anchor_point_size_green = read_binary_as<decltype(header.anchor_point_size_green)>(source);
+    header.anchor_point_size_blue  = read_binary_as<decltype(header.anchor_point_size_blue )>(source);
 
     /* anchor_red */{
         const std::size_t sz =
