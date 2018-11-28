@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 #include <libasd/libasd.hpp>
 #include <fstream>
+#include <sstream>
 
 namespace py = pybind11;
 
@@ -122,6 +123,31 @@ void add_header_classes(py::module& mod) // {{{
                        "type: libasd.scan_direction\nscanning direction. [x|y]_[forward|backward]")
         .def_readwrite("comment"            , &asd::Header<asd::version<0>>::comment,
                        "type: byte array\ncomments!")
+        .def("__repr__", [](const asd::Header<asd::version<0>>& self){
+                std::ostringstream oss; oss << std::fixed << std::boolalpha;
+                oss << "version           : " << self.file_version       << '\n';
+                oss << "timestamp         : " << self.year   << '/' << self.month  << '/'
+                                              << self.day    << ' ' << self.hour   << ':'
+                                              << self.minute << ':' << self.second << '\n';
+                oss << "data_kind_1ch     : " << self.data_type_1ch      << '\n';
+                oss << "data_kind_2ch     : " << self.data_type_2ch      << '\n';
+                oss << "num_frames        : " << self.num_frames         << '\n';
+                oss << "x_pixel           : " << self.x_pixel            << '\n';
+                oss << "y_pixel           : " << self.y_pixel            << '\n';
+                oss << "x_scanning_range  : " << self.x_scanning_range   << '\n';
+                oss << "y_scanning_range  : " << self.y_scanning_range   << '\n';
+                oss << "x_max_range       : " << self.x_max_range        << '\n';
+                oss << "y_max_range       : " << self.y_max_range        << '\n';
+                oss << "is_averaged       : " << self.is_averaged        << '\n';
+                oss << "average_window    : " << self.average_window     << '\n';
+                oss << "rounding_degree   : " << self.rounding_degree  << '\n';
+                oss << "machine_id        : " << self.machine_id         << '\n';
+                oss << "ad_range          : " << self.ad_range           << '\n';
+                oss << "bits_data         : " << self.bits_data          << '\n';
+                oss << "z_piezo_extension : " << self.z_piezo_extension  << '\n';
+                oss << "z_piezo_gain      : " << self.z_piezo_gain       << '\n';
+                return oss.str();
+            })
         ;
 
     py::class_<asd::Header<asd::version<1>>>(mod, "Header_v1", "header of asd file version 1.")
@@ -208,6 +234,35 @@ void add_header_classes(py::module& mod) // {{{
                        "type: byte array\nwho operated the AFM while imaging")
         .def_readwrite("comment"             , &asd::Header<asd::version<1>>::comment,
                        "type: byte array\ncomments!")
+        .def("__repr__", [](const asd::Header<asd::version<1>>& self){
+                std::ostringstream oss; oss << std::fixed << std::boolalpha;
+                oss << "version             : " << self.file_version       << '\n';
+                oss << "timestamp           : " << self.year   << '/' << self.month  << '/'
+                                                << self.day    << ' ' << self.hour   << ':'
+                                                << self.minute << ':' << self.second << '\n';
+                oss << "data_kind_1ch       : " << self.data_kind_1ch      << '\n';
+                oss << "data_kind_2ch       : " << self.data_kind_2ch      << '\n';
+                oss << "num_frames          : " << self.num_frames         << '\n';
+                oss << "scanning_direction  : " << self.scanning_direction << '\n';
+                oss << "x_pixel             : " << self.x_pixel            << '\n';
+                oss << "y_pixel             : " << self.y_pixel            << '\n';
+                oss << "x_scanning_range    : " << self.x_scanning_range   << '\n';
+                oss << "y_scanning_range    : " << self.y_scanning_range   << '\n';
+                oss << "x_max_scanning_range: " << self.x_max_scanning_range << '\n';
+                oss << "y_max_scanning_range: " << self.y_max_scanning_range << '\n';
+                oss << "is_averaged         : " << self.is_averaged        << '\n';
+                oss << "average_window      : " << self.average_window     << '\n';
+                oss << "x_rounding_degree   : " << self.x_rounding_degree  << '\n';
+                oss << "y_rounding_degree   : " << self.y_rounding_degree  << '\n';
+                oss << "machine_id          : " << self.machine_id         << '\n';
+                oss << "ad_range            : " << self.ad_range           << '\n';
+                oss << "ad_resolution       : " << self.ad_resolution      << '\n';
+                oss << "x_piezo_extension   : " << self.x_piezo_extension  << '\n';
+                oss << "y_piezo_extension   : " << self.y_piezo_extension  << '\n';
+                oss << "z_piezo_extension   : " << self.z_piezo_extension  << '\n';
+                oss << "z_piezo_gain        : " << self.z_piezo_gain       << '\n';
+                return oss.str();
+            })
         ;
 
     py::class_<asd::Header<asd::version<2>>>(mod, "Header_v2")
@@ -324,6 +379,36 @@ void add_header_classes(py::module& mod) // {{{
                        "type: List of Integers\nX value of the anchor points (blue)")
         .def_readwrite("y_anchor_points_blue"   , &asd::Header<asd::version<2>>::y_anchor_points_blue,
                        "type: List of Integers\nY value of the anchor points (blue)")
+        .def("__repr__", [](const asd::Header<asd::version<2>>& self){
+                std::ostringstream oss; oss << std::fixed << std::boolalpha;
+                oss << "version             : " << self.file_version       << '\n';
+                oss << "timestamp           : " << self.year   << '/' << self.month  << '/'
+                                                << self.day    << ' ' << self.hour   << ':'
+                                                << self.minute << ':' << self.second << '\n';
+                oss << "data_kind_1ch       : " << self.data_kind_1ch      << '\n';
+                oss << "data_kind_2ch       : " << self.data_kind_2ch      << '\n';
+                oss << "num_frames          : " << self.num_frames         << '\n';
+                oss << "scanning_direction  : " << self.scanning_direction << '\n';
+                oss << "x_pixel             : " << self.x_pixel            << '\n';
+                oss << "y_pixel             : " << self.y_pixel            << '\n';
+                oss << "x_scanning_range    : " << self.x_scanning_range   << '\n';
+                oss << "y_scanning_range    : " << self.y_scanning_range   << '\n';
+                oss << "x_max_scanning_range: " << self.x_max_scanning_range << '\n';
+                oss << "y_max_scanning_range: " << self.y_max_scanning_range << '\n';
+                oss << "is_averaged         : " << self.is_averaged        << '\n';
+                oss << "average_window      : " << self.average_window     << '\n';
+                oss << "x_rounding_degree   : " << self.x_rounding_degree  << '\n';
+                oss << "y_rounding_degree   : " << self.y_rounding_degree  << '\n';
+                oss << "machine_id          : " << self.machine_id         << '\n';
+                oss << "ad_range            : " << self.ad_range           << '\n';
+                oss << "ad_resolution       : " << self.ad_resolution      << '\n';
+                oss << "x_piezo_extension   : " << self.x_piezo_extension  << '\n';
+                oss << "y_piezo_extension   : " << self.y_piezo_extension  << '\n';
+                oss << "z_piezo_extension   : " << self.z_piezo_extension  << '\n';
+                oss << "z_piezo_gain        : " << self.z_piezo_gain       << '\n';
+                return oss.str();
+            })
+
         ;
 
     return;
@@ -417,6 +502,18 @@ void add_frame_headers(py::module& mod) // {{{
                        "type: Float\ntilt for Y")
         .def_readwrite("is_stimulated", &asd::FrameHeader::is_stimulated,
                        "type: Boolean\nflag for external stimuli")
+        .def("__repr__", [](const asd::FrameHeader& self) {
+                std::ostringstream oss; oss << std::boolalpha;
+                oss << "index        : " << self.number   << '\n';
+                oss << "max_data     : " << self.max_data << '\n';
+                oss << "min_data     : " << self.min_data << '\n';
+                oss << "x_offset     : " << self.x_offset << '\n';
+                oss << "y_offset     : " << self.y_offset << '\n';
+                oss << "x_tilt       : " << self.x_tilt   << '\n';
+                oss << "y_tilt       : " << self.y_tilt   << '\n';
+                oss << "is_stimulated: " << self.y_tilt   << '\n';
+                return oss.str();
+            })
         ;
     return;
 } // }}}
