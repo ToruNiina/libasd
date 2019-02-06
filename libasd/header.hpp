@@ -20,6 +20,26 @@ enum class AD_range : std::uint32_t
     dummy_value   = 0x00800000, //!< dummy value(80[V]). & resolution -> 16bit.
 };
 
+template<typename Real>
+std::pair<Real, Real> to_voltage(const AD_range range)
+{
+    switch(range)
+    {
+        case AD_range::unipolar_1_0V: {return std::make_pair(  0.0,  1.0);}
+        case AD_range::unipolar_2_5V: {return std::make_pair(  0.0,  2.5);}
+        case AD_range::unipolar_5_0V: {return std::make_pair(  0.0,  5.0);}
+        case AD_range::bipolar_1_0V : {return std::make_pair( -1.0,  1.0);}
+        case AD_range::bipolar_2_5V : {return std::make_pair( -2.5,  2.5);}
+        case AD_range::bipolar_5_0V : {return std::make_pair( -5.0,  5.0);}
+        case AD_range::dummy_value  : {return std::make_pair(-80.0, 80.0);}
+        default:
+        {
+            throw std::runtime_error("invalid AD_range: " +
+                     std::to_string(static_cast<std::uint32_t>(range)));
+        }
+    }
+}
+
 template<typename charT, typename traitsT>
 std::basic_ostream<charT, traitsT>&
 operator<<(std::basic_ostream<charT, traitsT>& os, const AD_range adr)

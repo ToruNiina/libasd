@@ -4,6 +4,7 @@ set(TEST_NAMES
     test_read_binary_as
     test_write_as_binary
     test_frame_data
+    test_header_enums
     )
 
 if(${Boost_FOUND})
