@@ -10,12 +10,12 @@ namespace py = pybind11;
 void add_header_enums(py::module& mod) // {{{
 {
     py::enum_<asd::AD_range>(mod, "AD_range", py::arithmetic())
-        .value("unipolar_1.0V", asd::AD_range::unipolar_1_0V)
-        .value("unipolar_2.5V", asd::AD_range::unipolar_2_5V)
-        .value("unipolar_5.0V", asd::AD_range::unipolar_5_0V)
-        .value("bipolar_1.0V",  asd::AD_range::bipolar_1_0V)
-        .value("bipolar_2.5V",  asd::AD_range::bipolar_2_5V)
-        .value("bipolar_5.0V",  asd::AD_range::bipolar_5_0V)
+        .value("unipolar_1_0V", asd::AD_range::unipolar_1_0V)
+        .value("unipolar_2_5V", asd::AD_range::unipolar_2_5V)
+        .value("unipolar_5_0V", asd::AD_range::unipolar_5_0V)
+        .value("bipolar_1_0V",  asd::AD_range::bipolar_1_0V)
+        .value("bipolar_2_5V",  asd::AD_range::bipolar_2_5V)
+        .value("bipolar_5_0V",  asd::AD_range::bipolar_5_0V)
         .value("dummy_value",   asd::AD_range::dummy_value)
         .export_values();
 
