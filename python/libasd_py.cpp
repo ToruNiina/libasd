@@ -42,6 +42,13 @@ void add_header_enums(py::module& mod) // {{{
         .value("none",       asd::data_kind::none)
         .export_values();
 
+    mod.def("to_voltage",
+        [](const asd::AD_range range) -> std::pair<double, double> {
+            return asd::to_voltage<double>(range);
+        }, py::arg("AD_range"), "This function converts AD_range enum into a "
+        "pair of floats that correspond to the minimum and maximum voltage [V]."
+        );
+
     return;
 } // }}}
 
