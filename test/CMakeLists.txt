@@ -1,5 +1,6 @@
 set(TEST_NAMES
     test_container_dispatches
+    test_boost_container_dispatches
     test_throw_exception
     test_read_binary_as
     test_write_as_binary

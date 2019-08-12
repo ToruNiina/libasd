@@ -1,5 +1,7 @@
 #include <libasd/container_traits.hpp>
 #include <libasd/container_dispatcher.hpp>
+#include <libasd/boost/container_traits.hpp>
+#include <libasd/boost/container_dispatcher.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 
@@ -45,16 +47,21 @@ BOOST_TEST_CASE_TEMPLATE_FUNCTION(clear, T)
     }
 }
 
+
 boost::unit_test::test_suite*
 init_unit_test_suite(int, char**)
 {
     typedef boost::mpl::list<
-        asd::container::vec
+        asd::container::boost_vec,
+        asd::container::boost_small_vec<100>,
+        asd::container::boost_static_vec<200>
         > pointer_available;
 
     typedef boost::mpl::list<
-        asd::container::vec,
-        asd::container::deq
+        asd::container::boost_vec,
+        asd::container::boost_deq,
+        asd::container::boost_small_vec<100>,
+        asd::container::boost_static_vec<200>
         > all;
 
     boost::unit_test::framework::master_test_suite()
