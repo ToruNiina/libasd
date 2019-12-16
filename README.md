@@ -190,7 +190,7 @@ You can access to each pixel in each line by index.
         {
             for(std::size_t x=0; x<x_pixel; ++x)
             {
-                std::cout << data[y][x]; // note: not [x][y].
+                std::cout << frame[y][x]; // note: not [x][y].
             }
             std::cout << '\n';
         }
