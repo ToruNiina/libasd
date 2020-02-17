@@ -85,7 +85,6 @@ matrix:
       homebrew:
         update: true
         packages:
-          - python
           - cmake
 
 before_install:
