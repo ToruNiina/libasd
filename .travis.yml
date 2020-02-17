@@ -88,9 +88,6 @@ matrix:
           - cmake
 
 before_install:
-- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum;
-  fi
 - which sha256sum
 - wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
 - echo "5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9  boost_1_66_0.tar.bz2" | sha256sum --check - && tar xvf boost_1_66_0.tar.bz2 > /dev/null 2>&1
