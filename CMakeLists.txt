@@ -3,9 +3,12 @@ cmake_minimum_required(VERSION 3.0)
 enable_testing()
 
 add_definitions("-Wall -Wextra -Wpedantic")
+include_directories(${PROJECT_SOURCE_DIR})
 
-find_package(Boost)
+# Boost.Test library is used to write test codes.
+find_package(Boost 1.62.0)
 if(Boost_FOUND)
+    message(STATUS "Boost libraries found in ${Boost_INCLUDE_DIRS}")
     include_directories(${Boost_INCLUDE_DIRS})
 else()
     message(STATUS "If you have Boost (e.g. /opt/boost-1.??.??) and CMake couldn't found Boost, try")
@@ -13,8 +16,9 @@ else()
     message(STATUS "current BOOST_ROOT = ${BOOST_ROOT}")
 endif()
 
-add_subdirectory(extlib)
+if(Boost_FOUND)
+    add_subdirectory(test)
+endif()
 
-include_directories(${PROJECT_SOURCE_DIR})
-add_subdirectory(test)
+add_subdirectory(extlib)
 add_subdirectory(python)
