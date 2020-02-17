@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(message_thrown)
     {
         asd::throw_exception<std::out_of_range>("hoge %", 100);
     }
-    catch(std::out_of_range oor)
+    catch(std::out_of_range& oor)
     {
         const std::string what = oor.what();
         BOOST_CHECK_EQUAL(what, std::string("hoge 100"));
