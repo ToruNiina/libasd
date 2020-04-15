@@ -56,28 +56,32 @@ void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, std::istream& is,
 template<typename channelT, typename contT>
 struct read_frame_impl
 {
+    using result_type = std::array<Frame<std::int16_t, contT>, channelT::value>;
+
     template<typename sourceT>
-    static Frame<std::int16_t, channelT, contT>
+    static std::array<Frame<std::int16_t, contT>, channelT::value>
     invoke(sourceT& source, const std::size_t x, const std::size_t y)
     {
-        Frame<std::int16_t, channelT, contT> f;
-        read_frame_header_impl(f.header, source);
-        for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
+        std::array<Frame<std::int16_t, contT>, channelT::value> fs;
+        for(auto& f : fs)
         {
-            read_frame_data_impl(f[i], source, x, y);
+            read_frame_header_impl(f.header, source);
+            read_frame_data_impl(f.data, source, x, y);
         }
-        return f;
+        return fs;
     }
 };
 
 template<typename contT>
 struct read_frame_impl<channel<1>, contT>
 {
+    using result_type = Frame<std::int16_t, contT>;
+
     template<typename sourceT>
-    static Frame<std::int16_t, channel<1>, contT>
+    static Frame<std::int16_t, contT>
     invoke(sourceT& source, const std::size_t x, const std::size_t y)
     {
-        Frame<std::int16_t, channel<1>, contT> f;
+        Frame<std::int16_t, contT> f;
         read_frame_header_impl(f.header, source);
         read_frame_data_impl(f.data, source, x, y);
         return f;
@@ -117,12 +121,14 @@ read_frame_data(std::istream& is, std::size_t x, std::size_t y)
 }
 
 template<typename chT = channel<1>, typename contT = container::vec>
-Frame<std::int16_t, chT, contT> read_frame(const char*& ptr, std::size_t x, std::size_t y)
+typename detail::read_frame_impl<chT, contT>::result_type
+read_frame(const char*& ptr, std::size_t x, std::size_t y)
 {
     return detail::read_frame_impl<chT, contT>::invoke(ptr, x, y);
 }
 template<typename chT = channel<1>, typename contT = container::vec>
-Frame<std::int16_t, chT, contT> read_frame(std::istream& is, std::size_t x, std::size_t y)
+typename detail::read_frame_impl<chT, contT>::result_type
+read_frame(std::istream& is, std::size_t x, std::size_t y)
 {
     return detail::read_frame_impl<chT, contT>::invoke(is, x, y);
 }

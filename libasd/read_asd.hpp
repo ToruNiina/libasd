@@ -9,74 +9,60 @@ namespace asd
 namespace detail
 {
 
-template<typename realT, typename channelT, typename versionT, typename contT>
+// for N-channel files, read N pair of frame-header and frame-data.
+template<typename realT, typename versionT, typename channelT, typename contT>
 struct read_and_convert_frame_impl
 {
     template<typename sourceT>
-    static Frame<realT, channelT, contT>
+    static std::array<Frame<realT, contT>, channelT::value>
     invoke(sourceT& source, const Header<versionT>& hdr,
            const std::size_t x, const std::size_t y)
     {
-        Frame<realT, channelT, contT> f;
-        read_frame_header_impl(f.header, source);
-        for(std::size_t i=0; i<f.data.size(); ++i) // for each channel
+        std::array<Frame<realT, contT>, channelT::value> channels;
+
+        for(auto& frame : channels)
         {
-            FrameData<std::int16_t, contT> fd;
-            read_frame_data_impl(fd, source, x, y);
-            f[i] = convert_data<realT>(fd, hdr, i);
+            read_frame_header_impl(frame.header, source);
+
+            FrameData<std::int16_t, contT> raw_data;
+            read_frame_data_impl(raw_data, source, x, y);
+
+            frame.data = convert_data<realT>(raw_data, hdr, 0);
         }
-        return f;
+        return channels;
     }
 };
 
 template<typename realT, typename versionT, typename contT>
-struct read_and_convert_frame_impl<realT, channel<1>, versionT, contT>
+struct read_and_convert_frame_impl<realT, versionT, channel<1>, contT>
 {
     template<typename sourceT>
-    static Frame<realT, channel<1>, contT>
+    static Frame<realT, contT>
     invoke(sourceT& source, const Header<versionT>& hdr,
            const std::size_t x, const std::size_t y)
     {
-        Frame<realT, channel<1>, contT> f;
-        read_frame_header_impl(f.header, source);
-        FrameData<std::int16_t, contT> fd;
-        read_frame_data_impl(fd, source, x, y);
-        f.data = convert_data<realT>(fd, hdr, 0);
-        return f;
+        Frame<realT, contT> frame;
+        read_frame_header_impl(frame.header, source);
+
+        FrameData<std::int16_t, contT> raw_data;
+        read_frame_data_impl(raw_data, source, x, y);
+
+        frame.data = convert_data<realT>(raw_data, hdr, 0);
+        return frame;
     }
 };
 
 }// detail
 
-template<typename realT,
-         typename chT = channel<1>, typename verT = version<1>,
-         typename contT = container::vec>
-Data<realT, chT, verT, contT> read_asd(const char*& ptr)
+template<typename realT, typename chT = channel<1>, typename verT = version<1>,
+         typename contT = container::vec, typename sourceT = std::istream>
+Data<realT, chT, verT, contT> read_asd(sourceT& is)
 {
     typedef Data<realT, chT, verT, contT> data_type;
     data_type data;
-    detail::read_header_impl(data.header, ptr);
-    const std::size_t n = data.header.num_frames;
-    container::resize(data.frames, n);
 
-    const std::size_t x = data.header.x_pixel;
-    const std::size_t y = data.header.y_pixel;
-    for(std::size_t i=0; i<n; ++i)
-    {
-        data.frames[i] = detail::read_and_convert_frame_impl<
-            realT, chT, verT, contT>::invoke(ptr, data.header, x, y);
-    }
-    return data;
-}
-
-template<typename realT,
-         typename chT = channel<1>, typename verT = version<1>,
-         typename contT = container::vec>
-Data<realT, chT, verT, contT> read_asd(std::istream& is)
-{
-    typedef Data<realT, chT, verT, contT> data_type;
-    data_type data;
     detail::read_header_impl(data.header, is);
+
     const std::size_t n = data.header.num_frames;
     container::resize(data.frames, n);
 
@@ -85,7 +71,7 @@ Data<realT, chT, verT, contT> read_asd(std::istream& is)
     for(std::size_t i=0; i<n; ++i)
     {
         data.frames[i] = detail::read_and_convert_frame_impl<
-            realT, chT, verT, contT>::invoke(is, data.header, x, y);
+            realT, verT, chT, contT>::invoke(is, data.header, x, y);
     }
     return data;
 }

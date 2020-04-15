@@ -22,7 +22,7 @@ Data<std::int16_t, chT, verT, contT> read_raw_data(const char*& ptr)
 
     for(std::size_t i=0; i<n; ++i)
     {
-        data.frames[i] = detail::read_frame_impl<chT, contT>::invoke(ptr, x, y);
+        data.frames[i] = read_frame<chT, contT>(ptr, x, y);
     }
     return data;
 }
@@ -42,7 +42,7 @@ Data<std::int16_t, chT, verT, contT> read_raw_data(std::istream& is)
 
     for(std::size_t i=0; i<n; ++i)
     {
-        data.frames[i] = detail::read_frame_impl<chT, contT>::invoke(is, x, y);
+        data.frames[i] = read_frame<chT, contT>(is, x, y);
     }
     return data;
 }
