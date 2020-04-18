@@ -10,45 +10,67 @@ namespace detail
 {
 
 // for N-channel files, read N pair of frame-header and frame-data.
-template<typename realT, typename versionT, typename channelT, typename contT>
-struct read_and_convert_frame_impl
+template<typename realT, typename channelT, typename versionT, typename contT>
+struct read_asd_impl
 {
     template<typename sourceT>
-    static std::array<Frame<realT, contT>, channelT::value>
-    invoke(sourceT& source, const Header<versionT>& hdr,
-           const std::size_t x, const std::size_t y)
+    static Data<realT, channelT, versionT, contT> invoke(sourceT& src)
     {
-        std::array<Frame<realT, contT>, channelT::value> channels;
+        Data<realT, channelT, versionT, contT> data;
 
-        for(auto& frame : channels)
+        detail::read_header_impl(data.header, src);
+
+        const std::size_t n = data.header.num_frames;
+        const std::size_t x = data.header.x_pixel;
+        const std::size_t y = data.header.y_pixel;
+
+        for(std::size_t ch = 0; ch < channelT::value; ++ch)
         {
-            read_frame_header_impl(frame.header, source);
+            auto& frames = data.channels[ch];
+            container::resize(frames, n);
+            for(std::size_t i=0; i<n; ++i)
+            {
+                auto& frame = frames[i];
 
-            FrameData<std::int16_t, contT> raw_data;
-            read_frame_data_impl(raw_data, source, x, y);
+                read_frame_header_impl(frame.header, src);
 
-            frame.data = convert_data<realT>(raw_data, hdr, 0);
+                FrameData<std::int16_t, contT> raw_data;
+                read_frame_data_impl(raw_data, src, x, y);
+
+                frame.data = convert_data<realT>(raw_data, data.header, ch);
+            }
         }
-        return channels;
+        return data;
     }
 };
 
 template<typename realT, typename versionT, typename contT>
-struct read_and_convert_frame_impl<realT, versionT, channel<1>, contT>
+struct read_asd_impl<realT, channel<1>, versionT, contT>
 {
     template<typename sourceT>
-    static Frame<realT, contT>
-    invoke(sourceT& source, const Header<versionT>& hdr,
-           const std::size_t x, const std::size_t y)
+    static Data<realT, channel<1>, versionT, contT> invoke(sourceT& src)
     {
-        Frame<realT, contT> frame;
-        read_frame_header_impl(frame.header, source);
+        Data<realT, channel<1>, versionT, contT> data;
 
-        FrameData<std::int16_t, contT> raw_data;
-        read_frame_data_impl(raw_data, source, x, y);
+        detail::read_header_impl(data.header, src);
 
-        frame.data = convert_data<realT>(raw_data, hdr, 0);
-        return frame;
+        const std::size_t n = data.header.num_frames;
+        const std::size_t x = data.header.x_pixel;
+        const std::size_t y = data.header.y_pixel;
+
+        container::resize(data.frames, n);
+        for(std::size_t i=0; i<n; ++i)
+        {
+            auto& frame = data.frames[i];
+
+            read_frame_header_impl(frame.header, src);
+
+            FrameData<std::int16_t, contT> raw_data;
+            read_frame_data_impl(raw_data, src, x, y);
+
+            frame.data = convert_data<realT>(raw_data, data.header, 0);
+        }
+        return data;
     }
 };
 
@@ -56,24 +78,9 @@ struct read_and_convert_frame_impl<realT, versionT, channel<1>, contT>
 
 template<typename realT, typename chT = channel<1>, typename verT = version<1>,
          typename contT = container::vec, typename sourceT = std::istream>
-Data<realT, chT, verT, contT> read_asd(sourceT& is)
+Data<realT, chT, verT, contT> read_asd(sourceT& src)
 {
-    typedef Data<realT, chT, verT, contT> data_type;
-    data_type data;
-
-    detail::read_header_impl(data.header, is);
-
-    const std::size_t n = data.header.num_frames;
-    container::resize(data.frames, n);
-
-    const std::size_t x = data.header.x_pixel;
-    const std::size_t y = data.header.y_pixel;
-    for(std::size_t i=0; i<n; ++i)
-    {
-        data.frames[i] = detail::read_and_convert_frame_impl<
-            realT, verT, chT, contT>::invoke(is, data.header, x, y);
-    }
-    return data;
+    return detail::read_asd_impl<realT, chT, verT, contT>::invoke(src);
 }
 
 } // asd

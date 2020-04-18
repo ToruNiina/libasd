@@ -52,85 +52,34 @@ void read_frame_data_impl(FrameData<std::int16_t, contT>& fd, std::istream& is,
     fd.base() = read_binary_as<std::int16_t, contT>(is, x * y);
     return;
 }
-
-template<typename channelT, typename contT>
-struct read_frame_impl
-{
-    using result_type = std::array<Frame<std::int16_t, contT>, channelT::value>;
-
-    template<typename sourceT>
-    static std::array<Frame<std::int16_t, contT>, channelT::value>
-    invoke(sourceT& source, const std::size_t x, const std::size_t y)
-    {
-        std::array<Frame<std::int16_t, contT>, channelT::value> fs;
-        for(auto& f : fs)
-        {
-            read_frame_header_impl(f.header, source);
-            read_frame_data_impl(f.data, source, x, y);
-        }
-        return fs;
-    }
-};
-
-template<typename contT>
-struct read_frame_impl<channel<1>, contT>
-{
-    using result_type = Frame<std::int16_t, contT>;
-
-    template<typename sourceT>
-    static Frame<std::int16_t, contT>
-    invoke(sourceT& source, const std::size_t x, const std::size_t y)
-    {
-        Frame<std::int16_t, contT> f;
-        read_frame_header_impl(f.header, source);
-        read_frame_data_impl(f.data, source, x, y);
-        return f;
-    }
-};
-
 } // detail
 
-inline FrameHeader read_frame_header(const char*& ptr)
-{
-    FrameHeader fh;
-    detail::read_frame_header_impl(fh, ptr);
-    return fh;
-}
-inline FrameHeader read_frame_header(std::istream& is)
+template<typename sourceT>
+FrameHeader read_frame_header(sourceT& is)
 {
     FrameHeader fh;
     detail::read_frame_header_impl(fh, is);
     return fh;
 }
 
-template<typename contT = container::vec>
+template<typename contT = container::vec, typename sourceT>
 FrameData<std::int16_t, contT>
-read_frame_data(const char*& ptr, std::size_t x, std::size_t y)
-{
-    FrameData<std::int16_t, contT> fd;
-    detail::read_frame_data_impl<contT>(fd, ptr, x, y);
-    return fd;
-}
-template<typename contT = container::vec>
-FrameData<std::int16_t, contT>
-read_frame_data(std::istream& is, std::size_t x, std::size_t y)
+read_frame_data(sourceT& is, std::size_t x, std::size_t y)
 {
     FrameData<std::int16_t, contT> fd;
     detail::read_frame_data_impl<contT>(fd, is, x, y);
     return fd;
 }
 
-template<typename chT = channel<1>, typename contT = container::vec>
-typename detail::read_frame_impl<chT, contT>::result_type
-read_frame(const char*& ptr, std::size_t x, std::size_t y)
+template<typename contT = container::vec, typename sourceT>
+Frame<std::int16_t, contT>
+read_frame(sourceT& source, std::size_t x, std::size_t y)
 {
-    return detail::read_frame_impl<chT, contT>::invoke(ptr, x, y);
-}
-template<typename chT = channel<1>, typename contT = container::vec>
-typename detail::read_frame_impl<chT, contT>::result_type
-read_frame(std::istream& is, std::size_t x, std::size_t y)
-{
-    return detail::read_frame_impl<chT, contT>::invoke(is, x, y);
+    Frame<std::int16_t, contT> f;
+    detail::read_frame_header_impl(f.header, source);
+    detail::read_frame_data_impl(f.data, source, x, y);
+    return f;
+
 }
 
 }// asd
