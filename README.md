@@ -69,6 +69,19 @@ a channel information. By reading the file, it extracts the information at a
 runtime, dynamically. C++ version requires both of them in order to determine
 types at a compile time, statically.
 
+If the file contains several channels, then the data will have `data.channels`
+that is a list of frames.
+
+```python
+print("version            = {}"     .format(data.header.file_version))
+print("number of channels = {}".format(len(data.channels)))
+print("type of channel1   = {}".format(data.header.data_type_1ch))
+print("type of channel2   = {}".format(data.header.data_type_2ch))
+print("number of frames: 1ch = {}, 2ch = {}".format(len(data.channels[0]), len(data.channels[1])))
+```
+
+For more details, run `help(data)` on the python interpreter.
+
 ### With NumPy
 
 Because libasd aims the interoperability with NumPy, `frame.image()` function
