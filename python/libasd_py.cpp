@@ -494,7 +494,7 @@ void add_frame_headers(py::module& mod) // {{{
     py::class_<asd::FrameHeader>(mod, "FrameHeader")
         .def(py::init<>())
         .def_readwrite("number",        &asd::FrameHeader::number,
-                       "type: Integer\nframe index")
+                       "type: Integer\ncurrent frame index")
         .def_readwrite("max_data",      &asd::FrameHeader::max_data,
                        "type: Integer\nmaximum value included in this frame")
         .def_readwrite("min_data",      &asd::FrameHeader::min_data,
@@ -599,9 +599,11 @@ void add_frame_classes(py::module& mod) // {{{
     return;
 } // }}}
 
+// add_data_class {{{
 template<typename dataT>
-void add_data_class(py::module& mod, const char* name,
-                    const char* doc_header, const char* doc_frames) // {{{
+typename std::enable_if<dataT::num_channel == 1>::type
+add_data_class(py::module& mod, const char* name,
+                    const char* doc_header, const char* doc_frames)
 {
     py::class_<dataT>(mod, name)
         .def(py::init<>())
@@ -609,19 +611,35 @@ void add_data_class(py::module& mod, const char* name,
         .def_readwrite("frames", &dataT::frames, doc_frames)
         ;
     return;
-} // }}}
-
-void add_data_classes(py::module& mod) // {{{
+}
+template<typename dataT>
+typename std::enable_if<dataT::num_channel != 1>::type
+add_data_class(py::module& mod, const char* name,
+                    const char* doc_header, const char* doc_frames)
 {
+    py::class_<dataT>(mod, name)
+        .def(py::init<>())
+        .def_readwrite("header",   &dataT::header,   doc_header)
+        .def_readwrite("channels", &dataT::channels, doc_frames)
+        ;
+    return;
+}
+
+void add_data_classes(py::module& mod)
+{
+
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<0>, asd::container::vec>
-        >(mod, "RawData1ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "RawData1ch_v0", "type: Header_v0\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<1>, asd::container::vec>
-        >(mod, "RawData1ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "RawData1ch_v1", "type: Header_v1\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
     add_data_class<
         asd::Data<std::int16_t, asd::ch<1>, asd::ver<2>, asd::container::vec>
-        >(mod, "RawData1ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "RawData1ch_v2", "type: Header_v2\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
 
     add_data_class<
         asd::Data<std::int16_t, asd::ch<2>, asd::ver<0>, asd::container::vec>
@@ -645,13 +663,16 @@ void add_data_classes(py::module& mod) // {{{
 
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<0>, asd::container::vec>
-        >(mod, "Data2ch_v0", "type: Header_v0\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "Data2ch_v0", "type: Header_v0\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<1>, asd::container::vec>
-        >(mod, "Data2ch_v1", "type: Header_v1\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "Data2ch_v1", "type: Header_v1\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
     add_data_class<
         asd::Data<double, asd::ch<2>, asd::ver<2>, asd::container::vec>
-        >(mod, "Data2ch_v2", "type: Header_v2\nheader information", "type: Array<FrameData>\nframes");
+        >(mod, "Data2ch_v2", "type: Header_v2\nheader information",
+          "type: Array<Array<FrameData>>\nchannels (array of frames)");
     return;
 } // }}}
 
