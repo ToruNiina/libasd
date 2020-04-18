@@ -44,14 +44,15 @@ struct Data
     typedef Frame<value_type, contT>             frame_type;
     typedef typename frame_type::header_type     frame_header_type;
     typedef typename frame_type::frame_data_type frame_data_type;
-    typedef std::array<frame_type, num_channel>  channels_type;
 
     typedef contT container_dispatcher_type;
-    typedef typename contT::template rebind<channels_type>::other
+    typedef typename contT::template rebind<frame_type>::other
             frame_container_type;
 
-    header_type          header; //!< header information
-    frame_container_type frames; //!< an array of (arrays of frames := channels)
+    typedef std::array<frame_container_type, num_channel> channels_type;
+
+    header_type   header;   //!< header information
+    channels_type channels; //!< an array of (arrays of frames)
 
     // normally,
     // frame_container_type := std::vector<std::array<frame_type, num_channel>>
