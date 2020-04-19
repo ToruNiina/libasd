@@ -184,6 +184,41 @@ int main()
 Here you can access each frame, line, and pixel intuitively by using range-based
 for loops.
 
+For the N-channel data, you need one more loop.
+
+```cpp
+#include <libasd/libasd.hpp>
+#include <fstream>
+#include <iostream>
+
+int main()
+{
+    std::ifstream ifs("example.asd");
+    const auto data = asd::read_asd<double, asd::ch<2>>(ifs);
+
+    std::cout << "x_pixel = " << data.header.x_pixel << '\n';
+    std::cout << "y_pixel = " << data.header.y_pixel << '\n';
+
+    for(auto const& frames : data.channels)
+    {
+        for(auto const& frame : frames)
+        {
+            for(auto const& line : frame)
+            {
+                for(auto const& pixel : line)
+                {
+                    std::cout << pixel << ','; // height [nm] for topography, ...
+                }
+                std::cout << '\n';
+            }
+            std::cout << "\n\n";
+        }
+    }
+    std::cout << std::flush;
+    return 0;
+}
+```
+
 You can set file version and channel as a template parameter.
 
 ```cpp
