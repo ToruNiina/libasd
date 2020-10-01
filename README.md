@@ -35,7 +35,7 @@ Automatic tests are performed with Python 3.4, 3.5, and 3.6 on Travis CI.
 
 The python binding part depends on [pybind11](https://github.com/pybind/pybind11).
 
-### Building Python Library
+### Installation of Python Library
 
 The build script uses [CMake](https://cmake.org/).
 Please make sure that you have installed `cmake`.
@@ -47,7 +47,7 @@ $ pip install --user ./libasd
 
 ### Example Code
 
-After set your `PYTHONPATH`, you can use the library in the following way.
+After installation, you can use the library in the following way.
 
 ```python
 import libasd
@@ -60,7 +60,7 @@ print("version    = {}"     .format(data.header.file_version))
 print("image size = {}x{}"  .format(data.header.x_pixel, data.header.y_pixel))
 print("there are {} frames.".format(len(data.frames)))
 
-plt.imshow(data.frames[0].image())
+plt.imshow(data.frames[0].image(), cmap="afmhot")
 plt.show()
 ```
 
@@ -73,11 +73,14 @@ If the file contains several channels, then the data will have `data.channels`
 that is a list of frames.
 
 ```python
-print("version            = {}"     .format(data.header.file_version))
+print("version            = {}".format(data.header.file_version))
 print("number of channels = {}".format(len(data.channels)))
 print("type of channel1   = {}".format(data.header.data_type_1ch))
 print("type of channel2   = {}".format(data.header.data_type_2ch))
 print("number of frames: 1ch = {}, 2ch = {}".format(len(data.channels[0]), len(data.channels[1])))
+
+plt.imshow(data.channels[0].frames[0].image(), cmap="afmhot")
+plt.show()
 ```
 
 For more details, run `help(data)` on the python interpreter.
