@@ -1,6 +1,7 @@
 #ifndef LIBASD_READ_HEADER_H
 #define LIBASD_READ_HEADER_H
 #include <libasd/read_binary_as.hpp>
+#include <libasd/stream_checkpoint.hpp>
 #include <libasd/header.hpp>
 #include <istream>
 
@@ -13,6 +14,8 @@ template<typename sourceT>
 sourceT&
 read_header_impl(Header<version<0>>& header, sourceT& source)
 {
+    const auto starting_point = checkpoint(source);
+
     header.file_version        = read_binary_as<decltype(header.file_version       )>(source);
     header.data_type_1ch       = static_cast<decltype(header.data_type_1ch)>(read_binary_as<std::int16_t>(source));
     header.data_type_2ch       = static_cast<decltype(header.data_type_2ch)>(read_binary_as<std::int16_t>(source));
@@ -73,6 +76,10 @@ read_header_impl(Header<version<0>>& header, sourceT& source)
         header.comment[i] = read_binary_as<std::int8_t>(source);
     }
 
+    // force read even if file header or spec is broken
+    restart_from(source, starting_point);
+    ignore_bytes(source, static_cast<std::size_t>(header.file_header_size));
+
     return source;
 }
 
@@ -80,6 +87,8 @@ template<typename sourceT>
 sourceT&
 read_header_impl(Header<version<1>>& header, sourceT& source)
 {
+    const auto starting_point = checkpoint(source);
+
     header.file_version         = read_binary_as<decltype(header.file_version        )>(source);
     header.file_header_size     = read_binary_as<decltype(header.file_header_size    )>(source);
     header.frame_header_size    = read_binary_as<decltype(header.frame_header_size   )>(source);
@@ -134,6 +143,11 @@ read_header_impl(Header<version<1>>& header, sourceT& source)
     {
         header.comment[i] = read_binary_as<std::int8_t>(source);
     }
+
+    // force read even if file header or spec is broken
+    restart_from(source, starting_point);
+    ignore_bytes(source, static_cast<std::size_t>(header.file_header_size));
+
     return source;
 }
 
@@ -141,6 +155,8 @@ template<typename sourceT>
 sourceT&
 read_header_impl(Header<version<2>>& header, sourceT& source)
 {
+    const auto starting_point = checkpoint(source);
+
     header.file_version         = read_binary_as<decltype(header.file_version        )>(source);
     header.file_header_size     = read_binary_as<decltype(header.file_header_size    )>(source);
     header.frame_header_size    = read_binary_as<decltype(header.frame_header_size   )>(source);
@@ -249,6 +265,11 @@ read_header_impl(Header<version<2>>& header, sourceT& source)
             header.y_anchor_points_blue[i] = read_binary_as<std::int32_t>(source);
         }
     }
+
+    // force read even if file header or spec is broken
+    restart_from(source, starting_point);
+    ignore_bytes(source, static_cast<std::size_t>(header.file_header_size));
+
     return source;
 }
 

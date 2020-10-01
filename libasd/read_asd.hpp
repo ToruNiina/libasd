@@ -1,7 +1,11 @@
 #ifndef LIBASD_READ_ASD_DATA_H
 #define LIBASD_READ_ASD_DATA_H
-#include <libasd/read_raw_data.hpp>
+#include <libasd/stream_checkpoint.hpp>
+#include <libasd/read_header.hpp>
+#include <libasd/read_frame.hpp>
+#include <libasd/data.hpp>
 #include <libasd/convert.hpp>
+#include <libasd/read_raw_data.hpp>
 
 namespace asd
 {
@@ -24,6 +28,7 @@ struct read_asd_impl
         const std::size_t x = data.header.x_pixel;
         const std::size_t y = data.header.y_pixel;
 
+        const std::size_t frame_header_size = data.header.frame_header_size;
         for(std::size_t ch = 0; ch < channelT::value; ++ch)
         {
             auto& frames = data.channels[ch];
@@ -32,7 +37,11 @@ struct read_asd_impl
             {
                 auto& frame = frames[i];
 
+                const auto frame_starting_point = checkpoint(src);
                 read_frame_header_impl(frame.header, src);
+                // force skip even if something is broken
+                restart_from(src, frame_starting_point);
+                ignore_bytes(src, frame_header_size);
 
                 FrameData<std::int16_t, contT> raw_data;
                 read_frame_data_impl(raw_data, src, x, y);
@@ -59,11 +68,16 @@ struct read_asd_impl<realT, channel<1>, versionT, contT>
         const std::size_t y = data.header.y_pixel;
 
         container::resize(data.frames, n);
+        const std::size_t frame_header_size = data.header.frame_header_size;
         for(std::size_t i=0; i<n; ++i)
         {
             auto& frame = data.frames[i];
 
+            const auto frame_starting_point = checkpoint(src);
             read_frame_header_impl(frame.header, src);
+            // force skip even if something is broken
+            restart_from(src, frame_starting_point);
+            ignore_bytes(src, frame_header_size);
 
             FrameData<std::int16_t, contT> raw_data;
             read_frame_data_impl(raw_data, src, x, y);
