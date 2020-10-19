@@ -62,6 +62,7 @@ setup(
     version='1.5.0',
     author='Toru Niina',
     author_email='niina.toru.68u@gmail.com',
+    url='https://github.com/ToruNiina/libasd',
     description='a library to read High Speed AFM data file',
     long_description='',
     ext_modules=[CMakeExtension('libasd')],
