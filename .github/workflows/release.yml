@@ -57,33 +57,80 @@ jobs:
 #         with:
 #             user: __token__
 #             password: ${{ secrets.pypi_token }}
-  test-windows:
-    runs-on: windows-2019
-    strategy:
-      matrix:
-        config: ['Release', 'Debug']
+#   test-windows:
+#     runs-on: windows-2019
+#     strategy:
+#       matrix:
+#         config: ['Release', 'Debug']
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#             submodules: true
+#       - uses: ilammy/msvc-dev-cmd@v1
+#       - name: Configure
+#         run: |
+#             mkdir build
+#             cd build
+#             cmake .. -G "NMake Makefiles"
+#       - name: Build
+#         working-directory: ./build
+#         run: |
+#             cmake --build . --config "${{ matrix.config }}"
+#       - name: Test
+#         working-directory: ./build
+#         run: |
+#             ctest --build-config "${{ matrix.config }}" --output-on-failure
+#   upload-windows:
+#     needs: test-windows
+#     runs-on: windows-2019
+#     strategy:
+#       matrix:
+#         python-version: ['3.6', '3.7', '3.8', '3.9']
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#             submodules: true
+#       - uses: ilammy/msvc-dev-cmd@v1
+#       - name: Configuration
+#         uses: actions/setup-python@v2
+#         with:
+#             python-version: ${{ matrix.python-version }}
+#             architecture: x64
+#       - name: Install
+#         run: |
+#             python -m pip install wheel twine
+#       - name: Build
+#         run: |
+#             python setup.py bdist_wheel
+#       - name: Upload
+#         run: |
+#             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
+#
+  test-macos:
+    runs-on: macos-10.15
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
             submodules: true
-      - uses: ilammy/msvc-dev-cmd@v1
       - name: Configure
         run: |
             mkdir build
             cd build
-            cmake .. -G "NMake Makefiles"
+            cmake ..
       - name: Build
         working-directory: ./build
         run: |
-            cmake --build . --config "${{ matrix.config }}"
+            cmake --build .
       - name: Test
         working-directory: ./build
         run: |
-            ctest --build-config "${{ matrix.config }}" --output-on-failure
-  upload-windows:
-    needs: test-windows
-    runs-on: windows-2019
+            ctest --output-on-failure
+  upload-macos:
+    needs: test-macos
+    runs-on: macos-10.15
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9']
@@ -92,7 +139,6 @@ jobs:
         uses: actions/checkout@v2
         with:
             submodules: true
-      - uses: ilammy/msvc-dev-cmd@v1
       - name: Configuration
         uses: actions/setup-python@v2
         with:
