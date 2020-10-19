@@ -5,8 +5,8 @@ on:
     branches:
       - master
 
-test:
-  build-linux:
+jobs:
+  test:
     runs-on: Ubuntu-20.04
     steps:
       - name: Checkout
@@ -30,10 +30,8 @@ test:
         working-directory: ./build
         run: |
             ctest --output-on-failure
-
-upload:
-  needs: test
-  build-linux:
+  upload:
+    needs: test
     runs-on: Ubuntu-20.04
     strategy:
       matrix:
