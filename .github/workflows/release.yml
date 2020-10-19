@@ -6,33 +6,84 @@ on:
       - master
 
 jobs:
-  test:
-    runs-on: Ubuntu-20.04
+#   test-linux:
+#     runs-on: Ubuntu-20.04
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#             submodules: true
+#       - name: Install
+#         run: |
+#             sudo apt-get update
+#             sudo apt-get install libboost-all-dev
+#       - name: Configure
+#         run: |
+#             mkdir build
+#             cd build
+#             cmake ..
+#       - name: Build
+#         working-directory: ./build
+#         run: |
+#             cmake --build .
+#       - name: Test
+#         working-directory: ./build
+#         run: |
+#             ctest --output-on-failure
+#   upload-linux:
+#     needs: test-linux
+#     runs-on: Ubuntu-20.04
+#     strategy:
+#       matrix:
+#         python-version: ['3.6', '3.7', '3.8', '3.9']
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#             submodules: true
+#       - name: Configuration
+#         uses: actions/setup-python@v2
+#         with:
+#             python-version: ${{ matrix.python-version }}
+#             architecture: x64
+#       - name: Install
+#         run: |
+#             python -m pip install wheel
+#       - name: Build
+#         run: |
+#             python setup.py bdist_wheel -p manylinux1_x86_64
+#       - name: Upload
+#         uses: pypa/gh-action-pypi-publish@master
+#         with:
+#             user: __token__
+#             password: ${{ secrets.pypi_token }}
+  test-windows:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        config: ['Release', 'Debug']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
             submodules: true
-      - name: Install
-        run: |
-            sudo apt-get update
-            sudo apt-get install libboost-all-dev
+      - uses: ilammy/msvc-dev-cmd@v1
       - name: Configure
         run: |
             mkdir build
             cd build
-            cmake ..
+            cmake .. -G "NMake Makefiles"
       - name: Build
         working-directory: ./build
         run: |
-            cmake --build .
+            cmake --build . --config "${{ matrix.config }}"
       - name: Test
         working-directory: ./build
         run: |
-            ctest --output-on-failure
-  upload:
-    needs: test
-    runs-on: Ubuntu-20.04
+            ctest --build-config "${{ matrix.config }}" --output-on-failure
+  upload-windows:
+    needs: test-windows
+    runs-on: windows-2019
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9']
@@ -41,6 +92,7 @@ jobs:
         uses: actions/checkout@v2
         with:
             submodules: true
+      - uses: ilammy/msvc-dev-cmd@v1
       - name: Configuration
         uses: actions/setup-python@v2
         with:
@@ -51,7 +103,7 @@ jobs:
             python -m pip install wheel
       - name: Build
         run: |
-            python setup.py bdist_wheel -p manylinux1_x86_64
+            python setup.py bdist_wheel
       - name: Upload
         uses: pypa/gh-action-pypi-publish@master
         with:
