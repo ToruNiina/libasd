@@ -33,10 +33,26 @@ Automatic tests are performed with Python 3.4, 3.5, and 3.6 on Travis CI.
 
 ## Usage in Python3
 
-The python binding part depends on [pybind11](https://github.com/pybind/pybind11).
+### Installation via pip
 
-### Installation of Python Library
+If you are ...
 
+- on Windows 2019, macOS Catalina 10.15, or Linux (x86\_64) and
+- using Python 3.6, 3.7, 3.8, or 3.9,
+
+you can install it via pip.
+
+```console
+$ pip install libasd
+```
+
+The complete list of supported environment can be found [here](https://pypi.org/project/libasd/#files)
+
+Otherwise, you need to build it by yourself (see the following section).
+
+### Building by yourself
+
+It depends on [pybind11](https://github.com/pybind/pybind11).
 The build script uses [CMake](https://cmake.org/).
 Please make sure that you have installed `cmake`.
 
