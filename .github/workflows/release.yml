@@ -1,0 +1,55 @@
+name: upload
+
+on: [release]
+
+test:
+  build-linux:
+    runs-on: Ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Install
+        run: |
+            sudo apt-get update
+            sudo apt-get install libboost-all-dev
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake ..
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build .
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --output-on-failure
+
+upload:
+  needs: test
+  build-linux:
+    runs-on: Ubuntu-20.04
+    strategy:
+      matrix:
+        compiler: ['3.6', '3.7', '3.8', '3.9']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Configuration
+        uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+            architecture: x64
+      - name: Build Python Package
+        run: |
+            python setup.py bdist_wheel -p manylinux1_x86_64
+      - name: Upload
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+            user: __token__
+            password: ${{ secrets.pypi_token }}
