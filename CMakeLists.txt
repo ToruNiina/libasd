@@ -2,11 +2,16 @@ project(libasd)
 cmake_minimum_required(VERSION 3.0)
 enable_testing()
 
-add_definitions("-Wall -Wextra -Wpedantic")
+if(MSVC)
+    add_definitions("/Zc:__cplusplus") # define __cplusplus value correctly
+    add_definitions("/utf-8")          # enable to use u8"" literal
+else()
+    add_definitions("-Wall -Wextra -Wpedantic")
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR})
 
 option(LIBASD_BUILD_TESTS ON)
-
 if(LIBASD_BUILD_TESTS)
     # Boost.Test library is used to write test codes.
     find_package(Boost 1.62.0)
