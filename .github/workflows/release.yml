@@ -1,6 +1,9 @@
-name: upload
+name: release
 
-on: [release]
+on:
+  push:
+    branches:
+      - master
 
 test:
   build-linux:
