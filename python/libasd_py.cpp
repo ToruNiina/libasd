@@ -532,9 +532,11 @@ void add_frame_data(py::module& mod) // {{{
         .def_buffer([](asd::FrameData<std::int16_t, asd::container::vec>& fd)
             -> py::buffer_info {
             return py::buffer_info(
-                fd.base().data(), sizeof(std::int16_t),
+                fd.base().data(),
+                sizeof(std::int16_t),
                 py::format_descriptor<std::int16_t>::format(),
-                2, {fd.x_pixel(), fd.y_pixel()},
+                2,
+                {fd.y_pixel(), fd.x_pixel()},
                 {sizeof(std::int16_t) * fd.x_pixel(), sizeof(std::int16_t)}
             );
         });
@@ -544,9 +546,11 @@ void add_frame_data(py::module& mod) // {{{
         .def_buffer([](asd::FrameData<double, asd::container::vec>& fd)
             -> py::buffer_info {
             return py::buffer_info(
-                fd.base().data(), sizeof(double),
+                fd.base().data(),
+                sizeof(double),
                 py::format_descriptor<double>::format(),
-                2, {fd.x_pixel(), fd.y_pixel()},
+                2,
+                {fd.y_pixel(), fd.x_pixel()},
                 {sizeof(double) * fd.x_pixel(), sizeof(double)}
             );
         });
@@ -565,9 +569,11 @@ void add_frame_classes(py::module& mod) // {{{
         .def("image", [](asd::Frame<std::int16_t, asd::container::vec>* self)
                 -> py::array_t<std::int16_t> {
                 return py::array_t<std::int16_t>(py::buffer_info(
-                    self->data.base().data(), sizeof(std::int16_t),
+                    self->data.base().data(),
+                    sizeof(std::int16_t),
                     py::format_descriptor<std::int16_t>::format(),
-                    2, {self->data.x_pixel(), self->data.y_pixel()},
+                    2,
+                    {self->data.y_pixel(), self->data.x_pixel()},
                     {sizeof(std::int16_t) * self->data.x_pixel(), sizeof(std::int16_t)}
                 ));
             },
@@ -586,9 +592,11 @@ void add_frame_classes(py::module& mod) // {{{
         .def("image", [](asd::Frame<double, asd::container::vec>* self)
                 -> py::array_t<double> {
                 return py::array_t<double>(py::buffer_info(
-                    self->data.base().data(), sizeof(double),
+                    self->data.base().data(),
+                    sizeof(double),
                     py::format_descriptor<double>::format(),
-                    2, {self->data.x_pixel(), self->data.y_pixel()},
+                    2,
+                    {self->data.y_pixel(), self->data.x_pixel()},
                     {sizeof(double) * self->data.x_pixel(), sizeof(double)}
                 ));
             },
