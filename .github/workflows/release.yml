@@ -1,7 +1,8 @@
 name: release
 
 on:
-  release
+  release:
+    types: [published]
 
 jobs:
   test-linux:
