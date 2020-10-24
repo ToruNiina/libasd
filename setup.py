@@ -59,7 +59,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='libasd',
-    version='1.5.2',
+    version='1.5.3',
     author='Toru Niina',
     author_email='niina.toru.68u@gmail.com',
     url='https://github.com/ToruNiina/libasd',
