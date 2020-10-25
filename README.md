@@ -11,8 +11,6 @@ depending only on the C++ standard library.
 libasd provides a binding for Python3 depending on
 [pybind11](https://github.com/pybind/pybind11).
 
-Automatic tests are performed with Python 3.4, 3.5, and 3.6 on Travis CI.
-
 ![logo](./misc/logo.png)
 
 ## Table of Contents
@@ -37,7 +35,7 @@ Automatic tests are performed with Python 3.4, 3.5, and 3.6 on Travis CI.
 
 If you are ...
 
-- on Windows 2019, macOS Catalina 10.15, or Linux (x86\_64) and
+- on Windows 2019 (x86\_64), macOS Catalina 10.15, or Linux (x86\_64) and
 - using Python 3.6, 3.7, 3.8, or 3.9,
 
 you can install it via pip.
@@ -95,7 +93,8 @@ print("type of channel1   = {}".format(data.header.data_type_1ch))
 print("type of channel2   = {}".format(data.header.data_type_2ch))
 print("number of frames: 1ch = {}, 2ch = {}".format(len(data.channels[0]), len(data.channels[1])))
 
-plt.imshow(data.channels[0].frames[0].image(), cmap="afmhot")
+# It plots 10-th frame in the first(0-th) channel.
+plt.imshow(data.channels[0][10].image(), cmap="afmhot")
 plt.show()
 ```
 
