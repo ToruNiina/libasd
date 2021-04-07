@@ -78,14 +78,6 @@ matrix:
         packages:
         - build-essential
         - cmake
-  - os: osx
-    language: cpp
-    compiler: clang
-    addons:
-      homebrew:
-        update: true
-        packages:
-          - cmake
 
 before_install:
 - which sha256sum
