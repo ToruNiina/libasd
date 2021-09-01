@@ -76,9 +76,12 @@ read_header_impl(Header<version<0>>& header, sourceT& source)
         header.comment[i] = read_binary_as<std::int8_t>(source);
     }
 
-    // force read even if file header or spec is broken
-    restart_from(source, starting_point);
-    ignore_bytes(source, static_cast<std::size_t>(header.file_header_size));
+    // sometimes version 0 file contains incorrect file_header_size, so here
+    // we don't rely on the `file_header_size`
+
+//     // force read even if file header or spec is broken
+//     restart_from(source, starting_point);
+//     ignore_bytes(source, static_cast<std::size_t>(header.file_header_size));
 
     return source;
 }
