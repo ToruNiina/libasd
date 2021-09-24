@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# copyright (c) Toru Niina 2021
+# distributed under the MIT license.
+
 # README
 #
 # usage: python3 <filename.asd> <frame> [channel=1 or 2, 1 by default]
@@ -13,11 +16,9 @@
 
 import libasd
 import tkinter
-import tkinter.ttk
 import numpy as np
 import matplotlib
 import matplotlib.cm
-import matplotlib.pyplot as plt
 import sys
 
 class TiltCorrection(tkinter.Frame):
@@ -28,92 +29,91 @@ class TiltCorrection(tkinter.Frame):
         self.afmx   = x
         self.afmy   = y
         self.filename = fname
-        self.logname = lname
+        self.logname  = lname
 
         self.pixels_used = []
-        self.rectangles = []
+        self.rectangles  = []
 
-        self.master = master
+        self.tmprect = None # to show temporary regions selected
+        self.colormap = matplotlib.cm.get_cmap("afmhot") # to colorize heights
+
+        # GUI stuff
+        self.master = master # upper level widget (in this case, root window)
         self.master.title('afm tilt correction')
-        self.pack()
-        self.launch(img, x, y)
+        self.pack() # I don't know but this is needed
+        self.launch()
 
         return
 
-    def launch(self, img, x, y):
+    def launch(self):
+        print("start launching GUI")
+
         refsize = 320
-        self.magnification = refsize // min(x, y)
-        mag = self.magnification # alias
+        self.magnification = refsize // min(self.afmx, self.afmy)
+        mag = self.magnification # alias. "magnification" is too long to type
+
+        self.width  = self.afmx * mag
+        self.height = self.afmy * mag
 
         if mag != 1:
-            print("image is too small to manipulate via GUI. magnifying x", mag)
-
-        self.width  = x * mag
-        self.height = y * mag
+            print("image is too small to manipulate via GUI. magnifying x{}".format(mag))
 
         # colormap
-        self.min_height = np.amin(img)
-        self.max_height = np.amax(img)
+        self.min_height = np.amin(self.afmimg)
+        self.max_height = np.amax(self.afmimg)
         self.height_coef = 1.0 / (self.max_height - self.min_height)
         print("max height in the image = ", self.max_height, ", min height = ", self.min_height)
 
         # make image
-        print("colorizing and magnifying image ...", end=" ", flush=True)
-        self.image = tkinter.PhotoImage(width=self.width, height=self.height)
-        self.draw_image()
-        print("done.")
-
         print("putting image on GUI...", end=" ", flush=True)
         self.canvas = tkinter.Canvas(self, bg='black', width=self.width, height=self.height, highlightthickness=0)
         self.canvas.pack()
-        self.canvas.create_image(self.width, self.height, image=self.image, anchor="se")
+        self.draw_image()
         print("done.")
 
         print("adding widgets to GUI...", end=" ", flush=True)
-        self.canvas.bind('<ButtonPress-1>',    self.start_pickup)
-        self.canvas.bind('<B1-Motion>',        self.during_pickup)
-        self.canvas.bind('<ButtonRelease-1>',  self.stop_pickup)
-        self.canvas.bind('<Button-3>',         self.undo_pickup)
-        self.winfo_toplevel().bind('<Return>', self.run_correction)
+        self.canvas.bind('<ButtonPress-1>',    self.start_pickup)   # left-click pressed
+        self.canvas.bind('<B1-Motion>',        self.during_pickup)  # left-click + drag
+        self.canvas.bind('<ButtonRelease-1>',  self.stop_pickup)    # left-click released
+        self.canvas.bind('<Button-3>',         self.undo_pickup)    # right click
+        self.winfo_toplevel().bind('<Return>', self.run_correction) # keyboard enter key
         print("done.")
 
         return
 
-    # change (0, 0) at the bottom-left
-    def convert_coord(self, x, y):
-        return (x, self.height - y)
-
     def draw_image(self):
         mag = self.magnification
+
         # show image
         for j in range(0, self.afmy):
+            # change (0, 0) at the bottom-left (tk sets (0, 0) at top-left)
+            y1 = self.height - (j+1)*mag
+            y2 = self.height -  j   *mag
             for i in range(0, self.afmx):
                 pixel_color=self.colorize(self.afmimg[j][i])
-                for h in range(j * mag, (j+1) * mag):
-                    for w in range(i * mag, (i+1) * mag):
-                        self.image.put(pixel_color, to=self.convert_coord(w, h))
+                x1 = i     * mag
+                x2 = (i+1) * mag
+                self.canvas.create_rectangle(x1, y1, x2, y2, fill=pixel_color, outline="")
 
-        # show shade to the selected regions
+        # show rectangle regions that are already selected
         for rect in self.rectangles:
             xstart, xend, ystart, yend = rect
-            for h in range(ystart * mag, yend * mag):
-                for w in range(xstart * mag, xend * mag):
-                    w_, h_ = self.convert_coord(w, h)
-                    r, g, b = self.image.get(w_, h_)
-                    r = (r + 255) // 2
-                    g = (g + 255) // 2
-                    b = (b + 255) // 2
-                    self.image.put("#" + format(r, "02x") + format(g, "02x") + format(b, "02x"), to=(w_, h_))
+
+            x1 = xstart * mag
+            x2 = xend   * mag
+            y1 = self.height - ystart * mag
+            y2 = self.height - yend   * mag
+
+            self.canvas.create_rectangle(x1, y1, x2, y2, width=3, outline="white")
         return
 
     def colorize(self, height):
-        value = (height - self.min_height) * self.height_coef # [0, 1]
-        afmhot = matplotlib.cm.get_cmap('afmhot')
-        return matplotlib.colors.rgb2hex(afmhot(value))
+        value = (height - self.min_height) * self.height_coef # adjust in [0, 1]
+        return matplotlib.colors.rgb2hex(self.colormap(value)) # return in "ffffff" or something like that
 
     def undo_pickup(self, event):
         xstart, xend, ystart, yend = self.rectangles.pop(-1)
-        print("removing rect(", xstart, ", ", xend, ", ", ystart, ", ", yend, ")")
+        print("removing rect({}, {}, {}, {})".format(xstart, xend, ystart, yend))
         self.draw_image()
         return
 
@@ -126,39 +126,32 @@ class TiltCorrection(tkinter.Frame):
         if not self.is_dragging:
             return
 
-        tmp_stop_x = event.x
-        tmp_stop_y = event.y
-        self.draw_image()
-
-        # show tmp rect
         mag = self.magnification
 
-        start_x = min(self.tmp_start_x, event.x)
-        stop_x  = max(self.tmp_start_x, event.x)
-        start_y = max(self.tmp_start_y, event.y)
-        stop_y  = min(self.tmp_start_y, event.y)
-        xstart = start_x                 // self.magnification
-        xend   = stop_x                  // self.magnification
-        ystart = (self.height - start_y) // self.magnification
-        yend   = (self.height - stop_y ) // self.magnification
+        # remove current tmprect if exists (it is selected in the last frame, so
+        # it could be different than the rect currently selected)
+        if not self.tmprect is None:
+            self.canvas.delete(self.tmprect)
 
-        for h in range(ystart * mag, yend * mag):
-            for w in range(xstart * mag, xend * mag):
-                w_, h_ = self.convert_coord(w, h)
-                r, g, b = self.image.get(w_, h_)
-                r = (r + 255) // 2
-                g = (g + 255) // 2
-                b = (b + 255) // 2
-                self.image.put("#" + format(r, "02x") + format(g, "02x") + format(b, "02x"), to=(w_, h_))
+        x1, x2 = (self.tmp_start_x, event.x) if self.tmp_start_x < event.x else (event.x, self.tmp_start_x)
+        y1, y2 = (self.tmp_start_y, event.y) if self.tmp_start_y < event.y else (event.y, self.tmp_start_y)
+
+        self.tmprect = self.canvas.create_rectangle(x1, y1, x2, y2, width=3, fill="", outline="white", dash=(4,8))
+
         return
 
     def stop_pickup(self, event):
         self.is_dragging = False
 
+        # If there is tmp rectangle, remove it
+        if not self.tmprect is None:
+            self.canvas.delete(self.tmprect)
+            self.tmprect = None
+
         start_x = min(self.tmp_start_x, event.x)
         stop_x  = max(self.tmp_start_x, event.x)
 
-        # in tkinter, y axis is flipped
+        # in tkinter, y axis is flipped (ystart uses max, while xstart uses min)
         start_y = max(self.tmp_start_y, event.y)
         stop_y  = min(self.tmp_start_y, event.y)
 
@@ -167,7 +160,7 @@ class TiltCorrection(tkinter.Frame):
         ystart = (self.height - start_y) // self.magnification
         yend   = (self.height - stop_y ) // self.magnification + 1
 
-        print("appending rect(", xstart, ", ", xend, ", ", ystart, ", ", yend, ")")
+        print("appending rect({}, {}, {}, {})".format(xstart, xend, ystart, yend))
 
         self.rectangles.append((xstart, xend, ystart, yend))
         self.draw_image()
@@ -213,32 +206,47 @@ class TiltCorrection(tkinter.Frame):
         return (a, b, c)
 
     def run_correction(self, event):
-        print("running correction ... ")
+        print("start running correction")
 
-        print("collecting bg pixels ... ")
+        print("collecting bg pixels ... ", end="", flush =True)
+        collected_xy = []
         bgheights = []
         for rect in self.rectangles:
             xstart, xend, ystart, yend = rect
-            for j in range(ystart, yend):
-                for i in range(xstart, xend):
+
+            # to avoid out-of-range
+            x1 = max(0, xstart)
+            y1 = max(0, ystart)
+            x2 = min(self.afmx, xend)
+            y2 = min(self.afmy, yend)
+
+            for j in range(y1, y2):
+                for i in range(x1, x2):
+                    if (i, j) in collected_xy: # to avoid double-count
+                        continue
+                    collected_xy.append((i, j))
                     z = self.afmimg[j][i]
                     bgheights.append((i, j, z))
+        print("done.")
 
+        print("writing bg pixel xyz to {} ... ".format(self.logname), end="", flush =True)
         with open(self.logname, "w") as f:
             f.write("# x[pixel], y[pixel], z[nm]")
             for bg in bgheights:
                 x, y, z = bg
                 f.write("{:10.6f} {:10.6f} {:10.6f}\n".format(x, y, z))
+        print("done.")
 
-        print("fitting background plane ... ")
-
+        print("fitting background plane ... ", end = "", flush=True)
         a, b, c = self.fit_plane(bgheights)
+        print("done.")
 
         print("fitted plane: z = {:9.4f}x + {:9.4f}y + {:9.4f}, x and y are in the unit of [pixels]".format(a, b, c))
 
         # ---------------------------------------------------------------------
         # dump corrected image
 
+        print("writing corrected image into {} ... ".format(self.filename), end = "", flush=True)
         with open(self.filename, "w") as f:
             for y in range(0, self.afmy):
                 line = ""
@@ -253,30 +261,42 @@ class TiltCorrection(tkinter.Frame):
         return
 
 # ------------------------------------------------------------------------------
+# main
 
 if len(sys.argv) != 3 and len(sys.argv) != 4:
     print("usage: python3 <filename.asd> <frame> [channel=1 or 2, 1 by default]")
     sys.exit(1)
+
+print("""
+TiltCorrection
+  left-click dragging : select rectangle to use as a background region
+  right click         : remove rectangle that is mistakenly chosen
+  Enter key           : run fitting.
+                        The resulting image will be written "filename_corrected.dat" as a space-separated file.
+                        "filename_background.dat" will have pixels that are used to fit plane (mainly for debugging and reproducibility).
+""")
 
 data = libasd.read_asd(sys.argv[1])
 
 x_pixels = data.header.x_pixel
 y_pixels = data.header.y_pixel
 
-print("image size = ", x_pixels, "x", y_pixels)
+print("image size = {}x{}".format(x_pixels, y_pixels))
 
 if len(sys.argv) == 4:
-    channel = int(sys.argv[3])
+    channel = int(sys.argv[3]) - 1 # 1 | 2 -> 0 | 1
     frame   = int(sys.argv[2])
     afmimg = data.channels[channel][frame].image()
-    print("reading image at channel ", channel, ", frame ", frame)
+    print("reading image at channel {}, {}-th frame".format(channel, frame))
 else:
     frame   = int(sys.argv[2])
     afmimg = data.frames[frame].image()
-    print("reading image at frame ", frame)
+    print("reading image at frame", frame)
 
 filename = sys.argv[1][0:-4] + "_corrected.dat" # for output
 logname  = sys.argv[1][0:-4] + "_background.dat" # for output
+
+# run GUI
 
 root = tkinter.Tk()
 app = TiltCorrection(afmimg, x_pixels, y_pixels, filename, logname, master=root)
