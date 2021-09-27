@@ -246,6 +246,8 @@ class TiltCorrection(tkinter.Frame):
         # ---------------------------------------------------------------------
         # dump corrected image
 
+        min_corrected =  float("inf")
+        max_corrected = -float("inf")
         print("writing corrected image into {} ... ".format(self.filename), end = "", flush=True)
         with open(self.filename, "w") as f:
             for y in range(0, self.afmy):
@@ -254,9 +256,35 @@ class TiltCorrection(tkinter.Frame):
                     stage = a * x + b * y + c
                     height = self.afmimg[y][x] - stage
                     line += "{:10.5f} ".format(height)
+                    if min_corrected > height:
+                        min_corrected = height
+                    if max_corrected < height:
+                        max_corrected = height
                 line += "\n"
                 f.write(line)
         print("done.")
+        height_range_corrected = max_corrected - min_corrected
+
+        # ---------------------------------------------------------------------
+        # show corrected window in another window
+
+        mag = self.magnification
+        self.tmp_window = tkinter.Toplevel(self.master)
+        self.tmp_window.title("corrected image")
+        self.tmp_canvas = tkinter.Canvas(self.tmp_window, bg='black', width=self.width, height=self.height, highlightthickness=0)
+        self.tmp_canvas.pack()
+        for j in range(0, self.afmy):
+            # change (0, 0) at the bottom-left (tk sets (0, 0) at top-left)
+            y1 = self.height - (j+1)*mag
+            y2 = self.height -  j   *mag
+            for i in range(0, self.afmx):
+                stage  = a * x + b * y + c
+                height = self.afmimg[j][i] - stage
+                value  = (height - min_corrected) / height_range_corrected
+                pixel_color = matplotlib.colors.rgb2hex(self.colormap(value))
+                x1 =  i    * mag
+                x2 = (i+1) * mag
+                self.tmp_canvas.create_rectangle(x1, y1, x2, y2, fill=pixel_color, outline="")
 
         return
 
