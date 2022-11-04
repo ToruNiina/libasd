@@ -1,12 +1,13 @@
 name: release
 
 on:
-  release:
-    types: [published]
+  push:
+  # release:
+  #   types: [published]
 
 jobs:
   test-linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,11 +52,11 @@ jobs:
       - name: Build
         run: |
             python setup.py bdist_wheel -p manylinux1_x86_64
-      - name: Upload
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-            user: __token__
-            password: ${{ secrets.pypi_token }}
+      # - name: Upload
+      #   uses: pypa/gh-action-pypi-publish@master
+      #   with:
+      #       user: __token__
+      #       password: ${{ secrets.pypi_token }}
   test-windows:
     runs-on: windows-2019
     strategy:
@@ -103,9 +104,9 @@ jobs:
       - name: Build
         run: |
             python setup.py bdist_wheel
-      - name: Upload
-        run: |
-            python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
+      # - name: Upload
+      #   run: |
+      #       python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
   test-macos:
     runs-on: macos-10.15
     steps:
@@ -148,6 +149,32 @@ jobs:
       - name: Build
         run: |
             python setup.py bdist_wheel
-      - name: Upload
+      # - name: Upload
+      #   run: |
+      #       python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
+  upload-source:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Configuration
+        uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+            architecture: x64
+      - name: Install
         run: |
-            python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
+            python -m pip install wheel
+      - name: Build
+        run: |
+            python setup.py sdist -p manylinux1_x86_64
+      # - name: Upload
+      #   uses: pypa/gh-action-pypi-publish@master
+      #   with:
+      #       user: __token__
+      #       password: ${{ secrets.pypi_token }}
