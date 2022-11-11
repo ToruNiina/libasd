@@ -35,8 +35,8 @@ libasd provides a binding for Python3 depending on
 
 If you are ...
 
-- on Windows 2019 (x86\_64), macOS Catalina 10.15, or Linux (x86\_64) and
-- using Python 3.6, 3.7, 3.8, or 3.9,
+- on Windows (x86\_64), macOS (x86\_64), or Linux (x86\_64) and
+- using Python 3.6, 3.7, 3.8, 3.9, 3.10, or 3.11,
 
 you can install it via pip.
 
