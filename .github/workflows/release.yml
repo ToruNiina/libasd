@@ -6,7 +6,7 @@ on:
 
 jobs:
   test-linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,7 +31,7 @@ jobs:
             ctest --output-on-failure
   upload-linux:
     needs: test-linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
@@ -57,7 +57,7 @@ jobs:
             user: __token__
             password: ${{ secrets.pypi_token }}
   test-windows:
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       matrix:
         config: ['Release', 'Debug']
@@ -82,7 +82,7 @@ jobs:
             ctest --build-config "${{ matrix.config }}" --output-on-failure
   upload-windows:
     needs: test-windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
@@ -107,7 +107,7 @@ jobs:
         run: |
             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
   test-macos:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -128,7 +128,7 @@ jobs:
             ctest --output-on-failure
   upload-macos:
     needs: test-macos
-    runs-on: macos-10.15
+    runs-on: macos-latest
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
@@ -152,7 +152,7 @@ jobs:
         run: |
             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
   upload-source:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
