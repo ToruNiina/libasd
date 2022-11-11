@@ -1,0 +1,141 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  test-linux-ubuntu22:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Install
+        run: |
+            sudo apt-get update
+            sudo apt-get install libboost-all-dev
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake ..
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build .
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --output-on-failure
+  test-linux-ubuntu20:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Install
+        run: |
+            sudo apt-get update
+            sudo apt-get install libboost-all-dev
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake ..
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build .
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --output-on-failure
+  test-windows-22:
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        config: ['Release', 'Debug']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake .. -G "NMake Makefiles"
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build . --config "${{ matrix.config }}"
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --build-config "${{ matrix.config }}" --output-on-failure
+  test-windows-19:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        config: ['Release', 'Debug']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake .. -G "NMake Makefiles"
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build . --config "${{ matrix.config }}"
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --build-config "${{ matrix.config }}" --output-on-failure
+  test-macos12-Monterey:
+    runs-on: macos-12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake ..
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build .
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --output-on-failure
+  test-macos11-BigSur:
+    runs-on: macos-11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+            submodules: true
+      - name: Configure
+        run: |
+            mkdir build
+            cd build
+            cmake ..
+      - name: Build
+        working-directory: ./build
+        run: |
+            cmake --build .
+      - name: Test
+        working-directory: ./build
+        run: |
+            ctest --output-on-failure
