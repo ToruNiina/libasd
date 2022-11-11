@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - name: Install
@@ -37,7 +37,7 @@ jobs:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - name: Configuration
@@ -63,7 +63,7 @@ jobs:
         config: ['Release', 'Debug']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - uses: ilammy/msvc-dev-cmd@v1
@@ -88,7 +88,7 @@ jobs:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - uses: ilammy/msvc-dev-cmd@v1
@@ -110,7 +110,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - name: Configure
@@ -134,7 +134,7 @@ jobs:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - name: Configuration
@@ -158,7 +158,7 @@ jobs:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
             submodules: true
       - name: Configuration
