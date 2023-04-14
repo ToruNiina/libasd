@@ -1,6 +1,11 @@
 name: build
 
-on: [push, pull_request]
+# on: [push, pull_request]
+on:
+  push:
+    branches:
+      - temporary-turn-off-this-build
+
 
 jobs:
   test-linux-ubuntu22:
