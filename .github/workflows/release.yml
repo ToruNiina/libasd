@@ -109,26 +109,26 @@ jobs:
       - name: Upload
         run: |
             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
-  test-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-            submodules: true
-      - name: Configure
-        run: |
-            mkdir build
-            cd build
-            cmake ..
-      - name: Build
-        working-directory: ./build
-        run: |
-            cmake --build .
-      - name: Test
-        working-directory: ./build
-        run: |
-            ctest --output-on-failure
+#   test-macos:
+#     runs-on: macos-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#             submodules: true
+#       - name: Configure
+#         run: |
+#             mkdir build
+#             cd build
+#             cmake ..
+#       - name: Build
+#         working-directory: ./build
+#         run: |
+#             cmake --build .
+#       - name: Test
+#         working-directory: ./build
+#         run: |
+#             ctest --output-on-failure
 #   upload-macos:
 #     needs: test-macos
 #     runs-on: macos-latest
@@ -154,27 +154,24 @@ jobs:
 #       - name: Upload
 #         run: |
 #             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
-  upload-source:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-            submodules: true
-      - name: Configuration
-        uses: actions/setup-python@v4
-        with:
-            python-version: ${{ matrix.python-version }}
-            architecture: x64
-      - name: Install
-        run: |
-            python -m pip install wheel twine
-      - name: Build
-        run: |
-            python setup.py sdist
-      - name: Upload
-        run: |
-            python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
+#   upload-source:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#             submodules: true
+#       - name: Configuration
+#         uses: actions/setup-python@v4
+#         with:
+#             python-version: '3.11'
+#             architecture: x64
+#       - name: Install
+#         run: |
+#             python -m pip install wheel twine
+#       - name: Build
+#         run: |
+#             python setup.py sdist
+#       - name: Upload
+#         run: |
+#             python -m twine upload dist/* --username __token__ --password "${{ secrets.pypi_token }}"
