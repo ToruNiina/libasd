@@ -55,7 +55,7 @@ jobs:
         run: |
             python setup.py bdist_wheel -p manylinux1_x86_64
       - name: Upload
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
             user: __token__
             password: ${{ secrets.pypi_token }}
